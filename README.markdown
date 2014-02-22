@@ -18,3 +18,9 @@ Data structures
 * `Union-Find`: quick find;
 * `Union-Find`: quick union;
 * `Union-Find`: weighted union;
+
+
+References
+----------
+
+__Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional

@@ -1,5 +1,12 @@
 package io.github.carlomicieli
 
+/**
+ * Union/find implementation
+ *
+ * Robert Sedgewick, Kevin Wayne
+ * Algorithms, 4th Edition
+ * 2011, Addison-Wesley Professional
+ */
 sealed trait UnionFind {
   def union(p: Int, q: Int): Unit
 
