@@ -2,7 +2,10 @@ package io.github.carlomicieli
 
 import org.scalatest.FunSpec
 import UnionFind._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
+@RunWith(classOf[JUnitRunner])
 class UnionFindSpecs extends FunSpec {
   describe("Quick find implementation") {
 
