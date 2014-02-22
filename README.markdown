@@ -24,7 +24,6 @@ Used for dynamic connectivity problems.
 | quick union   | O(n)        | O(n)      | O(n)      |
 | weighted      | O(n)        | O(lgn)    | O(lgn)    |
 
-
 References
 ----------
 
