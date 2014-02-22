@@ -1,0 +1,18 @@
+*.class
+*.log
+
+.gradle
+.settings
+.classpath
+.project
+.springBeans
+out
+bin
+build
+target
+
+# Idea files
+*.iml
+*.ipr
+*.iws
+.idea
