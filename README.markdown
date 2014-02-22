@@ -18,11 +18,10 @@ Data structures
 * `Union-Find`;
 
 | Algorithm     | Initialize  | Union     | Connected |
-| _____________ | ----------- | --------- | --------- |
+| ------------- | ----------- | --------- | --------- |
 | quick find    | O(n)        | O(n)      | O(1)      |
 | quick union   | O(n)        | O(n)      | O(n)      |
 | weighted      | O(n)        | O(lgn)    | O(lgn)    |
-
 
 References
 ----------
