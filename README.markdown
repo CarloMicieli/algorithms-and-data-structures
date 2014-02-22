@@ -15,9 +15,13 @@ To import the project in Intellij Idea:
 Data structures
 ---------------
 
-* `Union-Find`: quick find;
-* `Union-Find`: quick union;
-* `Union-Find`: weighted union;
+* `Union-Find`;
+
+| Algorithm     | Initialize  | Union     | Connected |
+| _____________ | ----------- | --------- | --------- |
+| quick find    | O(n)        | O(n)      | O(1)      |
+| quick union   | O(n)        | O(n)      | O(n)      |
+| weighted      | O(n)        | O(lgn)    | O(lgn)    |
 
 
 References
