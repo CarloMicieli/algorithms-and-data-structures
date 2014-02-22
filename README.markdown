@@ -1,6 +1,6 @@
 # algorithms-and-data-structures
 
-[![Build Status](https://drone.io/github.com/CarloMicieli/algorithms-and-data-structures/status.png)](https://drone.io/github.com/CarloMicieli/algorithms-and-data-structures/latest)
+[![Build Status](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures.png?branch=master)](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures)
 
 Data structures and algorithms implementations with the Scala programming language.
 
