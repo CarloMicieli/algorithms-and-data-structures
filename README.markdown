@@ -14,6 +14,7 @@ To import the project in Intellij Idea:
 ## Data structures
 
 ### Union/Find
+Used for dynamic connectivity problems.
 
 | Algorithm     | Initialize  | Union     | Connected |
 | ------------- | ----------- | --------- | --------- |
