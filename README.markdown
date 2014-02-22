@@ -1,5 +1,7 @@
 # algorithms-and-data-structures
 
+[![Build Status](https://drone.io/github.com/CarloMicieli/algorithms-and-data-structures/status.png)](https://drone.io/github.com/CarloMicieli/algorithms-and-data-structures/latest)
+
 Data structures and algorithms implementations with the Scala programming language.
 
 To run the tests with `sbt`:
