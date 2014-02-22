@@ -54,29 +54,32 @@ class QuickFind(size: Int) extends UnionFind {
 }
 
 class QuickUnion(size: Int) extends UnionFind {
-  private val root = (0 until size).toArray
+  private val id = (0 until size).toArray
 
   val count: Int = size
 
-  def find(p: Int): Int = findRoot(p)
+  // O(n): worst case
+  def find(p: Int): Int = root(p)
 
+  // O(n): worst case
   def connected(p: Int, q: Int): Boolean = {
     validate(p)
     validate(q)
-    findRoot(q) == findRoot(p)
+    root(q) == root(p)
   }
 
+  // O(1)
   def union(p: Int, q: Int): Unit = {
     validate(p)
     validate(q)
-    root(p) = root(q)
+    id(p) = id(q)
   }
 
-  private def findRoot(id: Int): Int =
-    if (id == root(id)) id
-    else findRoot(root(id))
+  private def root(p: Int): Int =
+    if (p == id(p)) p
+    else root(id(p))
 
-  override def toString = s"QuickUnion<${root.mkString(",")}>"
+  override def toString = s"QuickUnion<${id.mkString(",")}>"
 }
 
 object UnionFind {
