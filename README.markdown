@@ -1,5 +1,4 @@
-algorithms-and-data-structures
-==============================
+# algorithms-and-data-structures
 
 Data structures and algorithms implementations with the Scala programming language.
 
@@ -12,16 +11,16 @@ To import the project in Intellij Idea:
     sbt gen-idea
 
 
-Data structures
----------------
+## Data structures
 
-* `Union-Find`;
+### Union/Find
 
 | Algorithm     | Initialize  | Union     | Connected |
 | ------------- | ----------- | --------- | --------- |
 | quick find    | O(n)        | O(n)      | O(1)      |
 | quick union   | O(n)        | O(n)      | O(n)      |
 | weighted      | O(n)        | O(lgn)    | O(lgn)    |
+
 
 References
 ----------
