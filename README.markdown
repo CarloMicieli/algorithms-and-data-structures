@@ -27,6 +27,6 @@ Used for dynamic connectivity problems.
 References
 ----------
 
-__Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
-__Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
-__Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala (MEAP)`, 2014, Manning Publications
+* __Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
+* __Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
+* __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala (MEAP)`, 2014, Manning Publications
