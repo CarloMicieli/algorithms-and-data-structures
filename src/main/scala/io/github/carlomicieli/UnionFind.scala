@@ -12,6 +12,11 @@ sealed trait UnionFind {
   protected def validate(n: Int): Unit = {
     require((0 until count).contains(n))
   }
+  
+  protected def root(id: Array[Int], el: Int): Int =
+    if (el == id(el)) el
+    else root(id, id(el))
+
 }
 
 // Create: O(n)
@@ -75,15 +80,55 @@ class QuickUnion(size: Int) extends UnionFind {
     id(p) = id(q)
   }
 
-  private def root(p: Int): Int =
-    if (p == id(p)) p
-    else root(id(p))
+  private def root(p: Int): Int = root(id, p)
 
   override def toString = s"QuickUnion<${id.mkString(",")}>"
+}
+
+class WeightedUnion(size: Int) extends UnionFind {
+  private val id = (0 until size).toArray
+  private val sz = Array.fill(size)(1)
+
+  val count: Int = size
+
+  // O(n): worst case
+  def find(p: Int): Int = root(p)
+
+  // O(n): worst case
+  def connected(p: Int, q: Int): Boolean = {
+    validate(p)
+    validate(q)
+    root(q) == root(p)
+  }
+
+  // O(1)
+  def union(p: Int, q: Int): Unit = {
+    validate(p)
+    validate(q)
+
+    val i = root(p)
+    val j = root(q)
+    if (i != j) {
+      if (weight(i) < weight(j)) linkTrees(i, j)
+      else linkTrees(j, i)
+    }
+  }
+
+  private def linkTrees(smaller: Int, bigger: Int): Unit = {
+    id(smaller) = bigger
+    sz(bigger) += sz(smaller)
+  }
+
+  private def weight(el: Int) = sz(el)
+  private def root(p: Int): Int = root(id, p)
+
+  override def toString = s"WeightedUnion<${id.mkString(",")}>"
 }
 
 object UnionFind {
   def quickFind(size: Int): UnionFind = new QuickFind(size)
 
   def quickUnion(size: Int): UnionFind = new QuickUnion(size)
+
+  def weightedUnion(size: Int): UnionFind = new WeightedUnion(size)
 }

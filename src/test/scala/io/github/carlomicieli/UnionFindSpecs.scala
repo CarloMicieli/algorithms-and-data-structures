@@ -4,7 +4,7 @@ import org.scalatest.FunSpec
 import UnionFind._
 
 class UnionFindSpecs extends FunSpec {
-  describe("Quick find data structure") {
+  describe("Quick find implementation") {
 
     it("should return its length") {
       val quf = quickFind(6)
@@ -71,7 +71,7 @@ class UnionFindSpecs extends FunSpec {
     }
   }
 
-  describe("Quick union data structure") {
+  describe("Quick union implementation") {
     it("should get the items count") {
       val qu = quickUnion(6)
       assert(qu.count === 6)
@@ -124,5 +124,29 @@ class UnionFindSpecs extends FunSpec {
       }
     }
 
+  }
+
+  describe("Weighted implementation") {
+    it("should count items") {
+      val wu = weightedUnion(6)
+      assert(wu.count === 6)
+    }
+
+    it("should connect nodes") {
+      val wu = weightedUnion(10)
+      wu.union(4, 3)
+      wu.union(3, 8)
+      wu.union(6, 5)
+      wu.union(9, 4)
+      wu.union(2, 1)
+      wu.union(5, 0)
+      wu.union(7, 2)
+      wu.union(6, 1)
+
+      assert(wu.connected(3, 2) === false)
+      assert(wu.connected(4, 9) === true)
+      assert(wu.connected(0, 7) === true)
+      assert(wu.connected(1, 5) === true)
+    }
   }
 }
