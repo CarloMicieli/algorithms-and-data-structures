@@ -6,11 +6,11 @@ Data structures and algorithms implementations with the Scala programming langua
 
 To run the tests with `sbt`:
 
-    sbt test
+    $ sbt test
 
 To import the project in Intellij Idea:
 
-    sbt gen-idea
+    $ sbt gen-idea
 
 
 ## Data structures
@@ -28,3 +28,5 @@ References
 ----------
 
 __Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
+__Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
+__Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala (MEAP)`, 2014, Manning Publications
