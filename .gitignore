@@ -11,6 +11,8 @@ bin
 build
 target
 
+set*.txt
+
 # Idea files
 *.iml
 *.ipr
