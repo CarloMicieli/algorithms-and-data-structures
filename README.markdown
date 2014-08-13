@@ -12,15 +12,17 @@ To import the project in Intellij Idea:
 
     $ sbt gen-idea
 
-## Algorithms
+
+## Sorting Algorithms
+
+To benchmark the most famous sorting algorithms I've created a sample data set and shuffle the values using the 
+[Fisher–Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle).
 
 | Name              |        16 |       256 |     4.096 |    32.768 |    65.566 |   262.144 |   524.288 | 1.048.576 |
 | ----------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| BubbleSort        |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
 | BubbleSort [1]    |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
 
 [1]: implementation with _"early exit"_
-
 
 Machine used for the benchmark
 * Intel® Core™ i5-3570K CPU @ 3.40GHz × 4
@@ -30,15 +32,6 @@ Machine used for the benchmark
 * Java SE 1.8u11 / Scala 2.11.2
 
 ## Data structures
-
-### Union/Find
-Used for dynamic connectivity problems.
-
-| Algorithm     | Initialize  | Union     | Connected |
-| ------------- | ----------- | --------- | --------- |
-| quick find    | O(n)        | O(n)      | O(1)      |
-| quick union   | O(n)        | O(n)      | O(n)      |
-| weighted      | O(n)        | O(lgn)    | O(lgn)    |
 
 References
 ----------
