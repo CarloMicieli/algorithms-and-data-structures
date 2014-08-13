@@ -17,9 +17,10 @@ To import the project in Intellij Idea:
 
 | Name              |   stable  |  in place |           |           |  
 | ----------------- | --------- | --------- | --------- | --------- | 
-| BubbleSort        |    no     |   yes     |   Θ(n²)   |    O(n²)  |
+| BubbleSort [1]    |    no     |   yes     |   Θ(n²)   |    O(n²)  |
 | InsertionSort     |    yes    |   yes     |   Θ(n²)   |    O(n²)  |
-
+| SelectionSort     |    no     |   yes     |   Θ(n²)   |    O(n²)  |
+| ShellSort [2]     |    no     |   yes     |   Θ(n<sup>3/2</sup>) |    O(n²)  |
 
 To benchmark the most famous sorting algorithms I've created a sample data set and shuffle the values using the 
 [Fisher–Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle).
@@ -28,9 +29,12 @@ To benchmark the most famous sorting algorithms I've created a sample data set a
 | ----------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | BubbleSort [1]    |      2 ms |     18 ms |    166 ms |     8 sec |    44 sec |    10 min |    47 min |    --     |
 | InsertionSort     |      0 ms |      6 ms |    154 ms |     5 sec |    22 sec |           |           |    --     |
+| SelectionSort     |      0 ms |     17 ms |    295 ms |    10 sec |           |           |           |    --     |
+| ShellSort [2]     |      0 ms |      6 ms |     22 ms |     42 ms |     72 ms |    295 ms |    659 ms |     1 sec |
 
 
 [1]: implementation with _"early exit"_
+[2]: implementation with the Knuth's interval sequence
 
 Machine used for the benchmark
 * Intel® Core™ i5-3570K CPU @ 3.40GHz × 4

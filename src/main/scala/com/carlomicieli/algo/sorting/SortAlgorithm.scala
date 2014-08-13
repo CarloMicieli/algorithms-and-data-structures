@@ -29,7 +29,7 @@ trait SortAlgorithm {
     val sortedArray = sort(problem.array)
     val time = (System.nanoTime() - start) / 1000000
 
-    val result = Result(name, problem.size, time, sortedArray)
+    val result = Result(name, problem.size, time, isSorted(sortedArray), sortedArray)
     println(result)
     result
   }
@@ -61,10 +61,11 @@ trait SortAlgorithm {
   }
 }
 
-case class Result[T](name: String, size: Int, time: Long, sortedArray: Array[T]) {
+case class Result[T](name: String, size: Int, time: Long, sorted: Boolean, sortedArray: Array[T]) {
   def seconds: Long = time / 1000
 
-  override def toString = s"${LocalTime.now()}] Result($name, $size, $totalTime, $sortedSample)"
+  override def toString = s"${LocalTime.now()} [$status] $name, $size, $totalTime, $sortedSample"
   def sortedSample = sortedArray.take(10).mkString("[", ", ", " ...]")
   def totalTime = if (seconds == 0) s"$time ms" else s"$seconds sec"
+  def status = if (sorted) "OK" else "KO"
 }

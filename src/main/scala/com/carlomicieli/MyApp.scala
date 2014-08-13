@@ -18,30 +18,26 @@ package com.carlomicieli
 import java.nio.file.{Paths, StandardOpenOption, Files}
 import com.carlomicieli.algo.Arrays
 
-import com.carlomicieli.algo.sorting.{InsertionSort, SelectionSort, BubbleSort, ProblemSet}
+import com.carlomicieli.algo.sorting._
 
 /**
  * @author Carlo Micieli
  */
 object MyApp extends App {
 
-/*
-  val numbers = (0 to 524288).toArray
-  Arrays.shuffle(numbers)
+  //Seq(16, 256, 4096, 32768, 65536, 262144, 524288, 1048576).foreach(createTestData)
 
-  val bytes = numbers.take(262144).map(_.toString).mkString("\n").getBytes
+  val report = ProblemSet.solveAll(new SelectionSort)
 
-  Files.write(Paths.get("/home/carlo/Projects/hello-scala/src/main/resources/test-data/", "set262144.txt"), bytes,
-    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+  def createTestData(size: Int): Unit = {
+    val numbers = (0 to size * 2).toArray
+    Arrays.shuffle(numbers)
 
-*/
+    val bytes = numbers.take(size).map(_.toString).mkString("\n").getBytes
 
-
-
-
-
-  val report = ProblemSet.solveAll(new InsertionSort)
-
+    Files.write(Paths.get("/home/carlo/Projects/algorithms-and-data-structures/src/main/resources/test-data/", s"set$size.txt"), bytes,
+      StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+  }
 
 }
 
