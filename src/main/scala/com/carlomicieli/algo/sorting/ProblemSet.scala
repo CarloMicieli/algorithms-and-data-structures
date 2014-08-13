@@ -17,13 +17,15 @@ package com.carlomicieli.algo.sorting
 
 import com.carlomicieli.util.DataLoader
 
+import scala.util.Random
+
 /**
  * @author Carlo Micieli
  */
 object ProblemSet {
 
-
   def solveAll(algorithm: SortAlgorithm): String = {
+    warmUp(algorithm)
     problemsSet
       .map(size => algorithm.run(problem(size))).mkString("\n")
   }
@@ -35,6 +37,14 @@ object ProblemSet {
   private def problem(size: Int) = {
     val array = DataLoader.loadData(s"/test-data/set$size.txt")
     InputProblem(size, array)
+  }
+
+  private def warmUp(algorithm: SortAlgorithm) = {
+    val rnd = new Random()
+    val numbers: Array[Int] = (1 to 16).toList.map(n => rnd.nextInt(50)).toArray
+    (1 to 10) foreach {
+      algorithm.sort(numbers)
+    }
   }
 }
 

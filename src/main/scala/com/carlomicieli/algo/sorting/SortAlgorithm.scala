@@ -15,6 +15,8 @@
  */
 package com.carlomicieli.algo.sorting
 
+import java.time.LocalTime
+
 /**
  * @author Carlo Micieli
  */
@@ -43,7 +45,11 @@ trait SortAlgorithm {
   }
 
   def less[A](arr: Array[A], i: Int, j: Int)(implicit ord: math.Ordering[A]): Boolean = {
-    ord.compare(arr(i), arr(j)) <= 0
+    ord.compare(arr(i), arr(j)) < 0
+  }
+
+  def less[A](a: A, b: A)(implicit ord: math.Ordering[A]): Boolean = {
+    ord.compare(a, b) < 0
   }
 
   def isSorted[A](arr: Array[A])(implicit ord: math.Ordering[A]): Boolean = {
@@ -58,7 +64,7 @@ trait SortAlgorithm {
 case class Result[T](name: String, size: Int, time: Long, sortedArray: Array[T]) {
   def seconds: Long = time / 1000
 
-  override def toString = s"Result($name, $size, $totalTime, $sortedSample)"
+  override def toString = s"${LocalTime.now()}] Result($name, $size, $totalTime, $sortedSample)"
   def sortedSample = sortedArray.take(10).mkString("[", ", ", " ...]")
   def totalTime = if (seconds == 0) s"$time ms" else s"$seconds sec"
 }

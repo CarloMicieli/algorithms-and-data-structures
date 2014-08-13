@@ -15,12 +15,20 @@ To import the project in Intellij Idea:
 
 ## Sorting Algorithms
 
+| Name              |   stable  |  in place |           |           |  
+| ----------------- | --------- | --------- | --------- | --------- | 
+| BubbleSort        |    no     |   yes     |   Θ(n²)   |    O(n²)  |
+| InsertionSort     |    yes    |   yes     |   Θ(n²)   |    O(n²)  |
+
+
 To benchmark the most famous sorting algorithms I've created a sample data set and shuffle the values using the 
 [Fisher–Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle).
 
 | Name              |        16 |       256 |     4.096 |    32.768 |    65.566 |   262.144 |   524.288 | 1.048.576 |
 | ----------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| BubbleSort [1]    |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
+| BubbleSort [1]    |      2 ms |     18 ms |    166 ms |     8 sec |    44 sec |    10 min |    47 min |    --     |
+| InsertionSort     |      0 ms |      6 ms |    154 ms |     5 sec |    22 sec |           |           |    --     |
+
 
 [1]: implementation with _"early exit"_
 

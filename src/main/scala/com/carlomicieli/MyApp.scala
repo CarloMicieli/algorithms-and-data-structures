@@ -18,7 +18,7 @@ package com.carlomicieli
 import java.nio.file.{Paths, StandardOpenOption, Files}
 import com.carlomicieli.algo.Arrays
 
-import com.carlomicieli.algo.sorting.{BubbleSort, ProblemSet}
+import com.carlomicieli.algo.sorting.{InsertionSort, SelectionSort, BubbleSort, ProblemSet}
 
 /**
  * @author Carlo Micieli
@@ -40,7 +40,7 @@ object MyApp extends App {
 
 
 
-  val report = ProblemSet.solveAll(new BubbleSort)
+  val report = ProblemSet.solveAll(new InsertionSort)
 
 
 }

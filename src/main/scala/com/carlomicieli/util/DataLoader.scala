@@ -26,7 +26,7 @@ object DataLoader {
   def loadData(filename: String): Array[Int] = {
     loadFile(filename) match {
       case Success(v) => v.filterNot(_.startsWith("#")).map(_.toInt).toArray
-      case Failure(ex) => throw new Exception("File not found")
+      case Failure(ex) => throw new Exception("File not found " + filename)
     }
   }
 

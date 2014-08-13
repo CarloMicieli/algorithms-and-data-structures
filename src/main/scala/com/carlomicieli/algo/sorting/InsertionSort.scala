@@ -23,6 +23,20 @@ class InsertionSort extends SortAlgorithm {
   override val name: String = "InsertionSort"
 
   def sort[A](arr: Array[A])(implicit ord: math.Ordering[A]): Array[A] = {
+
+    for (i <- 1 until arr.size) {
+      val key = arr(i)
+      var j = i - 1
+      while (j >= 0 && less(key, arr(j))) {
+        arr(j + 1) = arr(j)
+        j = j - 1
+      }
+
+      arr(j + 1) = key
+    }
+
+
+    /*
     var i, j = 0
     val end = arr.size
 
@@ -34,7 +48,7 @@ class InsertionSort extends SortAlgorithm {
       }
       i = i + 1
     }
-
+*/
     arr
   }
 }
