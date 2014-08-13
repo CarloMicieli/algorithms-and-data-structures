@@ -14,9 +14,12 @@ To import the project in Intellij Idea:
 
 ## Algorithms
 
-| Algorithm     |        16 |       256 |     4.096 |    32.768 |    65.566 |   262.144 |   524.288 | 1.048.576 |
-| ------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| BubbleSort    |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
+| Name              |        16 |       256 |     4.096 |    32.768 |    65.566 |   262.144 |   524.288 | 1.048.576 |
+| ----------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
+| BubbleSort        |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
+| BubbleSort [1]    |       2ms |      18ms |     166ms |     8 sec |    36 sec |    10 min |     --    |    --     |
+
+[1]: implementation with _"early exit"_
 
 
 Machine used for the benchmark
