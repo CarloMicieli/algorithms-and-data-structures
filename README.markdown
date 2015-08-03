@@ -40,8 +40,8 @@ Machine used for the benchmark
 * Intel® Core™ i5-3570K CPU @ 3.40GHz × 4
 * 16 Gb RAM
 * SSD hard disk
-* Ubuntu 14.04.1
-* Java SE 1.8u11 / Scala 2.11.2
+* Ubuntu 14.04.2
+* Java SE 1.8u45 / Scala 2.11.7
 
 ## Data structures
 
