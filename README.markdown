@@ -16,14 +16,13 @@ To import the project in Intellij Idea:
 ## Sorting Algorithms
 
 | Name              |   stable  |  in place |           |           |  
-| ----------------- | --------- | --------- | --------- | --------- | 
+| ----------------- | --------- | --------- | --------- | --------- |
 | BubbleSort [1]    |    no     |   yes     |   Θ(n²)   |    O(n²)  |
 | InsertionSort     |    yes    |   yes     |   Θ(n²)   |    O(n²)  |
 | SelectionSort     |    no     |   yes     |   Θ(n²)   |    O(n²)  |
 | ShellSort [2]     |    no     |   yes     |   Θ(n<sup>3/2</sup>) |    O(n²)  |
 
-To benchmark the most famous sorting algorithms I've created a sample data set and shuffle the values using the 
-[Fisher–Yates shuffle](http://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle).
+
 
 | Name              |        16 |       256 |     4.096 |    32.768 |    65.566 |   262.144 |   524.288 | 1.048.576 |
 | ----------------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
@@ -41,7 +40,7 @@ Machine used for the benchmark
 * 16 Gb RAM
 * SSD hard disk
 * Ubuntu 14.04.2
-* Java SE 1.8u45 / Scala 2.11.7
+* Java SE 1.8u51 / Scala 2.11.7
 
 ## Data structures
 
