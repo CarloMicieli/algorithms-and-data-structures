@@ -134,6 +134,20 @@ final class LinkedList[A] extends Container[A] {
     loop(head, z)
   }
 
+  def removeHead: (A, LinkedList[A]) = {
+    (head, last) match {
+      case (Nil, Nil) =>
+        throw new NoSuchElementException("LinkedList.removeHead: list is empty")
+      case (h, l) if h == l =>
+        head = Nil
+        last = Nil
+        (h.key, this)
+      case (LNode(k, next), _) =>
+        head = next
+        (k, this)
+    }
+  }
+
   def remove(key: A): Boolean = {
 
     (head, last) match {

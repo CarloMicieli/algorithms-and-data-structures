@@ -102,6 +102,13 @@ class LinkedListSpec extends FlatSpec with Matchers with SampleLists {
     val l = numbersList.toList
     l should be(List(1, 2, 3, 4, 5, 6))
   }
+
+  "removeHead()" should "remove the head from a list" in {
+    val l = numbersList
+    val (h, l2) = l.removeHead
+    h should be(1)
+    l2.size should be(5)
+  }
 }
 
 
