@@ -35,7 +35,7 @@ class OrSpec extends FlatSpec with Matchers with GoodOrBadValues {
 
   "orElse" should "return a default for Bad values" in {
     good.orElse("default") should be(good)
-    bad.orElse("default") should be(Good("default"))
+    bad.orElse("default") should be(Bad("default"))
   }
 
   "toString" should "produce string representations for Or values" in {

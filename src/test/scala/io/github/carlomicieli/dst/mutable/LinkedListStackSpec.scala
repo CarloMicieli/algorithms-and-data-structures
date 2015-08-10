@@ -28,9 +28,27 @@ class LinkedListStackSpec extends FlatSpec with Matchers with ExampleStacks {
     val Good((out, _)) = stack.pop
     out should be(2)
   }
+
+  "Pop elements out of empty stacks" should "return a Bad value" in {
+    val res = emptyStack.pop
+    res.isBad should be(true)
+  }
+
+  "A Stack" should "be filled with values" in {
+    val s = LinkedListStack(1, 2, 3)
+
+    val Good((k, _)) = s.pop
+    k should be(1)
+  }
+
+  "peek()" should "return the first element, without changing the stack" in {
+    val first = stack.peek
+    first should be(Some(1))
+  }
 }
 
 
 trait ExampleStacks {
   def emptyStack = LinkedListStack.empty[Int]
+  def stack = LinkedListStack(1, 2, 3)
 }

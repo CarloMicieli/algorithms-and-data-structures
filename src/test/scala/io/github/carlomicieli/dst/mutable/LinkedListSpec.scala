@@ -1,5 +1,6 @@
 package io.github.carlomicieli.dst.mutable
 
+import io.github.carlomicieli.util.Good
 import org.scalatest.{Matchers, FlatSpec}
 
 class LinkedListSpec extends FlatSpec with Matchers with SampleLists {
@@ -105,12 +106,11 @@ class LinkedListSpec extends FlatSpec with Matchers with SampleLists {
 
   "removeHead()" should "remove the head from a list" in {
     val l = numbersList
-    val (h, l2) = l.removeHead
+    val Good((h, l2)) = l.removeHead
     h should be(1)
     l2.size should be(5)
   }
 }
-
 
 trait SampleLists {
   def emptyList = LinkedList.empty[Int]

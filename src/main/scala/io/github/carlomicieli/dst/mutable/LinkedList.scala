@@ -1,6 +1,7 @@
 package io.github.carlomicieli.dst.mutable
 
 import io.github.carlomicieli.dst.Container
+import io.github.carlomicieli.util.{Good, Bad, Or}
 
 /**
  * It represented a Linked List.
@@ -134,17 +135,17 @@ final class LinkedList[A] extends Container[A] {
     loop(head, z)
   }
 
-  def removeHead: (A, LinkedList[A]) = {
+  def removeHead: (A, LinkedList[A]) Or EmptyLinkedListException = {
     (head, last) match {
       case (Nil, Nil) =>
-        throw new NoSuchElementException("LinkedList.removeHead: list is empty")
+        Bad(new EmptyLinkedListException)
       case (h, l) if h == l =>
         head = Nil
         last = Nil
-        (h.key, this)
+        Good((h.key, this))
       case (LNode(k, next), _) =>
         head = next
-        (k, this)
+        Good((k, this))
     }
   }
 
@@ -253,3 +254,5 @@ object LinkedList {
 
   def empty[A]: LinkedList[A] = new LinkedList[A]
 }
+
+class EmptyLinkedListException extends Exception("LinkedList is empty")

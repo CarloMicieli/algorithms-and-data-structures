@@ -12,5 +12,5 @@ trait Stack[A] {
   def size: Int
 }
 
-final class InvalidStackOperationException extends Exception("Stack: invalid operation")
-final class EmptyStackException extends Exception("Stack is empty")
+class InvalidStackOperationException extends Exception("Stack: invalid operation")
+class EmptyStackException extends Exception("Stack is empty")
