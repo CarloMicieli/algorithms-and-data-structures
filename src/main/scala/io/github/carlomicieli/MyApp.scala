@@ -6,10 +6,10 @@ import io.github.carlomicieli.sorting._
 object MyApp extends LazyLogging {
   def main(args: Array[String]): Unit = {
 
-    val array = "QUICKSORTEXAMPLE".toCharArray
+    val array = "HEAPSORTEXAMPLE".toCharArray
 
     logger.info(Shell.printArray(array))
-    Quick.sort(array)
+    Heap.sort(array)
     logger.info(Shell.printArray(array))
 
 
