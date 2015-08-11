@@ -3,10 +3,10 @@ package io.github.carlomicieli.dst.mutable
 import io.github.carlomicieli.util.Good
 import org.scalatest.{Matchers, FlatSpec}
 
-class LinkedListStackSpec extends FlatSpec with Matchers with ExampleStacks {
+class ListStackSpec extends FlatSpec with Matchers with ExampleStacks {
 
   "An empty stack" should "have size equals to 0" in {
-    val empty = LinkedListStack.empty[Int]
+    val empty = ListStack.empty[Int]
     empty.size should be(0)
     empty.isEmpty should be(true)
     empty.nonEmpty should be(false)
@@ -35,7 +35,7 @@ class LinkedListStackSpec extends FlatSpec with Matchers with ExampleStacks {
   }
 
   "A Stack" should "be filled with values" in {
-    val s = LinkedListStack(1, 2, 3)
+    val s = ListStack(1, 2, 3)
 
     val Good((k, _)) = s.pop
     k should be(1)
@@ -49,6 +49,6 @@ class LinkedListStackSpec extends FlatSpec with Matchers with ExampleStacks {
 
 
 trait ExampleStacks {
-  def emptyStack = LinkedListStack.empty[Int]
-  def stack = LinkedListStack(1, 2, 3)
+  def emptyStack = ListStack.empty[Int]
+  def stack = ListStack(1, 2, 3)
 }

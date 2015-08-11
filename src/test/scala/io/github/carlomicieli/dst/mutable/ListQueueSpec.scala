@@ -32,6 +32,11 @@ class ListQueueSpec extends FlatSpec with Matchers with SampleQueues {
     val res = emptyQueue.dequeue
     res.isBad should be(true)
   }
+
+  "peek operation" should "return the first element, without chaning the queue" in {
+    val q = queue
+    q.peek.get should be(1)
+  }
 }
 
 trait SampleQueues {
