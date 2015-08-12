@@ -1,37 +1,32 @@
 package io.github.carlomicieli.samples
 
 sealed trait Suit {
-  def id: Int
+  def value: Int = this match {
+    case Clubs => 1
+    case Diamonds => 2
+    case Hearts => 3
+    case Spades => 4
+  }
 }
-case object Clubs    extends Suit {
-  val id = 0
-}
-case object Diamonds extends Suit {
-  val id = 1
-}
-case object Hearts   extends Suit {
-  val id = 2
-}
-case object Spades   extends Suit {
-  val id = 3
-}
+case object Clubs    extends Suit
+case object Diamonds extends Suit
+case object Hearts   extends Suit
+case object Spades   extends Suit
 
 sealed trait Rank {
-  def value: Int
+  def value: Int = this match {
+    case Ace => 1
+    case Number(n) => n
+    case Jack => 11
+    case Queen => 12
+    case King => 13
+  }
 }
-case object Ace   extends Rank {
-  val value = 1
-}
-case class  Number(value: Int) extends Rank
-case object Jack  extends Rank {
-  val value = 11
-}
-case object Queen extends Rank {
-  val value = 12
-}
-case object King  extends Rank {
-  val value = 13
-}
+case object Ace   extends Rank
+case class  Number(n: Int) extends Rank
+case object Jack  extends Rank
+case object Queen extends Rank
+case object King  extends Rank
 
 case class Card(rank: Rank, suit: Suit) {
   override def toString = {
@@ -49,30 +44,37 @@ object Card {
       case (Card(r1, s1), Card(r2, s2)) if s1 == s2 =>
         r1.value.compare(r2.value)
       case (Card(_, s1), Card(_, s2)) =>
-        s1.id.compare(s2.id)
+        s1.value.compare(s2.value)
     }
   }
 }
 
-object Deck {
-  def toArray: Array[Card] = {
-    val array = toList.toArray
+class Deck private(c: Array[Card]) {
+  private val cards = c
+
+  def shuffle(): Unit = {
     def swap(x: Int, y: Int): Unit = {
-      val tmp = array(x)
-      array(x) = array(y)
-      array(y) = tmp
+      val tmp = cards(x)
+      cards(x) = cards(y)
+      cards(y) = tmp
     }
-    val N = array.length
-    val rnd = scala.util.Random
+    val N = cards.length
+    val rnd = new scala.util.Random
     for (i <- 0 until N) {
       val j = rnd.nextInt(N - i)
       swap(i, j)
     }
-
-    array
   }
 
-  def toList: List[Card] = {
+  override def toString = c.mkString("Deck(", ", ", ")")
+}
+
+object Deck {
+  def apply(): Deck = {
+    new Deck(cardsList.toArray)
+  }
+
+  private def cardsList: List[Card] = {
     for {
       s <- suits
       r <- ranks
