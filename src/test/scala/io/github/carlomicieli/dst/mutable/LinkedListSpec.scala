@@ -110,6 +110,22 @@ class LinkedListSpec extends FlatSpec with Matchers with SampleLists {
     h should be(1)
     l2.size should be(5)
   }
+
+  "findFirst()" should "return the first key that matches the predicate" in {
+    val l = numbersList
+    l.findFirst {
+      _ == 5
+    } should be(Some(5))
+    l.findFirst {
+      _ == 9
+    } should be(None)
+  }
+
+  "keys()" should "produce an Iterable from the linked list keys" in {
+    val l = numbersList
+    l.keys.size should be(l.size)
+    l.keys.mkString(",") should be("1,2,3,4,5,6")
+  }
 }
 
 trait SampleLists {

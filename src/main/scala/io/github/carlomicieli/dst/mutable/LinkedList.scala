@@ -41,6 +41,18 @@ final class LinkedList[A] extends Container[A] {
     last = last ?? head
   }
 
+  def keys: Iterable[A] = new Iterable[A] {
+    def iterator: Iterator[A] = new Iterator[A] {
+      private var curr: Node = LinkedList.this.head
+      def hasNext: Boolean = !curr.isNil
+      def next(): A = {
+        val key = curr.key
+        curr = curr.next
+        key
+      }
+    }
+  }
+
   /**
    * Append a new key to the end of the list
    * This is an O(1) operation.
@@ -71,6 +83,20 @@ final class LinkedList[A] extends Container[A] {
       case LNode(k, next) =>
         f(k)
         loop(next)
+    }
+
+    loop(head)
+  }
+
+  def findFirst(p: A => Boolean): Option[A] = {
+    @annotation.tailrec
+    def loop(curr: Node): Option[A] = curr match {
+      case Nil => None
+      case LNode(k, next) =>
+        if (p(k))
+          Some(k)
+        else
+          loop(next)
     }
 
     loop(head)
@@ -150,7 +176,6 @@ final class LinkedList[A] extends Container[A] {
   }
 
   def remove(key: A): Boolean = {
-
     (head, last) match {
       case (Nil, Nil) => false
       case (h, l) if h == l =>
