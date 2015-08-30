@@ -21,40 +21,31 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli
+package io.github.carlomicieli.samples
 
-import com.typesafe.scalalogging.LazyLogging
-import io.github.carlomicieli.searching.BinarySearchST
+import java.time.LocalDate
 
-object MyApp extends LazyLogging {
-  def main(args: Array[String]): Unit = {
+import scala.util.Try
 
-    val st = BinarySearchST[String, Int](16)
-    st("hello") = 1
-    println(st.toString)
+case class Game(name: String,
+                developer: String,
+                publisher: String,
+                releaseDate: Option[LocalDate])
 
-
-
-    /*
-    val st = SequentialSearchST.empty[String, Int]
-
-    val dur = timed { () => {
-        val output = FrequencyCounter("/data/tale.txt", 8)(st)
-        println(output.mkString("\n"))
+object Game {
+  def fromVector(v: Vector[String]): Try[Game] = {
+    Try.apply {
+      v match
+      {
+        case Vector(name, developer, publisher, sDate, _*) =>
+          val releaseDate = toLocalDate(sDate).toOption
+          Game(name, developer, publisher, releaseDate)
       }
     }
-
-    println(dur + " seconds")
-    */
   }
 
-  def timed[U](op: () => U): Long = {
-    import java.time._
-    import java.time.temporal._
-    val start: Instant = Instant.now()
-    op()
-    val end: Instant = Instant.now()
-
-    start.until(end, ChronoUnit.SECONDS)
-  }
+  private def toLocalDate(s: String): Try[LocalDate] =
+    Try.apply {
+      LocalDate.parse(s)
+    }
 }

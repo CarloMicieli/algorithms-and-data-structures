@@ -21,40 +21,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli
+package io.github.carlomicieli.files
 
-import com.typesafe.scalalogging.LazyLogging
-import io.github.carlomicieli.searching.BinarySearchST
+import scala.io.Source
+import scala.util.Try
 
-object MyApp extends LazyLogging {
-  def main(args: Array[String]): Unit = {
+class DataFile private (filename: String) {
+  import java.io.InputStream
 
-    val st = BinarySearchST[String, Int](16)
-    st("hello") = 1
-    println(st.toString)
-
-
-
-    /*
-    val st = SequentialSearchST.empty[String, Int]
-
-    val dur = timed { () => {
-        val output = FrequencyCounter("/data/tale.txt", 8)(st)
-        println(output.mkString("\n"))
-      }
+  def parse[A](f: ParsingFunction[A]): Try[Stream[A]] = {
+    loadFile(filename) map {
+      in =>
+        Source.fromInputStream(in).getLines()
+          .toStream
+          .zip(Stream.from(1))
+          .map(p => f.tupled(p.swap))
+          .collect { case Matched(v) => v }
     }
-
-    println(dur + " seconds")
-    */
   }
 
-  def timed[U](op: () => U): Long = {
-    import java.time._
-    import java.time.temporal._
-    val start: Instant = Instant.now()
-    op()
-    val end: Instant = Instant.now()
+  private def loadFile(fn: String): Try[InputStream] = {
+    Try.apply {
+      getClass.getResourceAsStream(fn)
+    }
+  }
+}
 
-    start.until(end, ChronoUnit.SECONDS)
+object DataFile {
+  def apply[A](filename: String)(f: ParsingFunction[A]): Stream[A] = {
+    val dat = new DataFile(filename)
+    dat.parse(f).get
   }
 }

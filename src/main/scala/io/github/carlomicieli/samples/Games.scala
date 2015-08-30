@@ -21,40 +21,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli
+package io.github.carlomicieli.samples
 
-import com.typesafe.scalalogging.LazyLogging
-import io.github.carlomicieli.searching.BinarySearchST
+import io.github.carlomicieli.files.CsvFile
 
-object MyApp extends LazyLogging {
-  def main(args: Array[String]): Unit = {
-
-    val st = BinarySearchST[String, Int](16)
-    st("hello") = 1
-    println(st.toString)
-
-
-
-    /*
-    val st = SequentialSearchST.empty[String, Int]
-
-    val dur = timed { () => {
-        val output = FrequencyCounter("/data/tale.txt", 8)(st)
-        println(output.mkString("\n"))
-      }
+object Games {
+  def gamesList(): Iterable[Game] = {
+    val convertToGame = Game.fromVector _
+    CsvFile("/neogeo.csv", hasTitle = true) parse {
+      convertToGame
+    } getOrElse {
+      List.empty[Game]
     }
-
-    println(dur + " seconds")
-    */
-  }
-
-  def timed[U](op: () => U): Long = {
-    import java.time._
-    import java.time.temporal._
-    val start: Instant = Instant.now()
-    op()
-    val end: Instant = Instant.now()
-
-    start.until(end, ChronoUnit.SECONDS)
   }
 }
