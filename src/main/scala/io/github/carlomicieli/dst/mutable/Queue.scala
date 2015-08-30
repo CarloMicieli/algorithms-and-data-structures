@@ -21,27 +21,25 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.Or
+import scala.reflect.ClassTag
 
 trait Queue[A] {
   def peek: Option[A]
-  def enqueue(el: A): Queue[A] Or FullQueueException
-  def dequeue: (A, Queue[A]) Or EmptyQueueException
+  def enqueue(el: A): Unit
+  def dequeue(): A
   def size: Int
   def isEmpty: Boolean
 }
 
-class InvalidQueueOperation[A](queue: Queue[A], el: A, err: Exception)
-class EmptyQueueException extends Exception("Queue is empty")
-class FullQueueException extends Exception("Queue is full")
-
-sealed trait QueueOp[+A]
-case class Enquque[A](el: A) extends QueueOp[A]
-case object DequeueOp extends QueueOp[Nothing]
-
-object QueueOp {
-  def sequence[A](initial: Queue[A], ops: Seq[QueueOp[A]]): Queue[A] Or InvalidQueueOperation[A] = ???
+object Queue {
+  def empty[A]: Queue[A] = new ListQueue[A]
+  def fixed[A: ClassTag](n: Int): Queue[A] = {
+    val storage = new Array[A](n)
+    new FixedCapacityQueue[A](storage)
+  }
 }
 
+class EmptyQueueException extends Exception("Queue is empty")
+class FullQueueException extends Exception("Queue is full")

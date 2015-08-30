@@ -21,12 +21,48 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.immutable
 
-trait Container[A] {
-  def foreach[U](f: A => U): Unit
+import io.github.carlomicieli.util._
+
+/**
+ * It represents a FIFO data structure, the first element
+ * added to the queue will be the first one to be removed.
+ * @tparam A the `Queue` element type
+ */
+trait Queue[+A] {
+  /**
+   * Insert the new element to the last position of the `Queue`.
+   * @param el
+   * @tparam A1
+   * @return
+   */
+  def enqueue[A1 >: A](el: A1): Queue[A1]
+
+  /**
+   * Remove the element from the front position (if any).
+   * @return
+   */
+  def dequeue: (A, Queue[A]) Or EmptyQueueException
+
+  /**
+   * Return the element in the front position, if exists.
+   * @return
+   */
+  def peek: Maybe[A]
+
+  /**
+   * Check whether this `Queue` is empty.
+   * @return
+   */
   def isEmpty: Boolean
-  def nonEmpty = !isEmpty
-  def contains(x: A): Boolean
-  def mkString(sep: String): String
+
+  /**
+   * Return the current size of the `Queue`.
+   * @return
+   */
+  def size: Int
 }
+
+class EmptyQueueException extends Exception
+class FullQueueException  extends Exception

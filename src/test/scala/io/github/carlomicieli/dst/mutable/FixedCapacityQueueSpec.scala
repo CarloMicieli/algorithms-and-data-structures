@@ -1,23 +1,22 @@
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.Good
-import org.scalatest.{Matchers, FlatSpec}
+import io.github.carlomicieli.test.AbstractTestSpec
 
-class FixedCapacityQueueSpec extends FlatSpec with Matchers {
+class FixedCapacityQueueSpec extends AbstractTestSpec {
 
   "An empty fixed queue" should "have size equals to 0" in {
     val queue = FixedCapacityQueue[Int](16)
-    queue.isEmpty should be(true)
-    queue.size should be(0)
+    queue.isEmpty shouldBe true
+    queue.size shouldBe 0
   }
 
   "enqueue an item" should "increase the queue size by 1" in {
     val queue = FixedCapacityQueue[Int](16)
     queue.enqueue(1)
 
-    queue.size should be(1)
-    queue.isEmpty should be(false)
-    queue.peek.get should be(1)
+    queue.size shouldBe 1
+    queue.isEmpty shouldBe false
+    queue.peek.get shouldBe 1
   }
 
   "dequeue an item" should "happen in FIFO fashion in a queue" in {
@@ -25,12 +24,11 @@ class FixedCapacityQueueSpec extends FlatSpec with Matchers {
     queue.enqueue(1)
     queue.enqueue(2)
 
-    val res = queue.dequeue
-    val Good((k, _)) = res
+    val k = queue.dequeue()
 
-    k should be(1)
-    queue.size should be(1)
-    queue.isEmpty should be(false)
+    k shouldBe 1
+    queue.size shouldBe 1
+    queue.isEmpty shouldBe false
   }
 
   "A fixed capacity queue" should "reuse the released space" in {
@@ -39,24 +37,24 @@ class FixedCapacityQueueSpec extends FlatSpec with Matchers {
     queue.enqueue(2)
     queue.enqueue(3)
     queue.enqueue(4)
-    queue.dequeue
+    queue.dequeue()
     queue.enqueue(5)
 
-    queue.peek.get should be(2)
-    queue.size should be(4)
+    queue.peek.get shouldBe 2
+    queue.size shouldBe 4
   }
 
   "An equal number of enqueue and dequeue operations" should "leave the queue empty" in {
     val queue = FixedCapacityQueue[Int](2)
     queue.enqueue(1)
-    queue.dequeue
+    queue.dequeue()
     queue.enqueue(2)
-    queue.dequeue
+    queue.dequeue()
     queue.enqueue(3)
-    queue.dequeue
+    queue.dequeue()
 
-    queue.size should be(0)
-    queue.isEmpty should be(true)
-    queue.peek should be(None)
+    queue.size shouldBe 0
+    queue.isEmpty shouldBe true
+    queue.peek shouldBe None
   }
 }

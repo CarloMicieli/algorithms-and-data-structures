@@ -39,7 +39,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
   def get(key: K): Option[V] =
     containsKey(key).map(p => p._2)
 
-  def size: Int = storage.size
+  def size: Int = storage.length
 
   def delete(key: K): Unit = {
     containsKey(key) foreach {
@@ -47,7 +47,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
     }
   }
 
-  def keys: Iterable[K] = storage.keys.map(p => p._1)
+  def keys: Iterable[K] = storage.elements.map(p => p._1)
 
   def apply(key: K): V = get(key).get
 
@@ -57,7 +57,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
   def isEmpty: Boolean = storage.isEmpty
 
   private def containsKey(key: K): Option[KeyValPair] = {
-    storage.findFirst(p => p._1 == key)
+    storage.find(p => p._1 == key)
   }
 }
 

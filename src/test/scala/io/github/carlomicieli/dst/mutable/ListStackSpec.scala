@@ -1,23 +1,22 @@
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.Good
-import org.scalatest.{Matchers, FlatSpec}
+import io.github.carlomicieli.test.AbstractTestSpec
 
-class ListStackSpec extends FlatSpec with Matchers with ExampleStacks {
+class ListStackSpec extends AbstractTestSpec with ExampleStacks {
 
   "An empty stack" should "have size equals to 0" in {
-    val empty = ListStack.empty[Int]
-    empty.size should be(0)
-    empty.isEmpty should be(true)
-    empty.nonEmpty should be(false)
+    val empty = Stack.empty[Int]
+    empty.size shouldBe 0
+    empty.isEmpty shouldBe true
+    empty.nonEmpty shouldBe false
   }
 
   "Push elements to a stack" should "increase its size" in {
     val stack = emptyStack
     stack.push(1)
 
-    stack.size should be(1)
-    stack.isEmpty should be(false)
+    stack.size shouldBe 1
+    stack.isEmpty shouldBe false
   }
 
   "Pop elements out of a stack" should "happen in LIFO fashion" in {
@@ -25,30 +24,23 @@ class ListStackSpec extends FlatSpec with Matchers with ExampleStacks {
     stack.push(1)
     stack.push(2)
 
-    val Good((out, _)) = stack.pop
-    out should be(2)
-  }
-
-  "Pop elements out of empty stacks" should "return a Bad value" in {
-    val res = emptyStack.pop
-    res.isBad should be(true)
-  }
-
-  "A Stack" should "be filled with values" in {
-    val s = ListStack(1, 2, 3)
-
-    val Good((k, _)) = s.pop
-    k should be(1)
+    val out = stack.pop
+    out shouldBe 2
   }
 
   "peek()" should "return the first element, without changing the stack" in {
-    val first = stack.peek
-    first should be(Some(1))
+    val first = stack.top
+    first shouldBe Some(1)
   }
 }
 
-
 trait ExampleStacks {
-  def emptyStack = ListStack.empty[Int]
-  def stack = ListStack(1, 2, 3)
+  def emptyStack = Stack.empty[Int]
+  def stack = {
+    val st = Stack.empty[Int]
+    st.push(3)
+    st.push(2)
+    st.push(1)
+    st
+  }
 }

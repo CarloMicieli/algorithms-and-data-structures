@@ -21,12 +21,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.mutable
 
-trait Container[A] {
-  def foreach[U](f: A => U): Unit
+import scala.reflect.ClassTag
+
+trait Stack[A] {
+  def push(el: A): Unit
+  def pop(): A
+  def top: Option[A]
   def isEmpty: Boolean
-  def nonEmpty = !isEmpty
-  def contains(x: A): Boolean
-  def mkString(sep: String): String
+  def nonEmpty: Boolean
+  def size: Int
 }
+
+object Stack {
+  def empty[A]: Stack[A] = new ListStack[A]
+
+  def fixed[A: ClassTag](size: Int): Stack[A] = {
+    val st: Array[A] = new Array[A](size)
+    new FixedCapacityStack[A](st)
+  }
+}
+
+class FullStackException extends Exception("Stack is full")
+class EmptyStackException extends Exception("Stack is empty")

@@ -23,54 +23,26 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.{FullStackException, EmptyStackException, Stack}
-import io.github.carlomicieli.util.{Good, Bad, Or}
+import io.github.carlomicieli.util.Good
 
-import scala.util.control.NoStackTrace
+private[this]
+class ListStack[A] extends Stack[A] {
+  private val st = LinkedList.empty[A]
 
-final class ListStack[A] private(st: LinkedList[A]) extends Stack[A] {
-
-  private val storage: LinkedList[A] = st
-
-  def push(item: A): Stack[A] Or FullStackException = {
-    storage.addFront(item)
-    Good(this)
+  override def push(el: A): Unit = {
+    st.addFront(el)
   }
 
-  def peek: Option[A] = st.headOption
+  override def size: Int = st.length
 
-  def size: Int = storage.size
+  override def top: Option[A] = st.headOption
 
-  def isEmpty: Boolean = storage.isEmpty
+  override def isEmpty: Boolean = st.isEmpty
 
-  def pop(): (A, Stack[A]) Or EmptyStackException = {
-    if (storage.isEmpty)
-      Bad(new EmptyStackException)
-    else {
-      storage.removeHead.map {
-        res =>
-          val (k, _) = res
-          (k, this)
-      } orElse {
-        new EmptyStackException with NoStackTrace
-      }
-    }
-  }
-}
+  override def nonEmpty: Boolean = st.nonEmpty
 
-object ListStack {
-  def empty[A]: Stack[A] =
-    new ListStack[A](LinkedList.empty[A])
-
-  def apply[A](items: A*): Stack[A] = {
-    val stack = ListStack.empty[A]
-    if (items.isEmpty)
-      stack
-    else {
-      for (i <- items.reverse) {
-        stack.push(i)
-      }
-      stack
-    }
+  override def pop(): A = {
+    val Good((head, _)) = st.removeHead()
+    head
   }
 }

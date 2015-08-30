@@ -23,13 +23,10 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.{FullQueueException, EmptyQueueException, Queue}
-import io.github.carlomicieli.util.{Bad, Good, Or}
-
 import scala.reflect.ClassTag
-import scala.util.control.NoStackTrace
 
-final class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
+private[this]
+class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
 
   private val storage = st
   private val N: Int = storage.length
@@ -41,19 +38,17 @@ final class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
     if (isEmpty) None
     else Some(storage(first))
 
-  def dequeue: (A, Queue[A]) Or EmptyQueueException = {
+  def dequeue(): A = {
     if (isEmpty)
-      Bad(new EmptyQueueException with NoStackTrace)
-    else {
-      val firstEl = storage(first)
-      first = (first + 1) % N
+      throw new EmptyQueueException
+    val firstEl = storage(first)
+    first = (first + 1) % N
 
-      if (first == last) {
-        empty = true
-      }
-
-      Good((firstEl, this))
+    if (first == last) {
+      empty = true
     }
+
+    firstEl
   }
 
   def size: Int =
@@ -64,9 +59,9 @@ final class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
     else
       (last + N) - first
 
-  def enqueue(el: A): Queue[A] Or FullQueueException = {
+  def enqueue(el: A): Unit = {
     if (isFull)
-      Bad(new FullQueueException with NoStackTrace)
+      throw new FullQueueException
     else {
       if (empty) {
         empty = false
@@ -74,7 +69,6 @@ final class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
 
       storage(last) = el
       last = (last + 1) % N
-      Good(this)
     }
   }
 

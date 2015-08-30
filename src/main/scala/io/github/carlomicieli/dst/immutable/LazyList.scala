@@ -21,12 +21,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.immutable
 
-trait Container[A] {
-  def foreach[U](f: A => U): Unit
+/**
+ * It represents a "lazy" list where `head` and `tail` are not evaluated eagerly.
+ * @tparam A the element type
+ */
+sealed trait LazyList[+A] {
+  def head: A
+  def tail: LazyList[A]
   def isEmpty: Boolean
-  def nonEmpty = !isEmpty
-  def contains(x: A): Boolean
-  def mkString(sep: String): String
+  def size: Int
+  def ++[B >: A](that: LazyList[B]): LazyList[B]
+
+  def map[B](f: A => B): LazyList[B]
+  def flatMap[B](f: A => LazyList[B]): LazyList[B]
+
+  def take(n: Int): LazyList[A]
+  def drop(n: Int): LazyList[A]
+
+  def filter(p: A => Boolean): LazyList[A]
+  def nonFilter(p: A => Boolean): LazyList[A]
+
+  def foldRight[B](z: B)(f: (A, B) => B): B
+
+  def foldLeft[B](z: B)(f: (B, A) => B): B
+
+  def toList: List[A]
+}
+
+object LazyList {
+  def apply[A](items: A*): LazyList[A] = ???
 }

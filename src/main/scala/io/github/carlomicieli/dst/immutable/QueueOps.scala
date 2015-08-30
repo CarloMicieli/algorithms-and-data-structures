@@ -21,12 +21,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.immutable
 
-trait Container[A] {
-  def foreach[U](f: A => U): Unit
-  def isEmpty: Boolean
-  def nonEmpty = !isEmpty
-  def contains(x: A): Boolean
-  def mkString(sep: String): String
+import io.github.carlomicieli.util.Or
+
+sealed trait QueueOp[+A]
+case class Enqueue[A](el: A) extends QueueOp[A]
+case object DequeueOp extends QueueOp[Nothing]
+
+class InvalidQueueOperation[A](queue: Queue[A], el: A, err: Exception)
+
+object QueueOp {
+  def sequence[A](initial: Queue[A], ops: List[QueueOp[A]]): Queue[A] Or InvalidQueueOperation[A] = ???
 }

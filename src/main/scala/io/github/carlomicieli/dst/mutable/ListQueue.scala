@@ -23,35 +23,27 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.{FullQueueException, EmptyQueueException, Queue}
-import io.github.carlomicieli.util.{Good, Or}
+import io.github.carlomicieli.util.{Good}
 
-import scala.util.control.NoStackTrace
-
-final class ListQueue[A] private(st: LinkedList[A]) extends Queue[A] {
+private[this]
+class ListQueue[A] extends Queue[A] {
   private val storage = LinkedList.empty[A]
 
-  def enqueue(el: A): Queue[A] Or FullQueueException = {
+  def enqueue(el: A): Unit = {
     storage.addBack(el)
-    Good(this)
   }
 
-  def dequeue: (A, Queue[A]) Or EmptyQueueException = {
-    storage.removeHead.map {
-      x => (x._1, this)
-    } orElse {
-      new EmptyQueueException with NoStackTrace
-    }
+  def dequeue(): A = {
+    if (isEmpty)
+      throw new EmptyQueueException
+
+    val Good((head, _)) = storage.removeHead()
+    head
   }
 
   def peek: Option[A] = storage.headOption
 
-  def size: Int = storage.size
+  def size: Int = storage.length
 
   def isEmpty: Boolean = storage.isEmpty
-}
-
-object ListQueue {
-  def empty[A]: Queue[A] =
-    new ListQueue[A](LinkedList.empty[A])
 }

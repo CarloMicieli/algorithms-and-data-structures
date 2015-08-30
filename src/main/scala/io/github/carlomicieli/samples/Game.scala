@@ -33,6 +33,11 @@ case class Game(name: String,
                 releaseDate: Option[LocalDate])
 
 object Game {
+
+  implicit val gameOrdering: Ordering[Game] = new Ordering[Game]() {
+      def compare(x: Game, y: Game): Int = x.name compare y.name
+    }
+
   def fromVector(v: Vector[String]): Try[Game] = {
     Try.apply {
       v match
