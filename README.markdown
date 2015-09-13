@@ -12,7 +12,6 @@ To import the project in Intellij Idea:
 
     $ sbt gen-idea
 
-
 ## Sorting Algorithms
 
 | Name              |   stable  |  in place |           |           |  
@@ -63,6 +62,23 @@ trait Maybe[+A] {
   def toGood[B](bad: => B): Or[A, B]
 }
 ```
+
+### `Or`
+
+__full disclaimer:__ API borrowed from the type with the same name available in scalactic.
+
+```scala
+trait Or[+A, +B] {
+  def isBad: Boolean
+  def isGood: Boolean
+  def get: A
+  def map[C](f: A => C): Or[C, B]
+  def flatMap[C, D >: B](f: A => Or[C, D]): Or[C, D]
+  def orElse[D](v: => D): Or[A, D]
+  def toMaybe[A]: Maybe[A]
+}
+```
+
 
 References
 ----------

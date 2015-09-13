@@ -23,27 +23,113 @@
  */
 package io.github.carlomicieli.util
 
+/**
+ * It represents a value either `Good` or `Bad`. All the methods are
+ * biased on the `Good` type.
+ *
+ * The only way to extract the value encapsulated by a `Bad` is through pattern matching.
+ *
+ * @tparam A the `Good` element type
+ * @tparam B the `Bad` element type
+ */
 sealed trait Or[+A, +B] {
+
+  /**
+   * Returns `true` if `this` is a `Good[_]` value; `false` otherwise.
+   * @return `true` if `this` is a `Good[_]` value; `false` otherwise
+   */
   def isBad: Boolean
+
+  /**
+   * Returns `true` if `this` is a `Bad[_]` value; `false` otherwise.
+   * @return `true` if `this` is a `Bad[_]` value; `false` otherwise
+   */
   def isGood: Boolean
 
+  /**
+   * Returns the value contained if `this` is a `Good[_]` value; it
+   * throws a `NoSuchElementException` otherwise.
+   * @return the value contained
+   */
   def get: A
 
+  /**
+   *
+   * @usecase def getOrElse(default: => A): A
+   * @inheritdoc
+   * @param default the default value
+   * @tparam A1 the `Good` element type
+   * @return
+   */
+  def getOrElse[A1 >: A](default: => A1): A1 = ???
+
+  /**
+   *
+   * @usecase def foreach(f: A => Unit): Unit
+   * @inheritdoc
+   * @param f
+   * @tparam U
+   */
+  def foreach[U](f: A => U): Unit = ???
+
+  /**
+   *
+   * @param f
+   * @tparam C
+   * @return
+   */
   def map[C](f: A => C): Or[C, B] = this match {
     case Bad(_)  => this.asInstanceOf[Or[C, B]]
     case Good(v) => Good(f(v))
   }
 
+  /**
+   *
+   * @param f
+   * @tparam C
+   * @tparam D
+   * @return
+   */
   def flatMap[C, D >: B](f: A => Or[C, D]): Or[C, D] = this match {
     case Bad(_)  => this.asInstanceOf[Or[C, D]]
     case Good(v) => f(v)
   }
 
+  /**
+   * Returns `this` value if this is a `Good[_]`; produce a new `Bad` value
+   * using the given value `v` otherwise.
+   *
+   * @param v the value used to produce a new `Bad`
+   * @tparam D the new `Bad` element type
+   * @return
+   */
   def orElse[D](v: => D): Or[A, D] =
     if (isGood)
       this.asInstanceOf[Or[A, D]]
     else
       Bad(v)
+
+  /**
+   * Returns a `Just` value with the element contained in a `Good`;
+   * it simply return `None` otherwise.
+   *
+   * @usecase def toMaybe: Maybe[A]
+   * @inheritdoc
+   * @tparam A1
+   * @return
+   */
+  def toMaybe[A1 >: A]: Maybe[A1] = ???
+}
+
+object Or {
+  def safeOp[A](op: => A): Or[A, Throwable] = {
+    try {
+      val res = op
+      Good(res)
+    } catch {
+      case ex: Throwable => Bad(ex)
+    }
+  }
 }
 
 case class Good[A, B](value: A) extends Or[A, B] {

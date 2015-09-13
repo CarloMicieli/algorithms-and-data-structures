@@ -154,11 +154,20 @@ sealed trait Maybe[+A] {
   }
 }
 
-
-
 object Maybe {
+  /**
+   * Creates a new empty value.
+   * @tparam A
+   * @return
+   */
   def empty[A]: Maybe[A] = None
 
+  /**
+   * Creates a new `Just` value whether the provided `x` is not `null`; returns a `None` otherwise.
+   * @param x the value
+   * @tparam A the value type
+   * @return a new `Maybe` value
+   */
   def apply[A](x: A): Maybe[A] =
     if (x == null) None else Just(x)
 
