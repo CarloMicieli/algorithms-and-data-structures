@@ -163,8 +163,8 @@ trait LinkedList[A] extends Container[A] {
   def mkString(sep: String, start: String = "", end: String = ""): String
 
   /**
-   * Returns an [[scala.collection.Iterable]] for this list elements.
-   * @return the elements Iterable
+   * Returns an `Iterable` for this list elements.
+   * @return the elements `Iterable`
    */
   def elements: Iterable[A]
 
