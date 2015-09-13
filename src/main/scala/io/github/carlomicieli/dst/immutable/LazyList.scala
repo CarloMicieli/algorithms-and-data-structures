@@ -29,27 +29,106 @@ package io.github.carlomicieli.dst.immutable
  */
 sealed trait LazyList[+A] {
   def head: A
+
+  def headOption: Option[A] = this match {
+    case Empty => None
+    case LazyCons(h, _) => Some(h())
+  }
+
   def tail: LazyList[A]
+
   def isEmpty: Boolean
-  def size: Int
-  def ++[B >: A](that: LazyList[B]): LazyList[B]
 
-  def map[B](f: A => B): LazyList[B]
-  def flatMap[B](f: A => LazyList[B]): LazyList[B]
+  def size: Int = this match {
+    case Empty => 0
+    case LazyCons(_, t) => 1 + t().size
+  }
 
-  def take(n: Int): LazyList[A]
-  def drop(n: Int): LazyList[A]
+  def ++[B >: A](that: LazyList[B]): LazyList[B] =
+    foldRight(that)((a, b) => LazyCons(() => a, () => b))
 
-  def filter(p: A => Boolean): LazyList[A]
-  def nonFilter(p: A => Boolean): LazyList[A]
+  def map[B](f: A => B): LazyList[B] =
+    foldRight(LazyList.empty[B])((a, b) => LazyList.cons(f(a), b))
 
-  def foldRight[B](z: B)(f: (A, B) => B): B
+  def flatMap[B](f: A => LazyList[B]): LazyList[B] = ???
 
-  def foldLeft[B](z: B)(f: (B, A) => B): B
+  def take(n: Int): LazyList[A] = (this, n) match {
+    case (Empty, _) => Empty
+    case (_, 0) => Empty
+    case (LazyCons(h, t), i) => LazyCons(h, () => t().take(n - 1))
+  }
 
-  def toList: List[A]
+  def drop(n: Int): LazyList[A] = (this, n) match {
+    case (Empty, _) => Empty
+    case (st, 0) => st
+    case (LazyCons(_, t), i) => t().drop(n - 1)
+  }
+
+  def find(p: A => Boolean): Option[A] =
+    filter(p).headOption
+
+  def exists(p: A => Boolean): Boolean =
+    foldRight(false)((a, b) => p(a) || b)
+
+  def filter(p: A => Boolean): LazyList[A] = {
+    this match {
+      case Empty => Empty
+      case LazyCons(h, t) =>
+        lazy val head = h()
+        if (p(head))
+          LazyCons[A](h, () => t().filter(p))
+        else
+          t().filter(p)
+    }
+  }
+
+  def nonFilter(p: A => Boolean): LazyList[A] = ???
+
+  def foldRight[B](z: B)(f: (A, B) => B): B = {
+    this match {
+      case LazyCons(h, t) => f(h(), t().foldRight(z)(f))
+      case Empty => z
+    }
+  }
+
+  def foldLeft[B](z: B)(f: (B, A) => B): B = ???
+
+  def zip[B](that: LazyList[B]): LazyList[(A, B)] = (this, that) match {
+    case (Empty, _) => Empty
+    case (_, Empty) => Empty
+    case (LazyCons(ah, at), LazyCons(bh, bt)) =>
+      LazyList.cons((ah(), bh()), at() zip bt())
+  }
+
+  def toList: List[A] = this match {
+    case Empty => List.empty[A]
+    case LazyCons(h, t) =>
+      lazy val head = h()
+      lazy val tail = t()
+      head +: tail.toList
+  }
 }
 
 object LazyList {
-  def apply[A](items: A*): LazyList[A] = ???
+  def empty[A]: LazyList[A] = Empty
+
+  def cons[A](hd: => A, tl: => LazyList[A]): LazyList[A] = {
+    lazy val head = hd
+    lazy val tail = tl
+    LazyCons(() => head, () => tail)
+  }
+}
+
+case class LazyCons[+A](h: () => A, t: () => LazyList[A]) extends LazyList[A] {
+  var isEmpty = false
+
+  lazy val head: A = h()
+  lazy val tail: LazyList[A] = t()
+}
+
+case object Empty extends LazyList[Nothing] {
+  val isEmpty = true
+
+  override def head = throw new NoSuchElementException("LazyList.head: is empty")
+  override def tail = throw new NoSuchElementException("LazyList.head: is empty")
 }
