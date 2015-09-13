@@ -26,6 +26,7 @@ package io.github.carlomicieli.dst.immutable
 import io.github.carlomicieli.util.{Maybe, Just, None}
 
 /**
+ * A list is either empty, or a constructed list with a `head` and a `tail`.
  *
  * @tparam A the list element type
  */
@@ -63,7 +64,7 @@ sealed trait List[+A] {
   def nonEmpty: Boolean = !isEmpty
 
   /**
-   * Adds an element at the beginning of this list.
+   * `O(1)` Adds an element at the beginning of this list.
    * @param x the element to add
    * @tparam A1 the list element type
    * @return a new list, with the element appended
@@ -199,11 +200,11 @@ sealed trait List[+A] {
   /**
    * `O(n)` Returns a new list obtained appending the elements from `that` list to this one.
    *
+   * @usecase def ++(that: List[A]): List[A]
+   * @inheritdoc
    * @param that the second list to append
    * @tparam A1 the resulting list type
    * @return a list obtained appending the element of `that` to this list
-   * @usecase def ++(that: List[A]): List[A]
-   * @inheritdoc
    */
   def ++[A1 >: A](that: List[A1]): List[A1] =
     foldRight(that)((x, xs) => x +: xs)
@@ -217,12 +218,11 @@ sealed trait List[+A] {
    *   l: List[Char] = [a, -, b, -, c, -, d, -, e]
    * }}}
    *
+   * @usecase def intersperse(x: A): List[A]
+   * @inheritdoc
    * @param x
    * @tparam A1
    * @return
-   *
-   * @usecase def intersperse(x: A): List[A]
-   * @inheritdoc
    */
   def intersperse[A1 >: A](x: A1): List[A1] =
     if (isEmpty) this
@@ -261,11 +261,12 @@ sealed trait List[+A] {
 
   /**
    * Converts this list of lists into a list formed by the elements of these lists.
+
+   * @usecase def flatten: List[A]
+   * @inheritdoc
    * @param ev
    * @tparam B
    * @return
-   * @usecase def flatten: List[A]
-   * @inheritdoc
    */
   def flatten[B](implicit ev: A => List[B]): List[B] =
     foldRight(List.empty[B])((xss, xs) => xss ++ xs)
