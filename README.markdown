@@ -39,8 +39,8 @@ Machine used for the benchmark
 * Intel® Core™ i5-3570K CPU @ 3.40GHz × 4
 * 16 Gb RAM
 * SSD hard disk
-* Ubuntu 14.04.2
-* Java SE 1.8u51 / Scala 2.11.7
+* Ubuntu 14.04.3
+* Java SE 1.8u60 / Scala 2.11.7
 
 ## Data structures
 
@@ -49,4 +49,4 @@ References
 
 * __Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
 * __Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
-* __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala (MEAP)`, 2014, Manning Publications
+* __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala`, 2014, Manning Publications
