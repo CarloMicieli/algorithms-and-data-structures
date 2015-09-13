@@ -44,6 +44,26 @@ Machine used for the benchmark
 
 ## Data structures
 
+### `Maybe`
+
+The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]` either contains a value of type a 
+(represented as `Just[A]`), or it is empty (represented as `None`).
+
+```scala
+trait Maybe[+A] {
+  def get: A
+  def getOrElse(default: => A): A
+  def orElse(that: => Maybe[A]): Maybe[A]
+  def isDefined: Boolean
+  def isEmpty: Boolean
+  def foreach(f: A => Unit): Unit
+  def map(f: A => A): Maybe[A]
+  def flatMap(f: A => Maybe[A]): Maybe[A]
+  def filter(p: A => Boolean): Maybe[A]
+  def toGood[B](bad: => B): Or[A, B]
+}
+```
+
 References
 ----------
 
