@@ -1,6 +1,7 @@
 package io.github.carlomicieli.dst.immutable
 
 import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.util.{Just, None}
 
 class ListSpec extends AbstractTestSpec with TestLists {
   "An empty list" should "have length equals to 0" in {
@@ -73,7 +74,7 @@ class ListSpec extends AbstractTestSpec with TestLists {
   }
 
   "unfoldRight" should "produce a new list from a seed value and a function" in {
-    val l = List.unfoldRight(1)(n => if (n < 10) Some((s"N($n)", n + 1)) else None)
+    val l = List.unfoldRight(1)(n => if (n < 10) Just((s"N($n)", n + 1)) else None)
     l shouldBe List("N(9)", "N(8)", "N(7)", "N(6)", "N(5)", "N(4)", "N(3)", "N(2)", "N(1)")
   }
 

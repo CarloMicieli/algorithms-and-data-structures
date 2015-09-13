@@ -20,28 +20,34 @@
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- *
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.util.Maybe
 
-class LazyListSpec extends AbstractTestSpec {
-  "An empty LazyList" should "have size 0" in {
-    val list = LazyList.empty[Int]
-    list.isEmpty shouldBe true
-    list.size shouldBe 0
-  }
+private[this]
+sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
+  def get: (K, V)
+  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)] = ???
+  def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
+  def max: Maybe[K] = ???
+  def size: Int = ???
+  def toList: List[(K, V)] = ???
+  def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V]) = ???
+  def min: Maybe[K] = ???
+  def isEmpty: Boolean
+  def depth: Int = ???
+  def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
+}
 
-  "The size for a LazyList" should "not evaluatse the elements" in {
-    val list = LazyList.cons(1, LazyList.cons(throw new Exception, LazyList.cons(3, Empty)))
-    list.size shouldBe 3
-  }
+private[this]
+case object EmptyTree extends BinarySearchTree[Nothing, Nothing] {
+  def isEmpty = true
+  def get = throw new NoSuchElementException("Tree.get: this tree is empty")
+}
 
-  "Mapping a LazyList" should "produce a new list with the function applied to its elements" in {
-    val list = LazyList.cons(1, LazyList.cons(2, LazyList.cons(3, Empty)))
-    val resultList = list map { _ * 3 }
-
-    resultList.toList shouldBe List(3, 6, 9)
-  }
+private[this]
+case class Node[K, V](key: K, value: V) extends BinarySearchTree[K, V] {
+  def isEmpty = false
+  def get: (K, V) = (key, value)
 }

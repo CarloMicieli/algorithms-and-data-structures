@@ -27,10 +27,15 @@ import io.github.carlomicieli.util.Maybe
 
 /**
  * It represents a binary search tree.
+ *
+ * A binary tree is:
+ *  - either an empty node;
+ *  - or a node contains 3 parts, a value, two children which are also trees.
+ *
  * @tparam K the `Key` type
  * @tparam V the `Value` type
  */
-sealed trait BsTree[+K, +V] {
+trait Tree[+K, +V] {
   def get: (K, V)
 
   /**
@@ -87,7 +92,7 @@ sealed trait BsTree[+K, +V] {
    * @tparam V1
    * @return
    */
-  def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: V1 => V1)(implicit ord: Ordering[K1]): BsTree[K1, V1]
+  def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: V1 => V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
     * Inserts the `key` and the corresponding `value` to the `BsTree`. If the `key` already exists
@@ -100,7 +105,7 @@ sealed trait BsTree[+K, +V] {
    * @tparam V1
    * @return
    */
-  def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): BsTree[K1, V1]
+  def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
     * Delete the node with the provided key. If this `BsTree` doesn't contain the key, the
@@ -111,7 +116,7 @@ sealed trait BsTree[+K, +V] {
    * @tparam K1
    * @return
    */
-  def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], BsTree[K1, V])
+  def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V])
 
   /**
    * Convert this `BsTree` to a `List` of pair.
@@ -120,7 +125,7 @@ sealed trait BsTree[+K, +V] {
   def toList: List[(K, V)]
 }
 
-object BsTree {
+object Tree {
   /**
    * It creates an empty binary search tree.
    * @param ord
@@ -128,7 +133,7 @@ object BsTree {
    * @tparam V
    * @return
    */
-  def empty[K, V](implicit ord: Ordering[K]): BsTree[K, V] = ???
+  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = ???
 
   /**
    * It creates a new binary search tree with the provided `elements`.
@@ -138,7 +143,7 @@ object BsTree {
    * @tparam V
    * @return
    */
-  def apply[K, V](elements: (K, V)*)(implicit ord: Ordering[K]): BsTree[K, V] = ???
+  def apply[K, V](elements: (K, V)*)(implicit ord: Ordering[K]): Tree[K, V] = ???
 
   /**
    * It creates a binary search tree from the list elements.
@@ -148,5 +153,5 @@ object BsTree {
    * @tparam V
    * @return
    */
-  def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): BsTree[K, V] = ???
+  def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = ???
 }

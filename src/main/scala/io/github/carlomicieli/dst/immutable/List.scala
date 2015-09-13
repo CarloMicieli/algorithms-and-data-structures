@@ -23,11 +23,14 @@
  */
 package io.github.carlomicieli.dst.immutable
 
+import io.github.carlomicieli.util.{Maybe, Just, None}
+
 /**
  *
  * @tparam A the list element type
  */
-sealed trait List[+A] extends Foldable[A] {
+sealed trait List[+A] {
+  self =>
 
   /**
    * `O(1)` Returns the first element of a list.
@@ -39,7 +42,7 @@ sealed trait List[+A] extends Foldable[A] {
    * `O(1)` Optionally returns the first element of a list.
    * @return `Some(head)` if the list is not empty; `None` otherwise
    */
-  def headOption: Option[A] = if (isEmpty) None else Some(head)
+  def headOption: Maybe[A] = if (isEmpty) None else Just(head)
 
   /**
    * `O(1)` Returns the elements after the head of a list.
@@ -93,6 +96,16 @@ sealed trait List[+A] extends Foldable[A] {
   def filter(p: A => Boolean): List[A] = {
     val step = (x: A, xs: List[A]) => if (p(x)) x +: xs else xs
     foldRight(List.empty[A])(step)
+  }
+
+  def withFilter(p: A => Boolean): WithFilter = new WithFilter(p)
+
+  //TODO: not implementing WithFilter contract right now!
+  class WithFilter(p: A => Boolean) {
+    def flatMap[B](f: A => List[B]): List[B] = self filter p flatMap f
+    def foreach[U](f: A => U): Unit = self filter p foreach f
+    def map[B](f: A => B): List[B] = self filter p map f
+    def withFilter(q: A => Boolean): WithFilter = new WithFilter(x => p(x) && q(x))
   }
 
   /**
@@ -296,18 +309,24 @@ object List {
   }
 
   /**
+   * This function is a "dual" to `foldRight`: while `foldRight` reduces a list to a summary value,
+   * `unfoldRight` builds a list from a seed value.
    *
-   * @param z
-   * @param f
-   * @tparam A
-   * @tparam B
-   * @return
+   * The function takes the element and returns `None` if it is done producing the list or returns
+   * `Just (a, b)`, in which case, a is a prepended to the list and b is used as the next element in a
+   * recursive call.
+   *
+   * @param z the initial seed
+   * @param f the function to build the list
+   * @tparam A the list element type
+   * @tparam B the seed element type
+   * @return a list
    */
-  def unfoldRight[A, B](z: B)(f: B => Option[(A, B)]): List[A] = {
+  def unfoldRight[A, B](z: B)(f: B => Maybe[(A, B)]): List[A] = {
     @annotation.tailrec
     def loop(z: B, acc: List[A]): List[A] = f(z) match {
       case None => acc
-      case Some((na, nb)) => loop(nb, na +: acc)
+      case Just((na, nb)) => loop(nb, na +: acc)
     }
 
     loop(z, List.empty[A])
@@ -330,18 +349,4 @@ case object Nil extends List[Nothing] {
   override def head = throw new NoSuchElementException("List.head: empty list")
   override def tail = throw new NoSuchElementException("List.tail: empty list")
   override def isEmpty: Boolean = true
-}
-
-trait Foldable[+A] {
-  def foldRight[B](z: B)(f: (A, B) => B): B
- // def reduceRight(f: (A, A) => A): A
-  def foldLeft[B](z: B)(f: (B, A) => B): B
- // def reduceLeft(f: (A, A) => A): A
-  def fold[A1 >: A](implicit m: Monoid[A1]): A1 = foldLeft(m.mEmpty)(m.mAppend)
-}
-
-trait Monoid[A] {
-  def mEmpty: A
-  def mAppend(l: A, r: A): A
-  def mConcat(xs: List[A]): A
 }
