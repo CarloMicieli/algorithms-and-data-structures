@@ -45,7 +45,7 @@ trait Tree[+K, +V] {
 
   /**
    * The depth from this `Tree`.
-   * @return
+   * @return the tree depth
    */
   def depth: Int
 
@@ -62,25 +62,27 @@ trait Tree[+K, +V] {
   def min: Maybe[K]
 
   /**
-   * Returns the number of pair key-value contained in this `Tree`
-   * @return
+   * Returns the number of pair key-value contained in this `Tree`.
+   * @return the number elements in the tree
    */
   def size: Int
 
   /**
-   * Checks whether the current `Tree` is empty
-   * @return
+   * Checks whether the current `Tree` is empty.
+   * @return `true` if this tree is empty; `false` otherwise
    */
   def isEmpty: Boolean
 
   /**
-   * It searches for the `key` in this `BsTree`. It returns `Just((key, value))` when the
+   * It searches for the `key` in this `Tree`. It returns `Just((key, value))` when the
    * `key` is found, `None` otherwise.
    *
-   * @param key
-   * @param ord
+   * @usecase def lookup(key: K): Maybe[(K, V)]
+   * @inheritdoc
+   * @param key the key to find
+   * @param ord the key ordering
    * @tparam K1
-   * @return
+   * @return optionally a pair with the key and value
    */
   def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)]
 
@@ -89,9 +91,11 @@ trait Tree[+K, +V] {
    * other hand, if the `key` already exists the value is updated applying the function `f` to the
    * current value.
    *
-   * @param key
-   * @param value
-   * @param f
+   * @usecase def upsert(key: K, value: V)(f: V => V): Tree[K, V]
+   * @inheritdoc
+   * @param key the key
+   * @param value the value assigned to `key`, if not already in the tree
+   * @param f the function applied to the already present value
    * @param ord
    * @tparam K1
    * @tparam V1
@@ -100,32 +104,36 @@ trait Tree[+K, +V] {
   def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: V1 => V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
-    * Inserts the `key` and the corresponding `value` to the `BsTree`. If the `key` already exists
+    * Inserts the `key` and the corresponding `value` to the `Tree`. If the `key` already exists
    * this operation will replace the previous value.
    *
-   * @param key
-   * @param value
-   * @param ord
-   * @tparam K1
-   * @tparam V1
-   * @return
+   * @usecase def insert(key: K, value: V): Tree[K, V]
+   * @inheritdoc
+   * @param key the new element key
+   * @param value the new element value
+   * @param ord the key ordering
+   * @tparam K1 the key type
+   * @tparam V1 the value type
+   * @return a new `Tree`, with the addition of the new element
    */
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
-    * Delete the node with the provided key. If this `Tree` doesn't contain the key, the
+   * Delete the node with the provided key. If this `Tree` doesn't contain the key, the
    * `Tree` is returned unchanged.
    *
+   * @usecase def delete(key: K): (Maybe[V], Tree[K, V])
+   * @inheritdoc
    * @param key the key to be removed
    * @param ord the key ordering
    * @tparam K1
-   * @return
+   * @return a pair of the removed element and the modified `Tree`
    */
   def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V])
 
   /**
-   * Convert this `BsTree` to a `List` of pair.
-   * @return the list with the pair `(key, value)` in this `BsTree`
+   * Convert this `Tree` to a `List` of pair.
+   * @return the list with the pair `(key, value)` in this `Tree`
    */
   def toList: List[(K, V)]
 }
@@ -133,30 +141,52 @@ trait Tree[+K, +V] {
 object Tree {
   /**
    * It creates an empty binary search tree.
-   * @param ord
-   * @tparam K
-   * @tparam V
-   * @return
+   *
+   * @param ord the ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return an empty tree
    */
   def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = EmptyTree
 
   /**
    * It creates a new binary search tree with the provided `elements`.
-   * @param elements
-   * @param ord
-   * @tparam K
-   * @tparam V
-   * @return
+   *
+   * @param elements the elements to insert
+   * @param ord the ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return a tree
    */
-  def apply[K, V](elements: (K, V)*)(implicit ord: Ordering[K]): Tree[K, V] = ???
+  def apply[K, V](elements: (K, V)*)(implicit ord: Ordering[K]): Tree[K, V] = {
+    def go(pairs: (K, V)*): Tree[K, V] =
+      if (pairs.isEmpty)
+        Tree.empty[K, V]
+      else {
+        val item = pairs.head
+        val rest = pairs.tail
+        go(rest: _*).insert(item._1, item._2)
+      }
+    go(elements: _*)
+  }
 
   /**
    * It creates a binary search tree from the list elements.
-   * @param xs
-   * @param ord
-   * @tparam K
-   * @tparam V
-   * @return
+   *
+   * @param xs the list of elements to insert
+   * @param ord the ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return a tree
    */
-  def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = ???
+  def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = {
+    @annotation.tailrec
+    def go(l: List[(K, V)], tree: Tree[K, V]): Tree[K, V] =
+      l match {
+        case Nil => tree
+        case (k, v) +: tail =>
+          go(tail, tree.insert(k, v))
+      }
+    go(xs, Tree.empty[K, V])
+  }
 }

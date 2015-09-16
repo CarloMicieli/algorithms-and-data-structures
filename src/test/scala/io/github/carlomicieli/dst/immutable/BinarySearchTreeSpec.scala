@@ -65,22 +65,17 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   "It" should "convert a tree to a list" in {
     t2.toList shouldBe List((21, "b"), (42, "a"), (66, "f"), (99, "c"))
   }
+
+  "It" should "update a value for a key already in the tree" in {
+    val t3 = t2.upsert(45, "d")(_ * 2)
+    t3.lookup(45) shouldBe Just((45, "d"))
+
+    val t4 = t2.upsert(21, "b")(_ * 2)
+    t4.lookup(21) shouldBe Just((21, "bb"))
+  }
 }
 
 object TreesFixture {
-  val t1 = TreesFixture.emptyTree
-  val t2 = TreesFixture.tree((42, "a"), (21, "b"), (99, "c"), (66, "f"))
-
-  def emptyTree: Tree[Int, String] = Tree.empty[Int, String]
-  def tree(values: (Int, String)*): Tree[Int, String] = {
-    def go(pairs: (Int, String)*): Tree[Int, String] =
-      if (pairs.isEmpty)
-        Tree.empty[Int, String]
-      else {
-        val item = pairs.head
-        val rest = pairs.tail
-        go(rest: _*).insert(item._1, item._2)
-      }
-    go(values: _*)
-  }
+  def t1: Tree[Int, String] = Tree.empty[Int, String]
+  def t2: Tree[Int, String] = Tree((42, "a"), (21, "b"), (99, "c"), (66, "f"))
 }

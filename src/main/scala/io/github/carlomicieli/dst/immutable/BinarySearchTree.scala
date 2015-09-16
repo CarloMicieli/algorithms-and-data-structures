@@ -44,7 +44,7 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
 
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
     this match {
-      case EmptyTree => Node(key, value, EmptyTree, EmptyTree)
+      case EmptyTree => new Node(key, value)
       case node @ Node(k, _, _, _) if k == key => node
       case node @ Node(k, _, left, right) =>
         import Ordered._
@@ -86,7 +86,18 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
     case Node(_, _, left, right) => 1 + math.max(left.depth, right.depth)
   }
 
-  def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
+  def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
+    this match {
+      case EmptyTree => new Node(key, value)
+      case node @ Node(k, v, _, _) if k == key => node.copy(value = f(v))
+      case node @ Node(k, _, left, right) =>
+        import Ordered._
+        if (key < k)
+          node.copy(left = left.upsert(key, value)(f))
+        else
+          node.copy(right = right.upsert(key, value)(f))
+    }
+  }
 }
 
 private[this]
@@ -97,6 +108,11 @@ case object EmptyTree extends BinarySearchTree[Nothing, Nothing] {
 
 private[this]
 case class Node[K, V](key: K, value: V, left: Tree[K, V], right: Tree[K, V]) extends BinarySearchTree[K, V] {
+
+  def this(key: K, value: V) = {
+    this(key, value, EmptyTree, EmptyTree)
+  }
+
   def isEmpty = false
   def get: (K, V) = (key, value)
 }
