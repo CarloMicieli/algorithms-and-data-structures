@@ -23,20 +23,69 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util.Maybe
+import io.github.carlomicieli.util.{Maybe, None, Just}
 
 private[this]
 sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   def get: (K, V)
-  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)] = ???
-  def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
-  def max: Maybe[K] = ???
-  def size: Int = ???
-  def toList: List[(K, V)] = ???
+
+  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)] = {
+    this match {
+      case EmptyTree => None
+      case Node(k, v, _, _) if k == key => Just((k, v))
+      case Node(k, _, left, right) =>
+        import Ordered._
+        if (key < k)
+          left.lookup(key)
+        else
+          right.lookup(key)
+    }
+  }
+
+  def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
+    this match {
+      case EmptyTree => Node(key, value, EmptyTree, EmptyTree)
+      case node @ Node(k, _, _, _) if k == key => node
+      case node @ Node(k, _, left, right) =>
+        import Ordered._
+        if (key < k)
+          node.copy(left = left.insert(key, value))
+        else
+          node.copy(right = right.insert(key, value))
+    }
+  }
+
+  def min: Maybe[K] = this match {
+    case EmptyTree => None
+    case Node(k, _, EmptyTree, _) => Just(k)
+    case Node(_, _, left, _) => left.min
+  }
+
+  def max: Maybe[K] = this match {
+    case EmptyTree => None
+    case Node(k, _, _, EmptyTree) => Just(k)
+    case Node(_, _, _, right) => right.max
+  }
+
+  def size: Int = this match {
+    case EmptyTree => 0
+    case Node(_, _, left, right) => 1 + left.size + right.size
+  }
+
+  def toList: List[(K, V)] = this match {
+    case EmptyTree => List.empty[(K, V)]
+    case Node(k, v, left, right) => left.toList ++ List((k, v)) ++ right.toList
+  }
+
   def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V]) = ???
-  def min: Maybe[K] = ???
+
   def isEmpty: Boolean
-  def depth: Int = ???
+
+  def depth: Int = this match {
+    case EmptyTree => 0
+    case Node(_, _, left, right) => 1 + math.max(left.depth, right.depth)
+  }
+
   def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
 }
 
@@ -47,7 +96,7 @@ case object EmptyTree extends BinarySearchTree[Nothing, Nothing] {
 }
 
 private[this]
-case class Node[K, V](key: K, value: V) extends BinarySearchTree[K, V] {
+case class Node[K, V](key: K, value: V, left: Tree[K, V], right: Tree[K, V]) extends BinarySearchTree[K, V] {
   def isEmpty = false
   def get: (K, V) = (key, value)
 }

@@ -36,34 +36,39 @@ import io.github.carlomicieli.util.Maybe
  * @tparam V the `Value` type
  */
 trait Tree[+K, +V] {
+
+  /**
+   * Return the root element for this `Tree`.
+   * @return the root element
+   */
   def get: (K, V)
 
   /**
-   * The depth from this `BsTree`.
+   * The depth from this `Tree`.
    * @return
    */
   def depth: Int
 
   /**
-   * The element with the maximum key in this `BsTree` according to the key ordering.
-   * @return `Just(max)` if this `BsTree` is not empty, `None` otherwise
+   * The element with the maximum key in this `Tree` according to the key ordering.
+   * @return `Just(max)` if this `Tree` is not empty, `None` otherwise
    */
   def max: Maybe[K]
 
   /**
-   * The element with the minimum key in this `BsTree` according to the key ordering.
-   * @return `Just(min)` if this `BsTree` is not empty, `None` otherwise
+   * The element with the minimum key in this `Tree` according to the key ordering.
+   * @return `Just(min)` if this `Tree` is not empty, `None` otherwise
    */
   def min: Maybe[K]
 
   /**
-   * Returns the number of pair key-value contained in this `BsTree`
+   * Returns the number of pair key-value contained in this `Tree`
    * @return
    */
   def size: Int
 
   /**
-   * Checks whether the current `BsTree` is empty
+   * Checks whether the current `Tree` is empty
    * @return
    */
   def isEmpty: Boolean
@@ -108,8 +113,8 @@ trait Tree[+K, +V] {
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
-    * Delete the node with the provided key. If this `BsTree` doesn't contain the key, the
-   * `BsTree` is returned unchanged.
+    * Delete the node with the provided key. If this `Tree` doesn't contain the key, the
+   * `Tree` is returned unchanged.
    *
    * @param key the key to be removed
    * @param ord the key ordering
@@ -133,7 +138,7 @@ object Tree {
    * @tparam V
    * @return
    */
-  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = ???
+  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = EmptyTree
 
   /**
    * It creates a new binary search tree with the provided `elements`.
