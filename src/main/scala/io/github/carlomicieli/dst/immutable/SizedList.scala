@@ -23,43 +23,39 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util._
+import io.github.carlomicieli.util.Maybe
 
 private[this]
-case class ListQueue[+A](front: List[A], rear: List[A]) extends Queue[A] {
+case class SizedList[+A](xs: List[A], size: Int) {
+  def this() = this(List.empty[A], 0)
 
-  def this() = this(List.empty[A], List.empty[A])
+  def isEmpty = size == 0
 
-  override def enqueue[A1 >: A](el: A1): Queue[A1] = ListQueue(front, el +: rear)
+  def head: A = xs.head
+  def headOption: Maybe[A] = xs.headOption
 
-  override def peek: Maybe[A] =
+  def tail: SizedList[A] = {
     if (isEmpty)
-      None
-    else {
-      front match {
-        case x +: _ => Just(x)
-        case _      => rear.reverse.headOption
-      }
-    }
-
-  override def dequeue: Or[(A, Queue[A]), EmptyQueueException] =
-    if (isEmpty)
-      Bad(new EmptyQueueException)
-    else {
-      front match {
-        case x +: xs => Good((x, ListQueue(xs, rear)))
-        case _ =>
-          val newFront = rear.reverse
-          Good((newFront.head, ListQueue(newFront.tail, List.empty[A])))
-      }
-    }
-
-  override def size: Int = front.length + rear.length
-
-  override def isEmpty: Boolean = front.isEmpty && rear.isEmpty
-
-  override def toString: String = {
-    val topEl = peek.map(x => s"top = $x").getOrElse("")
-    s"Queue($topEl)"
+      this
+    else
+      SizedList(xs.tail, size - 1)
   }
+
+  def +:[A1 >: A](x: A1) = SizedList(x +: xs, size + 1)
+
+  def union[A1 >: A](that: SizedList[A1]): SizedList[A1] = {
+    (this, that) match {
+      case (SizedList(Nil, _), sl2) => sl2
+      case (sl1, SizedList(Nil, _)) => sl1
+      case (SizedList(ys, len1), SizedList(zs, len2)) =>
+        SizedList(ys ++ zs, len1 + len2)
+    }
+  }
+
+  def reverse: SizedList[A] = SizedList(xs.reverse, size)
+}
+
+private[this]
+object SizedList {
+  def empty[A]: SizedList[A] = new SizedList[A]
 }

@@ -23,43 +23,41 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util._
+import io.github.carlomicieli.util.{Good, Bad, Maybe, Or}
 
 private[this]
-case class ListQueue[+A](front: List[A], rear: List[A]) extends Queue[A] {
+class BalancedQueue[+A](front: SizedList[A], rear: SizedList[A]) extends Queue[A] {
 
-  def this() = this(List.empty[A], List.empty[A])
+  override def enqueue[A1 >: A](x: A1): Queue[A1] =
+    balance(front, x +: rear)
 
-  override def enqueue[A1 >: A](el: A1): Queue[A1] = ListQueue(front, el +: rear)
+  override def peek: Maybe[A] = front.headOption
 
-  override def peek: Maybe[A] =
-    if (isEmpty)
-      None
-    else {
-      front match {
-        case x +: _ => Just(x)
-        case _      => rear.reverse.headOption
-      }
-    }
-
-  override def dequeue: Or[(A, Queue[A]), EmptyQueueException] =
+  override def dequeue: Or[(A, Queue[A]), EmptyQueueException] = {
     if (isEmpty)
       Bad(new EmptyQueueException)
     else {
-      front match {
-        case x +: xs => Good((x, ListQueue(xs, rear)))
-        case _ =>
-          val newFront = rear.reverse
-          Good((newFront.head, ListQueue(newFront.tail, List.empty[A])))
-      }
+      val head = front.head
+      val tail = front.tail
+      Good((head, BalancedQueue(tail, rear)))
     }
-
-  override def size: Int = front.length + rear.length
-
-  override def isEmpty: Boolean = front.isEmpty && rear.isEmpty
-
-  override def toString: String = {
-    val topEl = peek.map(x => s"top = $x").getOrElse("")
-    s"Queue($topEl)"
   }
+
+  override def size: Int = front.size + rear.size
+
+  override def isEmpty: Boolean = front.isEmpty
+
+  private def balance[A1 >: A](f: SizedList[A1], r: SizedList[A1]): BalancedQueue[A1] = {
+    if (r.size <= f.size)
+      BalancedQueue(f, r)
+    else
+      BalancedQueue(f union r.reverse, SizedList.empty[A])
+  }
+}
+
+object BalancedQueue {
+  def empty[A]: Queue[A] = BalancedQueue(SizedList.empty[A], SizedList.empty[A])
+
+  private def apply[A](f: SizedList[A], r: SizedList[A]): BalancedQueue[A] =
+    new BalancedQueue(f, r)
 }

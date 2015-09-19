@@ -23,43 +23,41 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util._
+import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.util.{Good, Just, None}
 
-private[this]
-case class ListQueue[+A](front: List[A], rear: List[A]) extends Queue[A] {
-
-  def this() = this(List.empty[A], List.empty[A])
-
-  override def enqueue[A1 >: A](el: A1): Queue[A1] = ListQueue(front, el +: rear)
-
-  override def peek: Maybe[A] =
-    if (isEmpty)
-      None
-    else {
-      front match {
-        case x +: _ => Just(x)
-        case _      => rear.reverse.headOption
-      }
-    }
-
-  override def dequeue: Or[(A, Queue[A]), EmptyQueueException] =
-    if (isEmpty)
-      Bad(new EmptyQueueException)
-    else {
-      front match {
-        case x +: xs => Good((x, ListQueue(xs, rear)))
-        case _ =>
-          val newFront = rear.reverse
-          Good((newFront.head, ListQueue(newFront.tail, List.empty[A])))
-      }
-    }
-
-  override def size: Int = front.length + rear.length
-
-  override def isEmpty: Boolean = front.isEmpty && rear.isEmpty
-
-  override def toString: String = {
-    val topEl = peek.map(x => s"top = $x").getOrElse("")
-    s"Queue($topEl)"
+class BalancedQueueSpec extends AbstractTestSpec with BalancedQueueFixture {
+  "An empty balanced queue" should "have size 0" in {
+    val empty = BalancedQueue.empty[Int]
+    empty.size shouldBe 0
+    empty.isEmpty shouldBe true
+    empty.nonEmpty shouldBe false
   }
+
+  "Enqueue an element" should "change its size" in {
+    val q = BalancedQueue.empty[Int].enqueue(1).enqueue(2)
+    q.size shouldBe 2
+    q.isEmpty shouldBe false
+  }
+
+  "peek an element" should "leave the queue unchanged" in {
+    queue.peek shouldBe Just(1)
+    emptyQueue.peek shouldBe None
+  }
+
+  "dequeuing an element" should "remove the element from the queue" in {
+    val Good((x, q)) = queue.dequeue
+    x shouldBe 1
+    q.size shouldBe queue.size - 1
+  }
+
+  "dequeue on empty queues" should "return a Bad value" in {
+    val res = emptyQueue.dequeue
+    res.isBad shouldBe true
+  }
+}
+
+trait BalancedQueueFixture {
+  def emptyQueue: Queue[Int] = BalancedQueue.empty[Int]
+  def queue: Queue[Int] = emptyQueue.enqueue(1).enqueue(2).enqueue(3)
 }
