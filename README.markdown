@@ -86,6 +86,20 @@ trait Or[+G, +B] {
 }
 ```
 
+### `Stack`
+
+It represents a LIFO data structure, the last element added to the stack will be the first one to be removed.
+
+```scala
+trait Stack[+A] {
+  def top: Maybe[A]
+  def push(el: A): Stack[A]
+  def pop: (A, Stack[A]) Or EmptyStackException
+  def isEmpty: Boolean
+  def size: Int
+}
+```
+
 ### `Tree`
 
 It represents a binary search tree.

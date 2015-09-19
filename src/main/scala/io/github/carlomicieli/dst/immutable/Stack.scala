@@ -23,77 +23,69 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util._
-
-import scala.util.control.NoStackTrace
+import io.github.carlomicieli.util.{Or, Maybe}
 
 /**
  * It represents a LIFO data structure, the last element
  * added to the stack will be the first one to be removed.
- * @tparam A the `Queue` element type
+ *
+ * This data structure is immutable; if an operation is changing the stack, it will
+ * return a new, modified `Stack`.
+ *
+ * @tparam A the element type
  */
 trait Stack[+A] {
   /**
+   * `O(1)` Creates a new `Stack` with the provided value `el` as its top element.
    *
-   * @param el
-   * @tparam B
-   * @return
+   * @usecase def push(el: A): Stack[A]
+   * @inheritdoc
+   * @param el the top element
+   * @tparam B the element type
+   * @return a new `Stack` with `el` as its top element
    */
   def push[B >: A](el: B): Stack[B]
 
   /**
-   *
-   * @return
+   * `O(1)` If this `Stack` is not empty, it returns a pair with the top element and a new `Stack` without this element;
+   * else it returns an `EmptyStackException` wrapped in a `Bad` value.
+   * @return if not empty, a pair with the top element and a new `Stack`;
+   *         an `EmptyStackException` wrapped in a `Bad` value otherwise
    */
   def pop: (A, Stack[A]) Or EmptyStackException
 
   /**
-   * Check whether this `Stack` is empty
-   * @return
+   * `O(1)` Check whether this `Stack` is empty.
+   * @return `true` if this `Stack` is empty; `false` otherwise
    */
   def isEmpty: Boolean
 
   /**
-   * Check whether this `Stack` is empty
-   * @return
+   * `O(1)` Check whether this `Stack` is not empty.
+   * @return `true` if this `Stack` is not empty; `false` otherwise
    */
   def nonEmpty: Boolean
 
   /**
-   * Return the current size for this `Stack`
-   * @return
+   * `O(n)` Return the current size for this `Stack`.
+   * @return the number of elements
    */
   def size: Int
 
   /**
-   * Return the top element for the `Stack` (if exits), without removing it.
-   * @return
+   * `O(1)` Return the top element for the `Stack` (if exits), without removing it.
+   * @return optionally the top element
    */
   def top: Maybe[A]
 }
 
 object Stack {
+  /**
+   * Creates a new empty `Stack`.
+   * @tparam A the element type
+   * @return a new empty `Stack`
+   */
   def empty[A]: Stack[A] = new ListStack[A](List.empty[A])
-
-  private class ListStack[A](st: List[A]) extends Stack[A] {
-    def push[B >: A](el: B): Stack[B] =
-      new ListStack[B](el +: st)
-
-    def size: Int = st.length
-
-    def top: Maybe[A] = if (nonEmpty) Just(st.head) else None
-
-    def isEmpty: Boolean = st.isEmpty
-
-    def nonEmpty: Boolean = st.nonEmpty
-
-    def pop: Or[(A, Stack[A]), EmptyStackException] =
-      if (isEmpty) Bad(new EmptyStackException with NoStackTrace)
-      else {
-        val head +: tail = st
-        Good((head, new ListStack(tail)))
-      }
-  }
 }
 
 class EmptyStackException extends Exception("Stack is empty")

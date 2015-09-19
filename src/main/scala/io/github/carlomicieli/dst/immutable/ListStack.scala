@@ -23,14 +23,31 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util.{Maybe, Or}
+import io.github.carlomicieli.util.{Good, Bad, Maybe, Or}
+
+import scala.util.control.NoStackTrace
 
 private[this]
-class ListStack[+A] extends Stack[A] {
-  override def push[B >: A](el: B): Stack[B] = ???
-  override def size: Int = ???
-  override def top: Maybe[A] = ???
-  override def isEmpty: Boolean = ???
-  override def nonEmpty: Boolean = ???
-  override def pop: Or[(A, Stack[A]), EmptyStackException] = ???
+class ListStack[+A](st: List[A]) extends Stack[A] {
+  override def push[B >: A](el: B): Stack[B] = new ListStack[B](el +: st)
+
+  override def size: Int = st.length
+
+  override def top: Maybe[A] = st.headOption
+
+  override def isEmpty: Boolean = st.isEmpty
+
+  override def nonEmpty: Boolean = st.nonEmpty
+
+  override def pop: Or[(A, Stack[A]), EmptyStackException] =
+    if (isEmpty) Bad(new EmptyStackException with NoStackTrace)
+    else {
+      val head +: tail = st
+      Good((head, new ListStack(tail)))
+    }
+}
+
+private[this]
+object ListStack {
+  def empty[A]: Stack[A] = new ListStack(List.empty[A])
 }
