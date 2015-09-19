@@ -100,6 +100,18 @@ trait Stack[+A] {
 }
 ```
 
+### `Queue`
+
+```scala
+trait Queue[+A] {
+  def enqueue(el: A): Queue[A]
+  def dequeue: (A, Queue[A]) Or EmptyQueueException
+  def peek: Maybe[A]
+  def isEmpty: Boolean
+  def size: Int
+}
+```
+
 ### `Tree`
 
 It represents a binary search tree.
@@ -132,3 +144,4 @@ References
 * __Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
 * __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala`, 2014, Manning Publications
 * __Larry LIU Xinyu__, `Elementary Algorithms`, 2014
+* __Chris Okasaki__, `Purely Functional Data Structures`, 1999, Cambridge University Press

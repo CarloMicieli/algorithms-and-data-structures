@@ -33,9 +33,12 @@ import io.github.carlomicieli.util._
 trait Queue[+A] {
   /**
    * Insert the new element to the last position of the `Queue`.
-   * @param el
-   * @tparam A1
-   * @return
+   *
+   * @usecase def enqueue(el: A): Queue[A]
+   * @inheritdoc
+   * @param el the element to insert
+   * @tparam A1 the element type
+   * @return a new `Queue` with the element `el` inserted
    */
   def enqueue[A1 >: A](el: A1): Queue[A1]
 
@@ -47,22 +50,31 @@ trait Queue[+A] {
 
   /**
    * Return the element in the front position, if exists.
-   * @return
+   * @return optionally the front element
    */
   def peek: Maybe[A]
 
   /**
    * Check whether this `Queue` is empty.
-   * @return
+   * @return `true` if this `Queue` is empty; `false` otherwise
    */
   def isEmpty: Boolean
 
   /**
+   * Check whether this `Queue` is not empty.
+   * @return `true` if this `Queue` is not empty; `false` otherwise
+   */
+  def nonEmpty: Boolean = !isEmpty
+
+  /**
    * Return the current size of the `Queue`.
-   * @return
+   * @return the number of elements in this `Queue`
    */
   def size: Int
 }
 
+object Queue {
+  def empty[A]: Queue[A] = new ListQueue()
+}
+
 class EmptyQueueException extends Exception
-class FullQueueException  extends Exception
