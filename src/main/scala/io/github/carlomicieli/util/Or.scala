@@ -24,8 +24,8 @@
 package io.github.carlomicieli.util
 
 /**
- * It represents a value either `Good` or `Bad`. All the methods are
- * biased on the `Good` type.
+ * It represents a value that is one of two possible types, with one type being `Good[A]` and the other `Bad[B]`.
+ * All the methods are biased on the `Good` type.
  *
  * The only way to extract the value encapsulated by a `Bad` is through pattern matching.
  *

@@ -46,7 +46,7 @@ Machine used for the benchmark
 
 ### `Maybe`
 
-The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]` either contains a value of type a 
+The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]` either contains a value of type `A` 
 (represented as `Just[A]`), or it is empty (represented as `None`).
 
 ```scala
@@ -66,7 +66,9 @@ trait Maybe[+A] {
 
 ### `Or`
 
-__full disclaimer:__ API borrowed from the type with the same name available in scalactic.
+Represents a value that is one of two possible types, with one type being `Good[A]` and the other `Bad[B]`.
+__full disclaimer:__ API borrowed from the type with the same name available in 
+[Scalactic](http://doc.scalatest.org/2.2.4/org/scalactic/Or.html).
 
 ```scala
 trait Or[+A, +B] {
