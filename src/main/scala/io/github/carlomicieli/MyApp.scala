@@ -24,28 +24,25 @@
 package io.github.carlomicieli
 
 import com.typesafe.scalalogging.LazyLogging
-import io.github.carlomicieli.searching.BinarySearchST
+import io.github.carlomicieli.dst.immutable.Tree
+import io.github.carlomicieli.searching.Words
 
 object MyApp extends LazyLogging {
   def main(args: Array[String]): Unit = {
 
-    val st = BinarySearchST[String, Int](16)
-    st("hello") = 1
-    println(st.toString)
+    val words = Words.fromFile("/data/warpeace.txt")
 
+    val tree = sequence(Tree.empty[String, Int])(words.map(w => (w, 1)))
 
+    println(tree.size)
+    println(tree.lookup("CHAPTER"))
+  }
 
-    /*
-    val st = SequentialSearchST.empty[String, Int]
-
-    val dur = timed { () => {
-        val output = FrequencyCounter("/data/tale.txt", 8)(st)
-        println(output.mkString("\n"))
-      }
+  def sequence(tree: Tree[String, Int])(elements: Seq[(String, Int)]): Tree[String, Int] = {
+    elements match {
+      case (k, v) +: rest => sequence(tree.upsert(k, v)(_ + 1))(rest)
+      case Seq() => tree
     }
-
-    println(dur + " seconds")
-    */
   }
 
   def timed[U](op: () => U): Long = {
