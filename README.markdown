@@ -1,6 +1,7 @@
 # algorithms-and-data-structures
 
 [![Build Status](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures.png?branch=master)](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures)
+[![Coverage Status](https://coveralls.io/repos/CarloMicieli/algorithms-and-data-structures/badge.svg?branch=master&service=github)](https://coveralls.io/github/CarloMicieli/algorithms-and-data-structures?branch=master)
 
 Data structures and algorithms implementations with the Scala programming language.
 
@@ -76,6 +77,29 @@ trait Or[+A, +B] {
   def flatMap[C, D >: B](f: A => Or[C, D]): Or[C, D]
   def orElse[D](v: => D): Or[A, D]
   def toMaybe[A]: Maybe[A]
+}
+```
+
+### `Tree`
+
+It represents a binary search tree.
+A binary tree is:
+* either an empty node;
+* or a node contains 3 parts, a value, two children which are also trees.
+
+```scala
+trait Tree[+K, +V] {
+  def get: (K, V)
+  def depth: Int
+  def max: Maybe[K]
+  def min: Maybe[K]
+  def size: Int
+  def isEmpty: Boolean
+  def lookup(key: K): Maybe[(K, V)]
+  def upsert(key: K, value: V)(f: V => V): Tree[K, V]
+  def insert(key: K, value: V): Tree[K, V]
+  def delete(key: K): (Maybe[V], Tree[K, V])
+  def toList: List[(K, V)]
 }
 ```
 
