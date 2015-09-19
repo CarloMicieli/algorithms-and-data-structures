@@ -36,10 +36,10 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   }
 
   "Adding an element to a BS tree" should "increase its size" in {
-    val t3 = emptyTree.insert(42, "answer")
+    val t3 = emptyTree.insert(42, "answer").insert((1, "one"))
 
     t3.isEmpty shouldBe false
-    t3.size shouldBe 1
+    t3.size shouldBe 2
   }
 
   "It" should "find an element in a BS tree" in {
@@ -89,6 +89,20 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   "it" should "produce string representations for trees" in {
     emptyTree.toString shouldBe "-"
     bsTree.toString shouldBe "((- [21->b] (- [42->a] -)) [66->f] (- [99->c] -))"
+  }
+
+  "it" should "apply a function to every tree value" in {
+    val t1 = emptyTree.map(_ * 2)
+    val t2 = bsTree.map(_ * 2)
+
+    t1 shouldBe Tree.empty[Int, String]
+    t2.toString shouldBe "((- [21->bb] (- [42->aa] -)) [66->ff] (- [99->cc] -))"
+  }
+
+  "it" should "checks whether an element is in the tree" in {
+    emptyTree.contains(42) shouldBe false
+    bsTree.contains(42) shouldBe true
+    bsTree.contains(-1) shouldBe false
   }
 }
 

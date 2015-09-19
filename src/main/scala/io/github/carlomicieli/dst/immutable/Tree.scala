@@ -104,6 +104,18 @@ trait Tree[+K, +V] {
   def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: V1 => V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
+   * Checks whether this `Tree` contains the provided key.
+   *
+   * @usecase def contains(key: K): Boolean
+   * @inheritdoc
+   * @param key the key to search
+   * @param ord the key ordering
+   * @tparam K1 the key type
+   * @return `true` if the key is in `Tree`; `false` otherwise
+   */
+  def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean
+
+  /**
     * Inserts the `key` and the corresponding `value` to the `Tree`. If the `key` already exists
    * this operation will replace the previous value.
    *
@@ -119,6 +131,21 @@ trait Tree[+K, +V] {
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
+   * Inserts this key and value pair to the `Tree`. If the `key` already exists
+   * this operation will replace the previous value.
+   *
+   * @usecase def insert(keyValuePair: (K, V)): Tree[K, V]
+   * @inheritdoc
+   * @param keyValuePair the key and value pair
+   * @param ord the key ordering
+   * @tparam K1 the key type
+   * @tparam V1 the value type
+   * @return a new `Tree`
+   */
+  def insert[K1 >: K, V1 >: V](keyValuePair: (K1, V1))(implicit ord: Ordering[K1]): Tree[K1, V1] =
+    insert(keyValuePair._1, keyValuePair._2)
+
+  /**
    * Delete the node with the provided key. If this `Tree` doesn't contain the key, the
    * `Tree` is returned unchanged.
    *
@@ -130,6 +157,14 @@ trait Tree[+K, +V] {
    * @return a pair of the removed element and the modified `Tree`
    */
   def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V])
+
+  /**
+   * Apply the function `f` to the values in this `Tree`.
+   * @param f the function to be applied
+   * @tparam V1 the new value type
+   * @return a new tree
+   */
+  def map[V1](f: V => V1): Tree[K, V1]
 
   /**
    * Convert this `Tree` to a `List` of pair.
@@ -165,7 +200,7 @@ object Tree {
       else {
         val item = pairs.head
         val rest = pairs.tail
-        go(rest: _*).insert(item._1, item._2)
+        go(rest: _*).insert(item)
       }
     go(elements: _*)
   }
@@ -180,13 +215,6 @@ object Tree {
    * @return a tree
    */
   def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = {
-    @annotation.tailrec
-    def go(l: List[(K, V)], tree: Tree[K, V]): Tree[K, V] =
-      l match {
-        case Nil => tree
-        case (k, v) +: tail =>
-          go(tail, tree.insert(k, v))
-      }
-    go(xs, Tree.empty[K, V])
+    xs.foldLeft(Tree.empty[K, V])((tree, x) => tree.insert(x))
   }
 }

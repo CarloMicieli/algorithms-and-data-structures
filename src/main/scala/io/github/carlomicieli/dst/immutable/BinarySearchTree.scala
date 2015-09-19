@@ -117,6 +117,27 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
     }
   }
 
+  def map[V1](f: V => V1): Tree[K, V1] = {
+    this match {
+      case EmptyTree => EmptyTree
+      case Node(k, v, left, right) =>
+        Node(k, f(v), left.map(f), right.map(f))
+    }
+  }
+
+  def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean = {
+    this match {
+      case EmptyTree => false
+      case Node(k, _, _, _) if k == key => true
+      case Node(k, _, left, right) =>
+        import Ordered._
+        if (key < k)
+          left.contains(key)
+        else
+          right.contains(key)
+    }
+  }
+
   override def toString: String = {
     this match {
       case EmptyTree => "-"

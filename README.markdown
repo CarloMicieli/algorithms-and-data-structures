@@ -95,14 +95,15 @@ trait Tree[+K, +V] {
   def min: Maybe[K]
   def size: Int
   def isEmpty: Boolean
+  def contains(key: K): Boolean
   def lookup(key: K): Maybe[(K, V)]
   def upsert(key: K, value: V)(f: V => V): Tree[K, V]
   def insert(key: K, value: V): Tree[K, V]
   def delete(key: K): (Maybe[V], Tree[K, V])
+  def map[V1](f: V => V1): Tree[K, V1] 
   def toList: List[(K, V)]
 }
 ```
-
 
 References
 ----------
@@ -110,3 +111,4 @@ References
 * __Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
 * __Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
 * __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala`, 2014, Manning Publications
+* __Larry LIU Xinyu__, `Elementary Algorithms`, 2014
