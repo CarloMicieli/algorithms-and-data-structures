@@ -104,6 +104,17 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
     bsTree.contains(42) shouldBe true
     bsTree.contains(-1) shouldBe false
   }
+
+  "it" should "fold the tree applying a function" in {
+    Tree((1, 1), (2, 2), (3, 3)).fold(_ + _) shouldBe 1 + 2 + 3
+    Tree((1, 1)).fold(_ + _) shouldBe 1
+  }
+
+  "it" should "throw an exception folding an empty tree" in {
+    val res = intercept[NoSuchElementException] {
+      emptyTree.fold(_ + _)
+    }
+  }
 }
 
 object TreesFixture {

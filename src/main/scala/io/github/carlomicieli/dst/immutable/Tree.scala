@@ -167,6 +167,17 @@ trait Tree[+K, +V] {
   def map[V1](f: V => V1): Tree[K, V1]
 
   /**
+   * It folds the current tree values using the provided function.
+   *
+   * @usecase def fold(f: (V, V) => V): V
+   * @inheritdoc
+   * @param f
+   * @tparam V1
+   * @return
+   */
+  def fold[V1 >: V](f: (V1, V1) => V1): V1
+
+  /**
    * Convert this `Tree` to a `List` of pair.
    * @return the list with the pair `(key, value)` in this `Tree`
    */

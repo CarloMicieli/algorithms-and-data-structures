@@ -125,6 +125,16 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
     }
   }
 
+  def fold[V1 >: V](f: (V1, V1) => V1): V1 = {
+    this match {
+      case EmptyTree => throw new NoSuchElementException("fold: tree is empty")
+      case Node(_, v, EmptyTree, EmptyTree) => v
+      case Node(_, v, left, EmptyTree) => f(left.fold(f), v)
+      case Node(_, v, EmptyTree, right) => f(v, right.fold(f))
+      case Node(_, v, left, right) => f(left.fold(f), right.fold(f))
+    }
+  }
+
   def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean = {
     this match {
       case EmptyTree => false
