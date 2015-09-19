@@ -36,46 +36,63 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   }
 
   "Adding an element to a BS tree" should "increase its size" in {
-    val t3 = t1.insert(42, "answer")
+    val t3 = emptyTree.insert(42, "answer")
 
     t3.isEmpty shouldBe false
     t3.size shouldBe 1
   }
 
   "It" should "find an element in a BS tree" in {
-    t2.lookup(99) shouldBe Just((99, "c"))
-    t2.lookup(-1) shouldBe None
+    bsTree.lookup(99) shouldBe Just((99, "c"))
+    bsTree.lookup(-1) shouldBe None
   }
 
   "It" should "calculate a tree depth" in {
-    t1.depth shouldBe 0
-    t2.depth shouldBe 3
+    emptyTree.depth shouldBe 0
+    bsTree.depth shouldBe 3
   }
 
   "It" should "find the min element in the tree" in {
-    t1.min shouldBe None
-    t2.min shouldBe Just(21)
+    emptyTree.min shouldBe None
+    bsTree.min shouldBe Just(21)
   }
 
   "It" should "find the max element in the tree" in {
-    t1.max shouldBe None
-    t2.max shouldBe Just(99)
+    emptyTree.max shouldBe None
+    bsTree.max shouldBe Just(99)
   }
 
   "It" should "convert a tree to a list" in {
-    t2.toList shouldBe List((21, "b"), (42, "a"), (66, "f"), (99, "c"))
+    bsTree.toList shouldBe List((21, "b"), (42, "a"), (66, "f"), (99, "c"))
   }
 
   "It" should "update a value for a key already in the tree" in {
-    val t3 = t2.upsert(45, "d")(_ * 2)
+    val t3 = bsTree.upsert(45, "d")(_ * 2)
     t3.lookup(45) shouldBe Just((45, "d"))
 
-    val t4 = t2.upsert(21, "b")(_ * 2)
+    val t4 = bsTree.upsert(21, "b")(_ * 2)
     t4.lookup(21) shouldBe Just((21, "bb"))
+  }
+  
+  "deleting a element from an empty tree" should "produce an empty result" in {
+    val (removed, newTree) = emptyTree.delete(4)
+    removed shouldBe None
+    newTree shouldBe Tree.empty[Int, String]
+  }
+
+  "delete an element from a tree" should "return the remove value" in {
+    val (removed, newTree) = bsTree.delete(42)
+    removed shouldBe Just("a")
+    newTree.toString shouldBe "((- [21->b] -) [66->f] (- [99->c] -))"
+  }
+
+  "it" should "produce string representations for trees" in {
+    emptyTree.toString shouldBe "-"
+    bsTree.toString shouldBe "((- [21->b] (- [42->a] -)) [66->f] (- [99->c] -))"
   }
 }
 
 object TreesFixture {
-  def t1: Tree[Int, String] = Tree.empty[Int, String]
-  def t2: Tree[Int, String] = Tree((42, "a"), (21, "b"), (99, "c"), (66, "f"))
+  def emptyTree: Tree[Int, String] = Tree.empty[Int, String]
+  def bsTree: Tree[Int, String] = Tree((42, "a"), (21, "b"), (99, "c"), (66, "f"))
 }

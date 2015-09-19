@@ -77,7 +77,25 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
     case Node(k, v, left, right) => left.toList ++ List((k, v)) ++ right.toList
   }
 
-  def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V]) = ???
+  def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V]) = {
+    this match {
+      case EmptyTree => (None, EmptyTree)
+      case node @ Node(k, _, left, right) if k != key =>
+        import Ordered._
+        if (key < k) {
+          val (rem, tree2) = left.delete(key)
+          (rem, node.copy(left = tree2))
+        } else {
+          val (rem, tree2) = right.delete(key)
+          (rem, node.copy(right = tree2))
+        }
+      case Node(k, v, left, EmptyTree) if k == key => (Just(v), left)
+      case Node(k, v, EmptyTree, right) if k == key => (Just(v), right)
+      case node @ Node(k, v, left, right) =>
+        val (rem, tree2) = right.delete(key)
+        (rem, node.copy(right = tree2))
+    }
+  }
 
   def isEmpty: Boolean
 
@@ -96,6 +114,14 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
           node.copy(left = left.upsert(key, value)(f))
         else
           node.copy(right = right.upsert(key, value)(f))
+    }
+  }
+
+  override def toString: String = {
+    this match {
+      case EmptyTree => "-"
+      case Node(k, v, l, r) =>
+        s"($l [$k->$v] $r)"
     }
   }
 }
