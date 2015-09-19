@@ -71,13 +71,17 @@ __full disclaimer:__ API borrowed from the type with the same name available in
 [Scalactic](http://doc.scalatest.org/2.2.4/org/scalactic/Or.html).
 
 ```scala
-trait Or[+A, +B] {
+trait Or[+G, +B] {
   def isBad: Boolean
   def isGood: Boolean
-  def get: A
-  def map[C](f: A => C): Or[C, B]
-  def flatMap[C, D >: B](f: A => Or[C, D]): Or[C, D]
+  def get: G
+  def getOrElse(default: => G): G
+  def exists(p: G => Boolean): Boolean
+  def foreach(f: G => Unit): Unit
+  def map[G1](f: G => G1): Or[G1, B]
+  def flatMap[G1](f: G => Or[G1, B]): Or[G1, B]
   def orElse[D](v: => D): Or[A, D]
+  def zip[G1, B1 >: B](that: Or[G1, B1]): Or[(G, G1), List[B1]]
   def toMaybe[A]: Maybe[A]
 }
 ```
