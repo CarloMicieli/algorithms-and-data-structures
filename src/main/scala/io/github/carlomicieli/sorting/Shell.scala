@@ -27,6 +27,9 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
+/**
+ * Implements the `shell sort` sorting algorithm.
+ */
 object Shell extends Sorting with LazyLogging {
   def name: String = "Shell sort"
 

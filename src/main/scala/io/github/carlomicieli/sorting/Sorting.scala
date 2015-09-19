@@ -32,8 +32,20 @@ trait Sorting {
     sort[A](array, 0, array.length)
   }
 
+  /**
+   * It sorts in place a sub range in an `Array`.
+   *
+   * @usecase def sort[A](xs: Array[A], start: Int, end: Int): Unit
+   * @inheritdoc
+   * @param array the `Array`
+   * @param start the start index
+   * @param end the end index
+   * @param ord the element ordering
+   * @tparam A the element type
+   */
   def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit
 
+  @deprecated("not used anymore", "v0.1-SNAPSHOT")
   def isSorted[A](array: Array[A])(implicit ord: Ordering[A]): Boolean = {
     array match {
       case Array() | Array(_) => true

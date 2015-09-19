@@ -91,7 +91,6 @@ final class MaxPQ[A] private (storage: Array[A], size: Int) {
   }
 }
 
-
 object MaxPQ {
   implicit class IntOps(val i: Int) extends AnyVal {
     def downTo(n: Int) = n.to(i).reverse

@@ -59,7 +59,7 @@ object SortRunner extends SampleData with LazyLogging {
     timed {
       logger.debug(s"*Before* ${sorting.printArray(arr)}")
       sorting.sort(arr)
-      logger.debug(s"Array is now sorted? ${sorting.isSorted(arr)}")
+      logger.debug(s"Array is now sorted? ${arr.isSorted}")
       logger.debug(s"*After*  ${sorting.printArray(arr)}")
     }
   }

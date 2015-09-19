@@ -25,6 +25,9 @@ package io.github.carlomicieli.sorting
 
 import scala.reflect.ClassTag
 
+/**
+ * Implements the `selection sort` sorting algorithm.
+ */
 object Selection extends Sorting {
   def name: String = "Selection Sort"
 

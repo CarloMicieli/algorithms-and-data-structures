@@ -27,6 +27,9 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
+/**
+ * Implements the `quick sort` sorting algorithm.
+ */
 object Quick extends Sorting with LazyLogging {
   def name: String = "Quick Sort"
 

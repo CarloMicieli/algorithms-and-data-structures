@@ -21,23 +21,20 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.sorting
+package io.github.carlomicieli
 
-import io.github.carlomicieli.dst.mutable.MaxPQ
+package object sorting {
+  implicit class ArrayOps[A](array: Array[A])(implicit ord: Ordering[A]) {
+    def isSorted: Boolean = {
+      def unsorted(p: (A, A)): Boolean = {
+        import Ordered._
+        val (first, second) = p
+        first > second
+      }
 
-import scala.reflect.ClassTag
-
-/**
- * Implements the heapsort sorting algorithm.
- */
-object Heap extends Sorting {
-  def name: String = "Heap Sort"
-
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
-    val heap = MaxPQ(array)
-    for (i <- array.length - 1 to 1 by -1) {
-      swap(array, 0, i)
-      heap.removeMax()
+      !array.zip(array.tail).exists(unsorted)
     }
+
+    def asString: String = array.mkString
   }
 }

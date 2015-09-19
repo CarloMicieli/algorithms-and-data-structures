@@ -27,6 +27,9 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
+/**
+ * Implements the `merge sort` sorting algorithm.
+ */
 object Merge extends Sorting with LazyLogging {
   def name: String = "Merge Sort"
 
