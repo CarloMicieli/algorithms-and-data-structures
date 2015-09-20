@@ -3,7 +3,7 @@ package io.github.carlomicieli.dst.immutable
 import io.github.carlomicieli.test.AbstractTestSpec
 import io.github.carlomicieli.util.{Just, None}
 
-class ListSpec extends AbstractTestSpec with TestLists {
+class ListSpec extends AbstractTestSpec with ImmutableListsFixture {
   "An empty list" should "have length equals to 0" in {
     val empty = List.empty[Int]
     empty.length shouldBe 0
@@ -93,10 +93,29 @@ class ListSpec extends AbstractTestSpec with TestLists {
     l1 shouldBe List()
     l2 shouldBe List(6, 7, 8, 9, 10)
   }
+
+  "dropWhile" should "remove the prefix until the predicate match" in {
+    val l = randomList dropWhile { _ != 2 }
+    l shouldBe List(2, 9, 15, 99, 52)
+
+    emptyList.dropWhile(_ != 2) shouldBe Nil
+  }
+
+  "takeWhile" should "remove the prefix until the predicate match" in {
+    val l = randomList takeWhile { _ != 2 }
+    l shouldBe List(56, 34)
+
+    emptyList takeWhile { _ != 2 } shouldBe Nil
+  }
+
+  "sort" should "produce a sorted list" in {
+    randomList.sort shouldBe List(2, 9, 15, 34, 52, 56, 99)
+  }
 }
 
-trait TestLists {
+trait ImmutableListsFixture {
   def emptyList: List[Int] = List()
   def numbersList: List[Int] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+  def randomList: List[Int] = List(56, 34, 2, 9, 15, 99, 52)
   def list[A](items: A*): List[A] = List(items: _*)
 }

@@ -86,6 +86,39 @@ trait Or[+G, +B] {
 }
 ```
 
+### `List`
+
+A list is either empty, or a constructed list with a `head` and a `tail`.
+
+```scala
+trait List[+A] {
+  def head: A                                   // O(1)
+  def headOption: Maybe[A]                      // O(1)
+  def tail: List[A]                             // O(1)
+  def isEmpty: Boolean                          // O(1)
+  def nonEmpty: Boolean                         // O(1)
+  def +:(x: A): List[A]                         // O(1)
+  def foreach(f: A => Unit): Unit               // O(n)
+  def filter(p: A => Boolean): List[A]          // O(n)
+  def withFilter(p: A => Boolean): WithFilter   // O(n)
+  def filterNot(p: A => Boolean): List[A]       // O(n)
+  def length: Int                               // O(n)
+  def take(m: Int): List[A]                     // O(m)
+  def takeWhile(p: (A) ⇒ Boolean): List[A]      // O(n)
+  def drop(m: Int): List[A]                     // O(m)
+  def dropWhile(p: A => Boolean): List[A]       // O(n)
+  def reverse: List[A]                          // O(n)
+  def map[B](f: A => B): List[B]                // O(n)
+  def flatMap[B](f: A => List[B]): List[B]      // O(n)
+  def ++(that: List[A]): List[A]                // O(n)
+  def intersperse(x: A): List[A]                // O(n)
+  def foldRight[B](z: B)(f: (A, B) => B): B     // O(n)
+  def foldRight[B](continue: (A, => B) => B, z: B)(f: (A, B) => B): B
+  def foldLeft[B](z: B)(f: (B, A) => B): B      // O(n)
+  def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
+}
+```
+
 ### `Stack`
 
 It represents a LIFO data structure, the last element added to the stack will be the first one to be removed.

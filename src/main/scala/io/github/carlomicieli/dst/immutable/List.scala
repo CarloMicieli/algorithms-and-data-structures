@@ -137,6 +137,18 @@ sealed trait List[+A] {
   }
 
   /**
+   * Takes longest prefix of this list that satisfy a predicate.
+   * @param p the predicate to match
+   * @return the longest prefix that satisfy `p`
+   */
+  def takeWhile(p: (A) ⇒ Boolean): List[A] = {
+    this match {
+      case x +: xs if p(x) => x +: xs.takeWhile(p)
+      case _               => Nil
+    }
+  }
+
+  /**
    * `O(m)` It returns the suffix of this list of length `m`, or the empty list if `m > length`.
    * @param m the number of elements to drop
    * @return the list suffix of length `m`
@@ -145,6 +157,20 @@ sealed trait List[+A] {
     case Nil => Nil
     case xs if m == 0 => xs
     case _ +: xs => xs.drop(m - 1)
+  }
+
+  /**
+   * Drops longest prefix of this list that satisfy a predicate.
+   *
+   * @param p the predicate to match
+   * @return the suffix, if any
+   */
+  def dropWhile(p: A => Boolean): List[A] = {
+    this match {
+      case Nil              => Nil
+      case x +: xs if !p(x) => this
+      case _ +: xs          => xs.dropWhile(p)
+    }
   }
 
   /**
@@ -270,6 +296,28 @@ sealed trait List[+A] {
    */
   def flatten[B](implicit ev: A => List[B]): List[B] =
     foldRight(List.empty[B])((xss, xs) => xss ++ xs)
+
+  /**
+   * `O(n^2)` Sorts the list, using `insertion sort`.
+   *
+   * @usecase def sort: List[A]
+   * @inheritdoc
+   * @param ord the element ordering
+   * @tparam A1 the element type
+   * @return a sorted `List`
+   */
+  def sort[A1 >: A](implicit ord: Ordering[A1]): List[A1] = {
+    def insert(xs: List[A1], x: A1): List[A1] = {
+      import Ordered._
+      xs match {
+        case Nil             => List(x)
+        case y +: _ if x < y => x +: xs
+        case y +: ys         => y +: insert(ys, x)
+      }
+    }
+
+    this.foldLeft(List.empty[A1])(insert)
+  }
 
   override def toString: String = mkString(", ", "[", "]")
 }
