@@ -28,11 +28,14 @@ import io.github.carlomicieli.util.{Good, Bad, Maybe, Or}
 private[this]
 class BalancedQueue[+A](front: SizedList[A], rear: SizedList[A]) extends Queue[A] {
 
+  // O(1) amortized; [O(n) for some operation]
   override def enqueue[A1 >: A](x: A1): Queue[A1] =
     balance(front, x +: rear)
 
+  // O(1)
   override def peek: Maybe[A] = front.headOption
 
+  // O(1) amortized; [O(n) for some operation]
   override def dequeue: Or[(A, Queue[A]), EmptyQueueException] = {
     if (isEmpty)
       Bad(new EmptyQueueException)
@@ -43,8 +46,10 @@ class BalancedQueue[+A](front: SizedList[A], rear: SizedList[A]) extends Queue[A
     }
   }
 
+  // O(1)
   override def size: Int = front.size + rear.size
 
+  // O(1)
   override def isEmpty: Boolean = front.isEmpty
 
   private def balance[A1 >: A](f: SizedList[A1], r: SizedList[A1]): BalancedQueue[A1] = {

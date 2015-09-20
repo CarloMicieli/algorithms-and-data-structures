@@ -28,6 +28,7 @@ import io.github.carlomicieli.util._
 /**
  * It represents a FIFO data structure, the first element
  * added to the queue will be the first one to be removed.
+ *
  * @tparam A the `Queue` element type
  */
 trait Queue[+A] {
