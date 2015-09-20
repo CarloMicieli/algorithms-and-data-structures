@@ -92,8 +92,9 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
       case Node(k, v, left, EmptyTree) if k == key => (Just(v), left)
       case Node(k, v, EmptyTree, right) if k == key => (Just(v), right)
       case node @ Node(k, v, left, right) =>
-        val (rem, tree2) = right.delete(key)
-        (rem, node.copy(right = tree2))
+        val minKey = right.min.get
+        val (minVal, r) = right.delete[K1](minKey)(ord)
+        (Just(v), Node(minKey, minVal.get, left, r))
     }
   }
 
@@ -154,6 +155,30 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
       case Node(k, v, l, r) =>
         s"($l [$k->$v] $r)"
     }
+  }
+}
+
+object BinarySearchTree {
+
+  /**
+   * It creates a new empty, binary search tree.
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return an empty `Tree`
+   */
+  def empty[K, V]: Tree[K, V] = EmptyTree
+
+  /**
+   * It creates a binary search tree from the list elements.
+   *
+   * @param xs the list of elements to insert
+   * @param ord the ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return a `Tree`
+   */
+  def fromList[K, V](xs: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = {
+    xs.foldLeft(BinarySearchTree.empty[K, V])((tree, x) => tree.insert(x))
   }
 }
 

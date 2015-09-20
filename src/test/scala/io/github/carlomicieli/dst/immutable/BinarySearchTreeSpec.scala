@@ -26,13 +26,22 @@ package io.github.carlomicieli.dst.immutable
 import io.github.carlomicieli.test.AbstractTestSpec
 import io.github.carlomicieli.util.{None, Just}
 
-class BinarySearchTreeSpec extends AbstractTestSpec {
-  import TreesFixture._
+class BinarySearchTreeSpec extends AbstractTestSpec with BinarySearchTreesFixture {
 
   "An empty BS tree" should "have size 0" in {
-    val emptyTree = Tree.empty[Int, String]
+    val emptyTree = BinarySearchTree.empty[Int, String]
     emptyTree.size shouldBe 0
     emptyTree.isEmpty shouldBe true
+  }
+
+  "it" should "create a BS tree from a list" in {
+    val xs = List((42, "a"), (21, "b"), (99, "c"), (66, "f"))
+
+    val tree = BinarySearchTree.fromList(xs)
+
+    tree.get shouldBe xs.head
+    tree.size shouldBe xs.length
+    tree.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
   }
 
   "Adding an element to a BS tree" should "increase its size" in {
@@ -81,6 +90,12 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   }
 
   "delete an element from a tree" should "return the remove value" in {
+    val (removed, newTree) = bsTree.delete(21)
+    removed shouldBe Just("b")
+    newTree.toString shouldBe "(- [42->a] ((- [66->f] -) [99->c] -))"
+  }
+
+  "delete" should "remove also the tree root" in {
     val (removed, newTree) = bsTree.delete(42)
     removed shouldBe Just("a")
     newTree.toString shouldBe "((- [21->b] -) [66->f] (- [99->c] -))"
@@ -88,7 +103,7 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
 
   "it" should "produce string representations for trees" in {
     emptyTree.toString shouldBe "-"
-    bsTree.toString shouldBe "((- [21->b] (- [42->a] -)) [66->f] (- [99->c] -))"
+    bsTree.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
   }
 
   "it" should "apply a function to every tree value" in {
@@ -96,7 +111,7 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
     val t2 = bsTree.map(_ * 2)
 
     t1 shouldBe Tree.empty[Int, String]
-    t2.toString shouldBe "((- [21->bb] (- [42->aa] -)) [66->ff] (- [99->cc] -))"
+    t2.toString shouldBe "((- [21->bb] -) [42->aa] ((- [66->ff] -) [99->cc] -))"
   }
 
   "it" should "checks whether an element is in the tree" in {
@@ -117,7 +132,8 @@ class BinarySearchTreeSpec extends AbstractTestSpec {
   }
 }
 
-object TreesFixture {
-  def emptyTree: Tree[Int, String] = Tree.empty[Int, String]
-  def bsTree: Tree[Int, String] = Tree((42, "a"), (21, "b"), (99, "c"), (66, "f"))
+trait BinarySearchTreesFixture {
+  import BinarySearchTree._
+  def emptyTree: Tree[Int, String] = empty[Int, String]
+  def bsTree: Tree[Int, String] = fromList(List((42, "a"), (21, "b"), (99, "c"), (66, "f")))
 }
