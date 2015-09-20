@@ -132,7 +132,7 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
       case Node(_, v, EmptyTree, EmptyTree) => v
       case Node(_, v, left, EmptyTree) => f(left.fold(f), v)
       case Node(_, v, EmptyTree, right) => f(v, right.fold(f))
-      case Node(_, v, left, right) => f(left.fold(f), right.fold(f))
+      case Node(_, v, left, right) => f(v, f(left.fold(f), right.fold(f)))
     }
   }
 

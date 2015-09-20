@@ -121,7 +121,7 @@ class BinarySearchTreeSpec extends AbstractTestSpec with BinarySearchTreesFixtur
   }
 
   "it" should "fold the tree applying a function" in {
-    Tree((1, 1), (2, 2), (3, 3)).fold(_ + _) shouldBe 1 + 2 + 3
+    Tree((1, 1), (2, 2), (3, 3), (4, 4)).fold(_ + _) shouldBe 1 + 2 + 3 + 4
     Tree((1, 1)).fold(_ + _) shouldBe 1
   }
 
