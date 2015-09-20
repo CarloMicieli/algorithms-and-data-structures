@@ -28,8 +28,8 @@ import scala.reflect.ClassTag
 trait Sorting {
   def name: String
 
-  def sort[A: ClassTag](array: Array[A])(implicit ord: Ordering[A]): Unit = {
-    sort[A](array, 0, array.length)
+  def sort[A: ClassTag](as: Array[A])(implicit ord: Ordering[A]): Unit = {
+    sort[A](as, 0, as.length)
   }
 
   /**
@@ -37,31 +37,13 @@ trait Sorting {
    *
    * @usecase def sort[A](xs: Array[A], start: Int, end: Int): Unit
    * @inheritdoc
-   * @param array the `Array`
+   * @param as the `Array`
    * @param start the start index
    * @param end the end index
    * @param ord the element ordering
    * @tparam A the element type
    */
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit
-
-  @deprecated("not used anymore", "v0.1-SNAPSHOT")
-  def isSorted[A](array: Array[A])(implicit ord: Ordering[A]): Boolean = {
-    array match {
-      case Array() | Array(_) => true
-      case _ => {
-        @annotation.tailrec
-        def loop(i: Int): Boolean = {
-          if (i == array.length) true
-          else {
-            if (ord.gt(array(i - 1), array(i))) false
-            else loop(i + 1)
-          }
-        }
-        loop(1)
-      }
-    }
-  }
+  def sort[A: ClassTag](as: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit
 
   def printArray[A](array: Array[A]): String = {
     array.mkString("[", ", ", "]")

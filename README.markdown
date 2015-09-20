@@ -67,6 +67,7 @@ trait Maybe[+A] {
 ### `Or`
 
 Represents a value that is one of two possible types, with one type being `Good[A]` and the other `Bad[B]`.
+
 __full disclaimer:__ API borrowed from the type with the same name available in 
 [Scalactic](http://doc.scalatest.org/2.2.4/org/scalactic/Or.html).
 
