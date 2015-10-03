@@ -121,7 +121,7 @@ sealed trait Maybe[+A] {
   /**
    * Returns this `Maybe` if it is nonempty and applying the predicate `p` to
    * this `Maybe`'s value returns `true`.
-   * @param p
+   * @param p the predicate to apply
    * @return
    */
   def filter(p: A => Boolean): Maybe[A] =

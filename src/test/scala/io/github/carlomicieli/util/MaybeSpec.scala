@@ -23,90 +23,160 @@
  */
 package io.github.carlomicieli.util
 
-import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.test.AbstractSpec
 import io.github.carlomicieli.dst.immutable.List
 
-class MaybeSpec extends AbstractTestSpec {
-  "A Maybe value" should "return whether is defined or not" in {
-    val none = Maybe.empty[Int]
-    val just = Maybe(42)
-    none.isDefined shouldBe false
-    just.isDefined shouldBe true
-  }
+class MaybeSpec extends AbstractSpec with MaybeFixture {
 
-  "It" should "extract the contained value from Just[_]" in {
-    val just = Maybe(42)
-    just.get shouldBe 42
-  }
+  describe("A Maybe") {
+    describe("Maybe") {
+      it("should create new Good values") {
+        val just = Maybe(42)
+        just shouldBe Just(42)
+      }
+    }
 
-  "It" should "throw an exception extracting a value from a None" in {
-    val none = Maybe.empty[Int]
-    val r = intercept[NoSuchElementException] {
-      none.get
+    describe("isEmpty") {
+      it("should return false for Just values") {
+        just42.isEmpty shouldBe false
+      }
+
+      it("should return true for None values") {
+        none.isEmpty shouldBe true
+      }
+    }
+
+    describe("isDefined") {
+      it("should return true for Just values") {
+        just42.isDefined shouldBe true
+      }
+
+      it("should return false for None values") {
+        none.isDefined shouldBe false
+      }
+    }
+
+    describe("get") {
+      it("should extract the contained value in Just values") {
+        just42.get shouldBe 42
+      }
+
+      it("should throw an exception for None values") {
+        the [NoSuchElementException] thrownBy {
+          none.get
+        } should have message "Maybe.get: a value doesn't exist"
+      }
+    }
+
+    describe("getOrElse") {
+      it("should provide the contained value in Good values") {
+        just42.getOrElse(-1) shouldBe 42
+      }
+
+      it("should provided the default for None values") {
+        none.getOrElse(-1) shouldBe -1
+      }
+    }
+
+    describe("orElse") {
+      it("should return a new value if it's a None") {
+        none.orElse(just42) shouldBe just42
+      }
+
+      it("should return the same value, if it's a Good") {
+        just42.orElse(Just(99)) shouldBe just42
+        just42 should be theSameInstanceAs just42
+      }
+    }
+
+    describe("foreach") {
+      it("should apply a function f to Just values for its side effects") {
+        var res = 0
+        just42.foreach(x => res = x + 1)
+        res shouldBe 43
+      }
+
+      it("should do nothing for None values") {
+        var res = 0
+        none.foreach(x => res = res + 1)
+        res shouldBe 0
+      }
+    }
+
+    describe("map") {
+      it("should apply the function to Just values") {
+        just42.map(_ * 2) shouldBe Just(84)
+      }
+
+      it("should simply produce a None, if it's a None") {
+        none.map(_ * 2) shouldBe None
+      }
+    }
+
+    describe("flatMap") {
+      it("should apply the function to Just values") {
+        just42.flatMap(x => Maybe(x * 2)) shouldBe Just(84)
+      }
+
+      it("should do nothing, if it's a None value") {
+        none.flatMap(x => Maybe(x * 2)) shouldBe None
+      }
+    }
+
+    describe("toString") {
+      it("should produce a string representation for Just values") {
+        just42.toString shouldBe "Just(42)"
+      }
+
+      it("should produce a string representation for None values") {
+        none.toString shouldBe "None"
+      }
+    }
+
+    describe("toGood") {
+      it("should convert a Just to a Good value") {
+        just42.toGood("it's bad") shouldBe Good(42)
+      }
+
+      it("should convert a None to a Bad value, using the provided value") {
+        none.toGood("it's bad") shouldBe Bad("it's bad")
+      }
+    }
+
+    describe("toList") {
+      it("should convert a Just value to the singleton list") {
+        just42.toList shouldBe List(42)
+      }
+
+      it("should convert a None value to the empty list") {
+        none.toList shouldBe List()
+      }
+    }
+
+    describe("catMaybes") {
+      it("should extract only the Just values from a list") {
+        val list = List(Just(1), None, None, Just(4), Just(5), None)
+        Maybe.catMaybes(list) shouldBe List(1, 4, 5)
+      }
+    }
+
+    describe("filter") {
+      it("should return this value, if it's Good and match the predicate") {
+        just42.filter(_ % 2 == 0) should be theSameInstanceAs just42
+      }
+
+      it("should return None, if it's Good and doesn't match the predicate") {
+        just42.filter(_ % 2 != 0) shouldBe none
+      }
+
+      it("should return None, if it's None") {
+        none.filter(_ % 2 != 0) shouldBe none
+      }
     }
   }
+}
 
-  "getOrElse" should "provide the contained value, or a default for None" in {
-    val none = Maybe.empty[Int]
-    val just = Maybe(42)
-
-    just.getOrElse(-1) shouldBe 42
-    none.getOrElse(-1) shouldBe -1
-  }
-
-  "orElse" should "return a new value if it a None" in {
-    val none = Maybe(null)
-    val just42 = Maybe(42)
-
-    none.orElse(just42) shouldBe just42
-    just42.orElse(just42) shouldBe just42
-  }
-
-  "foreach" should "apply a function f to the value for its side effects" in {
-    val none = Maybe(null)
-    val just42 = Maybe(42)
-    var res = 0
-    none.foreach(x => res = res + 1)
-    res shouldBe 0
-
-    just42.foreach(x => res = x + 1)
-    res shouldBe 43
-  }
-
-  "map" should "apply the function to Just values" in {
-    val none = Maybe.empty[Int]
-    val just42 = Maybe(42)
-
-    just42.map(_ * 2) shouldBe Just(84)
-    none.map(_ * 2) shouldBe None
-  }
-
-  "flatMap" should "apply the function to Just values" in {
-    val none = Maybe.empty[Int]
-    val just42 = Maybe(42)
-
-    just42.flatMap(x => Maybe(x * 2)) shouldBe Just(84)
-    none.flatMap(x => Maybe(x * 2)) shouldBe None
-  }
-
-  "it" should "produce a string representation for Maybe values" in {
-    val none = Maybe.empty[Int]
-    val just42 = Maybe(42)
-
-    none.toString shouldBe "None"
-    just42.toString shouldBe "Just(42)"
-  }
-
-  "it" should "convert a Maybe value to a list" in {
-    val none = Maybe.empty[Int]
-    val just42 = Maybe(42)
-
-    none.toList shouldBe List()
-    just42.toList shouldBe List(42)
-  }
-
-  "catMaybes" should "extract the Just values from a list" in {
-    val list = List(Just(1), None, None, Just(4), Just(5), None)
-    Maybe.catMaybes(list) shouldBe List(1, 4, 5)
-  }
+trait MaybeFixture {
+  val none = Maybe.empty[Int]
+  val just42 = Maybe(42)
 }

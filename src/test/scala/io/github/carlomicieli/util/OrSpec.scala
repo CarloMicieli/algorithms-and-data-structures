@@ -24,93 +24,157 @@
 package io.github.carlomicieli.util
 
 import io.github.carlomicieli.dst.immutable.List
-import org.scalatest.{Matchers, FlatSpec}
+import io.github.carlomicieli.test.AbstractSpec
 
-class OrSpec extends FlatSpec with Matchers with GoodOrBadValues {
-  "A Good value" should "return the value it contains" in {
-    good.get should be("answer")
-  }
+class OrSpec extends AbstractSpec with OrValuesFixture {
 
-  "isGood" should "return true whether the value is Good" in {
-    good.isGood should be(true)
-    bad.isGood should be(false)
-  }
+  describe("Or value") {
+    describe("get") {
+      it("should return the value contained in a 'Good'") {
+        good.get shouldBe "answer"
+      }
 
-  "A Bad value" should "throw an exception when asked for its value" in {
-    val r = intercept[NoSuchElementException] {
-      bad.get
+      it("should throw an exception for 'Bad' values") {
+        the [NoSuchElementException] thrownBy {
+          bad.get
+        } should have message "Or.get: is empty"
+      }
     }
-  }
 
-  "isBad" should "return true whether the value is Bad" in {
-    good.isBad should be(false)
-    bad.isBad should be(true)
-  }
+    describe("getOrElse") {
+      it("should return the contained value for Good") {
+        good.getOrElse("default") shouldBe "answer"
+      }
 
-  "getOrElse" should "return the contained value for Good" in {
-    good.getOrElse("default") shouldBe good.get
-    bad.getOrElse("default") shouldBe "default"
-  }
+      it("should return the default value for Bad values") {
+        bad.getOrElse("default") shouldBe "default"
+      }
+    }
 
-  "map" should "be Good biased for Or values" in {
-    good.map(_.toUpperCase) should be(Good("ANSWER"))
-    bad.map(_.toUpperCase) should be(bad)
-  }
+    describe("orElse") {
+      it("should return the same Good value, if this is a Good") {
+        good.orElse("default") should be theSameInstanceAs good
+      }
 
-  "flatMap" should "be Good biased for Or values" in {
-    good.flatMap(s => Good(s.toUpperCase)) should be(Good("ANSWER"))
-    bad.flatMap(s => Good(s.toUpperCase)) should be(Bad(42))
-  }
+      it("should return a Bad containing the default, if this is Bad") {
+        bad.orElse("default") shouldBe Bad("default")
+      }
+    }
 
-  "orElse" should "return a default for Bad values" in {
-    good.orElse("default") should be(good)
-    bad.orElse("default") should be(Bad("default"))
-  }
+    describe("isGood") {
+      it("should return 'true' for Good values") {
+        good.isGood shouldBe true
+      }
 
-  "toString" should "produce string representations for Or values" in {
-    good.toString should be("Good(answer)")
-    bad.toString should be("Bad(42)")
-  }
+      it("should return 'false' for Bad values") {
+        bad.isGood shouldBe false
+      }
+    }
 
-  "it" should "convert a Bad value to a None" in {
-    bad.toMaybe shouldBe None
-  }
+    describe("isBad") {
+      it("should return 'true' for Bad values") {
+        bad.isBad shouldBe true
+      }
 
-  "it" should "convert a Good value to a Just" in {
-    good.toMaybe shouldBe Just("answer")
-  }
+      it("should return 'false' for Good values") {
+        good.isBad shouldBe false
+      }
+    }
 
-  "foreach" should "do nothing for Bad values" in {
-    var n = 0
-    bad.foreach { x => n = n + 1 }
-    n shouldBe 0
-  }
+    describe("map") {
+      it("should apply the function to the value contained in Good values") {
+        good.map(_.toUpperCase) shouldBe Good("ANSWER")
+      }
 
-  "foreach" should "apply the function to Good values" in {
-    var n = 0
-    good foreach { x => n = n + x.length }
-    n shouldBe "answer".length
-  }
+      it("should return the same Bad instance, when f is applied to Bad values") {
+        val result = bad.map(_.toUpperCase)
+        result shouldBe bad
+        result shouldBe theSameInstanceAs (bad)
+      }
+    }
 
-  "zip" should "combine two Or values" in {
-    good zip good shouldBe Good(("answer", "answer"))
-    good zip bad shouldBe Bad(List(42))
-    bad zip good shouldBe Bad(List(42))
-    bad zip bad shouldBe Bad(List(42, 42))
-  }
+    describe("flatMap") {
+      it("should apply the function to the contained value in Good values") {
+        good.flatMap(s => Good(s.toUpperCase)) shouldBe Good("ANSWER")
+      }
 
-  "exists" should "apply a predicate to Good values" in {
-    good exists { _.startsWith("a") } shouldBe true
-    bad exists { _.startsWith("a") } shouldBe false
-  }
+      it("should return the same bad value, when applying the function to Bad values") {
+        bad.flatMap(s => Good(s.toUpperCase)) should be theSameInstanceAs bad
+      }
+    }
 
-  "swap" should "exchange Good with Bad, and viceversa" in {
-    good.swap shouldBe Bad("answer")
-    bad.swap shouldBe Good(42)
+    describe("toString") {
+      it("should produce a string representation for Good values") {
+        good.toString shouldBe "Good(answer)"
+      }
+
+      it("should produce a string representation for Bad values") {
+        bad.toString shouldBe "Bad(42)"
+      }
+    }
+
+    describe("toMaybe") {
+      it("should convert a Good to a Just value") {
+        good.toMaybe shouldBe Just("answer")
+      }
+
+      it("should convert a Bad to a None value") {
+        bad.toMaybe shouldBe None
+      }
+    }
+
+    describe("foreach") {
+      it("should do nothing for Bad values") {
+        var n = 0
+        bad.foreach { x => n = n + 1 }
+        n shouldBe 0
+      }
+
+      it("should apply the function to Good values") {
+        var n = 0
+        good foreach { x => n = n + x.length }
+        n shouldBe "answer".length
+      }
+    }
+
+    describe("zip") {
+      it("should combine two Good values to a Good") {
+        good zip good shouldBe Good(("answer", "answer"))
+      }
+
+      it("should combine Good and Bad values to a Bad") {
+        good zip bad shouldBe Bad(List(42))
+        bad zip good shouldBe Bad(List(42))
+      }
+
+      it("should combine two Bad values in a Bad") {
+        bad zip bad shouldBe Bad(List(42, 42))
+      }
+    }
+
+    describe("exists") {
+      it("should apply a predicate to Good values") {
+        good exists { _.startsWith("a") } shouldBe true
+      }
+
+      it("should apply a predicate to Bad values") {
+        bad exists { _.startsWith("a") } shouldBe false
+      }
+    }
+
+    describe("swap") {
+      it("should exchange Good with Bad") {
+        good.swap shouldBe Bad("answer")
+      }
+
+      it("should exchange Bad with Good") {
+        bad.swap shouldBe Good(42)
+      }
+    }
   }
 }
 
-trait GoodOrBadValues {
-  def good: String Or Int = Good("answer")
-  def bad: String Or Int = Bad(42)
+trait OrValuesFixture {
+  val good: String Or Int = Good("answer")
+  val bad: String Or Int = Bad(42)
 }
