@@ -23,117 +23,199 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.test.AbstractSpec
 import io.github.carlomicieli.util.{None, Just}
 
-class BinarySearchTreeSpec extends AbstractTestSpec with BinarySearchTreesFixture {
+class BinarySearchTreeSpec extends AbstractSpec with BinarySearchTreesFixture {
 
-  "An empty BS tree" should "have size 0" in {
-    val emptyTree = BinarySearchTree.empty[Int, String]
-    emptyTree.size shouldBe 0
-    emptyTree.isEmpty shouldBe true
-  }
+  describe("An immutable BS tree") {
+    describe("size") {
+      it("should return 0 for empty tree") {
+        emptyTree.size shouldBe 0
+      }
 
-  "it" should "create a BS tree from a list" in {
-    val xs = List((42, "a"), (21, "b"), (99, "c"), (66, "f"))
+      it("should return the number of elements in a tree") {
+        tree.size shouldBe 4
+      }
+    }
 
-    val tree = BinarySearchTree.fromList(xs)
+    describe("isEmpty") {
+      it("should return true for empty trees") {
+        emptyTree.isEmpty shouldBe true
+      }
 
-    tree.get shouldBe xs.head
-    tree.size shouldBe xs.length
-    tree.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
-  }
+      it("should return false for non empty trees") {
+        tree.isEmpty shouldBe false
+      }
+    }
 
-  "Adding an element to a BS tree" should "increase its size" in {
-    val t3 = emptyTree.insert(42, "answer").insert((1, "one"))
+    describe("fromList") {
+      it("should create a BS tree from a list") {
+        val xs = List((42, "a"), (21, "b"), (99, "c"), (66, "f"))
+        val t = BinarySearchTree.fromList(xs)
+        t.size shouldBe xs.length
+        t.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
+        withClue("The tree root should be the list head") {
+          t.get shouldBe xs.head
+        }
+      }
+    }
 
-    t3.isEmpty shouldBe false
-    t3.size shouldBe 2
-  }
+    describe("insert") {
+      it("should insert the new element at the root, inserting into an empty tree") {
+        val t = emptyTree.insert(42, "answer")
+        t should have size 1
+        t.get shouldBe ((42, "answer"))
+      }
 
-  "It" should "find an element in a BS tree" in {
-    bsTree.lookup(99) shouldBe Just((99, "c"))
-    bsTree.lookup(-1) shouldBe None
-  }
+      it("should create a new tree with the new element") {
+        val t = tree.insert(55, "x")
+        t should have size (tree.size + 1)
+        t.contains(55) shouldBe true
+      }
 
-  "It" should "calculate a tree depth" in {
-    emptyTree.depth shouldBe 0
-    bsTree.depth shouldBe 3
-  }
+      it("should increase tree size") {
+        val t = emptyTree.insert(42, "answer").insert((1, "one"))
+        t should have size 2
+        t.isEmpty shouldBe false
+      }
+    }
 
-  "It" should "find the min element in the tree" in {
-    emptyTree.min shouldBe None
-    bsTree.min shouldBe Just(21)
-  }
+    describe("lookup") {
+      it("should return a Just, if the element is found") {
+        tree.lookup(99) shouldBe Just((99, "c"))
+      }
 
-  "It" should "find the max element in the tree" in {
-    emptyTree.max shouldBe None
-    bsTree.max shouldBe Just(99)
-  }
+      it("should return a None, if the element is not found") {
+        tree.lookup(-1) shouldBe None
+      }
+    }
 
-  "It" should "convert a tree to a list" in {
-    bsTree.toList shouldBe List((21, "b"), (42, "a"), (66, "f"), (99, "c"))
-  }
+    describe("depth") {
+      it("should have a 0 depth if the tree is empty") {
+        emptyTree.depth shouldBe 0
+      }
 
-  "It" should "update a value for a key already in the tree" in {
-    val t3 = bsTree.upsert(45, "d")(_ * 2)
-    t3.lookup(45) shouldBe Just((45, "d"))
+      it("should return the number of levels in a tree") {
+        tree.depth shouldBe 3
+      }
+    }
 
-    val t4 = bsTree.upsert(21, "b")(_ * 2)
-    t4.lookup(21) shouldBe Just((21, "bb"))
-  }
-  
-  "deleting a element from an empty tree" should "produce an empty result" in {
-    val (removed, newTree) = emptyTree.delete(4)
-    removed shouldBe None
-    newTree shouldBe Tree.empty[Int, String]
-  }
+    describe("min") {
+      it("should return None, if the tree is empty") {
+        emptyTree.min shouldBe None
+      }
 
-  "delete an element from a tree" should "return the remove value" in {
-    val (removed, newTree) = bsTree.delete(21)
-    removed shouldBe Just("b")
-    newTree.toString shouldBe "(- [42->a] ((- [66->f] -) [99->c] -))"
-  }
+      it("should return a Just value, with the element with the minimum key") {
+        tree.min shouldBe Just(21)
+      }
+    }
 
-  "delete" should "remove also the tree root" in {
-    val (removed, newTree) = bsTree.delete(42)
-    removed shouldBe Just("a")
-    newTree.toString shouldBe "((- [21->b] -) [66->f] (- [99->c] -))"
-  }
+    describe("max") {
+      it("should return None, if the tree is empty") {
+        emptyTree.max shouldBe None
+      }
 
-  "it" should "produce string representations for trees" in {
-    emptyTree.toString shouldBe "-"
-    bsTree.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
-  }
+      it("should return a Just value, with the element with the maximum key") {
+        tree.max shouldBe Just(99)
+      }
+    }
 
-  "it" should "apply a function to every tree value" in {
-    val t1 = emptyTree.map(_ * 2)
-    val t2 = bsTree.map(_ * 2)
+    describe("toList") {
+      it("should return an empty list for the empty tree") {
+        emptyTree.toList shouldBe List()
+      }
 
-    t1 shouldBe Tree.empty[Int, String]
-    t2.toString shouldBe "((- [21->bb] -) [42->aa] ((- [66->ff] -) [99->cc] -))"
-  }
+      it("should return a list with the tree elements, as pairs") {
+        tree.toList shouldBe List((21, "b"), (42, "a"), (66, "f"), (99, "c"))
+      }
+    }
 
-  "it" should "checks whether an element is in the tree" in {
-    emptyTree.contains(42) shouldBe false
-    bsTree.contains(42) shouldBe true
-    bsTree.contains(-1) shouldBe false
-  }
+    describe("upsert") {
+      it("should update a value for a key already in the tree") {
+        val t = tree.upsert(21, "b")(_ * 2)
+        t.lookup(21) shouldBe Just((21, "bb"))
+      }
 
-  "it" should "fold the tree applying a function" in {
-    Tree((1, 1), (2, 2), (3, 3), (4, 4)).fold(_ + _) shouldBe 1 + 2 + 3 + 4
-    Tree((1, 1)).fold(_ + _) shouldBe 1
-  }
+      it("should insert a new value, if the key is not in tree") {
+        val t = tree.upsert(45, "d")(_ * 2)
+        t.lookup(45) shouldBe Just((45, "d"))
+      }
+    }
 
-  "it" should "throw an exception folding an empty tree" in {
-    val res = intercept[NoSuchElementException] {
-      emptyTree.fold(_ + _)
+    describe("delete") {
+      it("should return an empty result, deleting from the empty tree") {
+        val (removed, newTree) = emptyTree.delete(4)
+        removed shouldBe None
+        newTree shouldBe Tree.empty[Int, String]
+      }
+
+      it("should return a pair with deleted value and the new tree without the removed key") {
+        val (removed, newTree) = tree.delete(21)
+        removed shouldBe Just("b")
+        newTree.toString shouldBe "(- [42->a] ((- [66->f] -) [99->c] -))"
+      }
+
+      it("should remove the tree root") {
+        val (removed, newTree) = tree.delete(42)
+        removed shouldBe Just("a")
+        newTree.toString shouldBe "((- [21->b] -) [66->f] (- [99->c] -))"
+      }
+    }
+
+    describe("toString") {
+      it("should produce a string representation for the empty tree") {
+        emptyTree.toString shouldBe "-"
+      }
+
+      it("should produce a string representation for trees") {
+        tree.toString shouldBe "((- [21->b] -) [42->a] ((- [66->f] -) [99->c] -))"
+      }
+    }
+
+    describe("map") {
+      it("should do nothing, applying a function to the empty tree") {
+        val t = emptyTree.map(_ * 2)
+        t should be theSameInstanceAs emptyTree
+      }
+
+      it("should apply a function to every tree value") {
+        val t = tree.map(_ * 2)
+        t.toString shouldBe "((- [21->bb] -) [42->aa] ((- [66->ff] -) [99->cc] -))"
+      }
+    }
+
+    describe("contains") {
+      it("should return always false for the empty tree") {
+        emptyTree.contains(42) shouldBe false
+      }
+
+      it("should return true if the element is in the tree") {
+        tree.contains(42) shouldBe true
+      }
+
+      it("should return false if the element is in the tree") {
+        tree.contains(-1) shouldBe false
+      }
+    }
+
+    describe("fold") {
+      it("should throw an exception folding an empty tree") {
+        the [NoSuchElementException] thrownBy {
+          emptyTree.fold(_ + _)
+        } should have message "fold: tree is empty"
+      }
+
+      it("should fold the tree applying a function") {
+        Tree((1, 1), (2, 2), (3, 3), (4, 4)).fold(_ + _) shouldBe 1 + 2 + 3 + 4
+        Tree((1, 1)).fold(_ + _) shouldBe 1
+      }
     }
   }
 }
 
 trait BinarySearchTreesFixture {
   import BinarySearchTree._
-  def emptyTree: Tree[Int, String] = empty[Int, String]
-  def bsTree: Tree[Int, String] = fromList(List((42, "a"), (21, "b"), (99, "c"), (66, "f")))
+  val emptyTree: Tree[Int, String] = empty[Int, String]
+  val tree: Tree[Int, String] = fromList(List((42, "a"), (21, "b"), (99, "c"), (66, "f")))
 }
