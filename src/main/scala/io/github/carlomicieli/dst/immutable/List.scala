@@ -189,15 +189,6 @@ sealed trait List[+A] {
     s"$start$itemsString$end"
   }
 
-  // Lazy variant for the foldRight function
-  // (source: http://voidmainargs.blogspot.de/2011/08/folding-stream-with-scala.html)
-  def foldRight[B](continue: (A, => B) => B, z: B)(f: (A, B) => B): B = {
-    this match {
-      case Nil => z
-      case x +: xs => continue(x, f(x, xs.foldRight(continue, z)(f)))
-    }
-  }
-  
   /**
    * `O(n)` Returns the elements of this list in reverse order.
    * @return the list in reversed order
@@ -320,6 +311,38 @@ sealed trait List[+A] {
     }
 
     this.foldLeft(List.empty[A1])(insert)
+  }
+
+  /**
+   * `O(m)` Returns a tuple where first element is the prefix of length `m`
+   * and second element is the remainder of the list.
+   *
+   * @param m the index where the list will be splitted
+   * @return a pair of lists
+   */
+  def splitAt(m: Int): (List[A], List[A]) = (m, this) match {
+    case (_, Nil)         => (Nil, Nil)
+    case (i, _) if i <= 0 => (Nil, this)
+    case (i, x +: xs)     =>
+      val (fst, snd) = xs.splitAt(i - 1)
+      (x +: fst, snd)
+  }
+
+  /**
+   * `O(n)` Apply  a predicate `p` to `this` list, returns a tuple where first element
+   * is longest prefix (possibly empty) of elements that satisfy `p` and second element
+   * is the remainder of the list.
+   * @param p the predicate to apply
+   * @return a pair of lists.
+   */
+  def span(p: A => Boolean): (List[A], List[A]) = this match {
+    case Nil     => (Nil, Nil)
+    case x +: xs =>
+      val (fst, snd) = xs span p
+      if (p(x))
+        (x +: fst, snd)
+      else
+        (fst, x +: snd)
   }
 
   override def toString: String = mkString(", ", "[", "]")

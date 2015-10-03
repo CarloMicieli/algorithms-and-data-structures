@@ -117,6 +117,12 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
         numbersList.head shouldBe 1
         numbersList.headOption shouldBe Just(1)
       }
+
+      it("should throw an exception for empty lists head") {
+        the [NoSuchElementException] thrownBy {
+          emptyList.head
+        } should have message "List.head: empty list"
+      }
     }
 
     describe("tail") {
@@ -124,6 +130,12 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
         the[NoSuchElementException] thrownBy {
           emptyList.tail
         } should have message "List.tail: empty list"
+      }
+
+      it("should return the tail for the list") {
+        val list = numbersList.tail
+        list should have length (numbersList.length - 1)
+        list shouldBe List(2, 3, 4, 5, 6, 7, 8, 9, 10)
       }
     }
 
@@ -329,6 +341,42 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
       it("should produce a list, after the elements have been flatten") {
         val list = List(List(1, 2), List(3), List(4, 5))
         list.flatten shouldBe List(1, 2, 3, 4, 5)
+      }
+    }
+
+    describe("splitAt") {
+      it("should produce two empty lists, splitting an empty list") {
+        emptyList.splitAt(1) should be ((emptyList, emptyList))
+      }
+
+      it("should split the list at the given index") {
+        numbersList.splitAt(4) shouldBe ((List(1, 2, 3, 4), List(5, 6, 7, 8, 9, 10)))
+      }
+
+      it("should produce an empty list as first element, if m is non positive") {
+        numbersList.splitAt(-4) shouldBe ((Nil, numbersList))
+      }
+
+      it("should produce an empty list as second element, if m is greater than list length") {
+        numbersList.splitAt(10) shouldBe ((numbersList, Nil))
+      }
+    }
+
+    describe("span") {
+      it("should produce a pair of empty lists, when applied to empty lists") {
+        emptyList.span(_ > 100) shouldBe ((Nil, Nil))
+      }
+
+      it("should produce a pair of list applying a predicate") {
+        numbersList.span(_ % 2 == 0) shouldBe ((List(2, 4, 6, 8, 10), List(1, 3, 5, 7, 9)))
+      }
+
+      it("should produce a pair with a Nil as first element, if no element is matching the predicate") {
+        numbersList.span(_ > 999) shouldBe ((Nil, numbersList))
+      }
+
+      it("should produce a pair with a Nil as second element, if no element is matching the predicate") {
+        numbersList.span(_ < 999) shouldBe ((numbersList, Nil))
       }
     }
   }

@@ -122,6 +122,8 @@ trait List[+A] {
   def foldRight[B](continue: (A, => B) => B, z: B)(f: (A, B) => B): B
   def foldLeft[B](z: B)(f: (B, A) => B): B      // O(n)
   def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
+  def splitAt(m: Int): (List[A], List[A])       // O(m)
+  def span(p: A => Boolean): (List[A], List[A]) // O(n)
 }
 ```
 
