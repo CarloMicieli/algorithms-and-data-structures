@@ -33,19 +33,19 @@ import io.github.carlomicieli.util.Maybe
 trait Tree[K, V] {
 
   /**
-   * It applies the function `f` to all key value pairs in this tree in sorted order.
+   * `O(n)` It applies the function `f` to all key value pairs in this tree in sorted order.
    * @param f the function to apply
    */
-  def inorderWalk(f: ((K, V)) => Unit): Unit
+  def inorderWalk(f: KeyValuePair[K, V] => Unit): Unit
 
   /**
-   * Checks whether `this` tree is empty
+   * `O(1)` Checks whether `this` tree is empty
    * @return `true` if empty; `false` otherwise
    */
   def isEmpty: Boolean
 
   /**
-   * Checks whether `this` tree is non empty.
+   * `O(1)` Checks whether `this` tree is non empty.
    * @return `true` if not empty; `false` otherwise
    */
   def nonEmpty: Boolean = !isEmpty
@@ -81,13 +81,13 @@ trait Tree[K, V] {
   def search(key: K)(implicit ord: Ordering[K]): Maybe[V]
 
   /**
-   * Returns the minimum element in this tree.
+   * `O(h)` Returns the minimum element in this tree.
    * @return the minimum element, if any
    */
   def min: K
 
   /**
-   * Returns the maximum element in this tree.
+   * `O(h)` Returns the maximum element in this tree.
    * @return the maximum element, if any
    */
   def max: K
@@ -96,18 +96,24 @@ trait Tree[K, V] {
    * Returns the successor of the key `key` in this tree.
    *
    * The successor is the node with the smallest key greater than `key`.
+   *
+   * @usecase def successor(key: K): K
+   * @inheritdoc
    * @param key the key
    * @return the `key`'s successor
    */
-  def successor(key: K): K
+  def successor(key: K)(implicit ord: Ordering[K]): K
 
   /**
    * Returns the predecessor of the key `key` in this tree.
    *
    * The predecessor is the node with the greatest key smaller than `key`.
+   *
+   * @usecase def predecessor(key: K): K
+   * @inheritdoc
    * @param key the key
    * @return the `key`'s predecessor
    */
-  def predecessor(key: K): K
+  def predecessor(key: K)(implicit ord: Ordering[K]): K
 }
 

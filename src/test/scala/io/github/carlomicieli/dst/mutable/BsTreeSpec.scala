@@ -23,6 +23,8 @@
  */
 package io.github.carlomicieli.dst.mutable
 
+import java.util.NoSuchElementException
+
 import io.github.carlomicieli.test.AbstractTestSpec
 import io.github.carlomicieli.util.{None, Just}
 
@@ -68,6 +70,34 @@ class BsTreeSpec extends AbstractTestSpec with BsTreesFixture {
 
   "max" should "return the maximum key in the BS tree" in {
     tree.max shouldBe 20
+  }
+
+  "successor" should "find the smallest key greater than the one provided" in {
+    tree.successor(15) shouldBe 17
+  }
+
+  "successor" should "throw an exception if no successor is found" in {
+    val thrown = intercept[NoSuchElementException] {
+      tree.successor(20)
+    }
+    thrown.getMessage shouldBe "Successor not found for '20'"
+  }
+
+  "predecessor" should "find with the greatest key smaller than the one provided" in {
+    tree.predecessor(15) shouldBe 13
+  }
+
+  "predecessor" should "throw an exception if no predecessor is found" in {
+    val thrown = intercept[NoSuchElementException] {
+      tree.predecessor(2)
+    }
+    thrown.getMessage shouldBe "Predecessor not found for '2'"
+  }
+
+  "inorderTreeWalk" should "traverse the tree elements in order" in {
+    var str = ""
+    tree.inorderWalk(kv => str = str + s"${kv.key} > ")
+    str shouldBe "2 > 3 > 4 > 6 > 7 > 9 > 13 > 15 > 17 > 18 > 20 > "
   }
 }
 
