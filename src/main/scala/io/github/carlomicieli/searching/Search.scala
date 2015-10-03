@@ -33,8 +33,6 @@ object Search {
   /**
    * `O(lg n)` Search for an element in a sorted `Array`.
    *
-   * @usecase def binarySearch[A](xs: Array[A], x: A): Maybe[Int]
-   * @inheritdoc
    * @param xs a sorted `Array`
    * @param x the element to find
    * @param ord the element ordering
@@ -48,8 +46,6 @@ object Search {
   /**
    * `O(lg n)` Search for an element in a part of a sorted `Array`.
    *
-   * @usecase def binarySearch[A](xs: Array[A], x: A, lo: Int, hi: Int): Maybe[Int]
-   * @inheritdoc
    * @param xs a sorted `Array`
    * @param x the element to find
    * @param lo the low index

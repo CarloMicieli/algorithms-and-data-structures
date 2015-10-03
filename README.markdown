@@ -5,13 +5,18 @@
 
 Data structures and algorithms implementations with the Scala programming language.
 
-To run the tests with `sbt`:
+    $ git clone https://github.com/CarloMicieli/algorithms-and-data-structures.git
+
+To run the test suite:
 
     $ sbt test
 
-To import the project in Intellij Idea:
+To generate the `Scaladoc` documentation:
 
-    $ sbt gen-idea
+    $ sbt doc
+
+Documentation will be available under `./target/scala-2.11/api/`.
+
 
 ## Sorting Algorithms
 
