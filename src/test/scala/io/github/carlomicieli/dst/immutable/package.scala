@@ -21,26 +21,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst.immutable
+package io.github.carlomicieli.dst
 
-import io.github.carlomicieli.test.AbstractTestSpec
+import org.scalatest.enablers.{Length, Size}
 
-class LazyListSpec extends AbstractTestSpec {
-  "An empty LazyList" should "have size 0" in {
-    val list = LazyList.empty[Int]
-    list.isEmpty shouldBe true
-    list.size shouldBe 0
+package object immutable {
+  implicit val listLength: Length[List[_]] = new Length[List[_]] {
+    def lengthOf(obj: List[_]): Long = obj.length
   }
 
-  "The size for a LazyList" should "not evaluatse the elements" in {
-    val list = LazyList.cons(1, LazyList.cons(throw new Exception, LazyList.cons(3, Empty)))
-    list.size shouldBe 3
-  }
-
-  "Mapping a LazyList" should "produce a new list with the function applied to its elements" in {
-    val list = LazyList.cons(1, LazyList.cons(2, LazyList.cons(3, Empty)))
-    val resultList = list map { _ * 3 }
-
-    resultList.toList shouldBe List(3, 6, 9)
+  implicit val bsTreeSize: Size[Tree[_, _]] = new Size[Tree[_, _]] {
+    def sizeOf(obj: Tree[_, _]): Long = obj.size
   }
 }

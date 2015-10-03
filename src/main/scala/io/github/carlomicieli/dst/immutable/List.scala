@@ -232,8 +232,11 @@ sealed trait List[+A] {
    * @tparam A1 the resulting list type
    * @return a list obtained appending the element of `that` to this list
    */
-  def ++[A1 >: A](that: List[A1]): List[A1] =
-    foldRight(that)((x, xs) => x +: xs)
+  def ++[A1 >: A](that: List[A1]): List[A1] = (this, that) match {
+    case (Nil, ys) => ys
+    case (xs, Nil) => xs
+    case _ => foldRight(that)((x, xs) => x +: xs)
+  }
 
   /**
    * `O(n)` Takes an element and a list and "intersperses" that element between the elements of the list.

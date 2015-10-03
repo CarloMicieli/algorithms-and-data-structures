@@ -77,10 +77,7 @@ class BsTreeSpec extends AbstractTestSpec with BsTreesFixture {
   }
 
   "successor" should "throw an exception if no successor is found" in {
-    val thrown = intercept[NoSuchElementException] {
-      tree.successor(20)
-    }
-    thrown.getMessage shouldBe "Successor not found for '20'"
+    the [NoSuchElementException] thrownBy tree.successor(20) should have message "Successor not found for '20'"
   }
 
   "predecessor" should "find with the greatest key smaller than the one provided" in {
@@ -88,10 +85,7 @@ class BsTreeSpec extends AbstractTestSpec with BsTreesFixture {
   }
 
   "predecessor" should "throw an exception if no predecessor is found" in {
-    val thrown = intercept[NoSuchElementException] {
-      tree.predecessor(2)
-    }
-    thrown.getMessage shouldBe "Predecessor not found for '2'"
+    the [NoSuchElementException] thrownBy tree.predecessor(2) should have message "Predecessor not found for '2'"
   }
 
   "inorderTreeWalk" should "traverse the tree elements in order" in {

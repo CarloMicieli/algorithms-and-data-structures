@@ -24,3 +24,6 @@ scalacOptions ++= Seq(
   "-Ywarn-infer-any",
   "-Ywarn-value-discard"
 )
+
+
+fork in run := true
