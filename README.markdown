@@ -169,7 +169,7 @@ trait Tree[+K, +V] {
   def size: Int
   def isEmpty: Boolean
   def contains(key: K): Boolean
-  def lookup(key: K): Maybe[(K, V)]
+  def lookup(key: K): Maybe[V]
   def upsert(key: K, value: V)(f: V => V): Tree[K, V]
   def insert(key: K, value: V): Tree[K, V]
   def delete(key: K): (Maybe[V], Tree[K, V])

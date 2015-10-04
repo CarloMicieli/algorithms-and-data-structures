@@ -83,7 +83,7 @@ class BinarySearchTreeSpec extends AbstractSpec with BinarySearchTreesFixture {
 
     describe("lookup") {
       it("should return a Just, if the element is found") {
-        tree.lookup(99) shouldBe Just((99, "c"))
+        tree.lookup(99) shouldBe Just("c")
       }
 
       it("should return a None, if the element is not found") {
@@ -134,12 +134,12 @@ class BinarySearchTreeSpec extends AbstractSpec with BinarySearchTreesFixture {
     describe("upsert") {
       it("should update a value for a key already in the tree") {
         val t = tree.upsert(21, "b")(_ * 2)
-        t.lookup(21) shouldBe Just((21, "bb"))
+        t.lookup(21) shouldBe Just("bb")
       }
 
       it("should insert a new value, if the key is not in tree") {
         val t = tree.upsert(45, "d")(_ * 2)
-        t.lookup(45) shouldBe Just((45, "d"))
+        t.lookup(45) shouldBe Just("d")
       }
     }
 

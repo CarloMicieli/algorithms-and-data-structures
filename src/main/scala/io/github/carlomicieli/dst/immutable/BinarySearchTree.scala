@@ -29,10 +29,10 @@ private[this]
 sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   def get: (K, V)
 
-  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)] = {
+  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[V] = {
     this match {
       case EmptyTree => None
-      case Node(k, v, _, _) if k == key => Just((k, v))
+      case Node(k, v, _, _) if k == key => Just(v)
       case Node(k, _, left, right) =>
         import Ordered._
         if (key < k)

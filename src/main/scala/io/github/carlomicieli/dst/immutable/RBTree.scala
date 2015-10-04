@@ -27,10 +27,10 @@ import io.github.carlomicieli.util.{None, Maybe, Just}
 
 private[this]
 sealed trait RBTree[+K, +V] extends Tree[K, V] {
-  override def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)] = {
+  override def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[V] = {
     this match {
       case EmptyRBTree => None
-      case RBNode(_, left, k, v, right) if k == key => Just((k, v))
+      case RBNode(_, left, k, v, right) if k == key => Just(v)
       case RBNode(_, left, k, _, right) =>
         import Ordered._
         if (key < k)

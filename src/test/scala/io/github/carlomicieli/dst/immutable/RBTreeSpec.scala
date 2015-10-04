@@ -46,7 +46,7 @@ class RBTreeSpec extends AbstractTestSpec with RBTreesFixture {
 
   "lookup" should "find elements in a RB tree" in {
     emptyTree.lookup(99) shouldBe None
-    bsTree.lookup(42) shouldBe Just((42, "a"))
+    bsTree.lookup(42) shouldBe Just("a")
   }
 
   "min" should "find the min element in a RB tree" in {

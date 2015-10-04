@@ -38,56 +38,56 @@ import io.github.carlomicieli.util.Maybe
 trait Tree[+K, +V] {
 
   /**
-   * Return the root element for this `Tree`.
+   * `O(1)` Return the root element for this `Tree`.
    * @return the root element
    */
   def get: (K, V)
 
   /**
-   * The depth from this `Tree`.
+   * `O(n)` The depth from this `Tree`.
    * @return the tree depth
    */
   def depth: Int
 
   /**
-   * The element with the maximum key in this `Tree` according to the key ordering.
+   * `O(h)` The element with the maximum key in this `Tree` according to the key ordering.
    * @return `Just(max)` if this `Tree` is not empty, `None` otherwise
    */
   def max: Maybe[K]
 
   /**
-   * The element with the minimum key in this `Tree` according to the key ordering.
+   * `O(h)` The element with the minimum key in this `Tree` according to the key ordering.
    * @return `Just(min)` if this `Tree` is not empty, `None` otherwise
    */
   def min: Maybe[K]
 
   /**
-   * Returns the number of pair key-value contained in this `Tree`.
+   * `O(n)` Returns the number of pair key-value contained in this `Tree`.
    * @return the number elements in the tree
    */
   def size: Int
 
   /**
-   * Checks whether the current `Tree` is empty.
+   * `O(1)` Checks whether the current `Tree` is empty.
    * @return `true` if this tree is empty; `false` otherwise
    */
   def isEmpty: Boolean
 
   /**
-   * It searches for the `key` in this `Tree`. It returns `Just((key, value))` when the
+   * `O(h)` It searches for the `key` in this `Tree`. It returns `Just(value)` when the
    * `key` is found, `None` otherwise.
    *
-   * @usecase def lookup(key: K): Maybe[(K, V)]
+   * @usecase def lookup(key: K): Maybe[V]
    * @inheritdoc
    * @param key the key to find
    * @param ord the key ordering
    * @tparam K1
-   * @return optionally a pair with the key and value
+   * @return optionally the value associated with `key`
    */
-  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[(K1, V)]
+  def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[V]
 
   /**
-    * If the key `key` doesn't exist, this operation will insert it with the value `value`. On the
+   * `O(h)` If the key `key` doesn't exist, this operation will insert it with the value `value`. On the
    * other hand, if the `key` already exists the value is updated applying the function `f` to the
    * current value.
    *
@@ -104,7 +104,7 @@ trait Tree[+K, +V] {
   def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: V1 => V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
-   * Checks whether this `Tree` contains the provided key.
+   * `O(h)` Checks whether this `Tree` contains the provided key.
    *
    * @usecase def contains(key: K): Boolean
    * @inheritdoc
@@ -116,7 +116,7 @@ trait Tree[+K, +V] {
   def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean
 
   /**
-    * Inserts the `key` and the corresponding `value` to the `Tree`. If the `key` already exists
+   * `O(h)` Inserts the `key` and the corresponding `value` to the `Tree`. If the `key` already exists
    * this operation will replace the previous value.
    *
    * @usecase def insert(key: K, value: V): Tree[K, V]
@@ -131,7 +131,7 @@ trait Tree[+K, +V] {
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1]
 
   /**
-   * Inserts this key and value pair to the `Tree`. If the `key` already exists
+   * `O(h)` Inserts this key and value pair to the `Tree`. If the `key` already exists
    * this operation will replace the previous value.
    *
    * @usecase def insert(keyValuePair: (K, V)): Tree[K, V]
@@ -146,7 +146,7 @@ trait Tree[+K, +V] {
     insert(keyValuePair._1, keyValuePair._2)
 
   /**
-   * Delete the node with the provided key. If this `Tree` doesn't contain the key, the
+   * `O(h)` Delete the node with the provided key. If this `Tree` doesn't contain the key, the
    * `Tree` is returned unchanged.
    *
    * @usecase def delete(key: K): (Maybe[V], Tree[K, V])
@@ -159,7 +159,7 @@ trait Tree[+K, +V] {
   def delete[K1 >: K](key: K1)(implicit ord: Ordering[K1]): (Maybe[V], Tree[K1, V])
 
   /**
-   * Apply the function `f` to the values in this `Tree`.
+   * `O(n)` Apply the function `f` to the values in this `Tree`.
    * @param f the function to be applied
    * @tparam V1 the new value type
    * @return a new tree
@@ -167,7 +167,7 @@ trait Tree[+K, +V] {
   def map[V1](f: V => V1): Tree[K, V1]
 
   /**
-   * It folds the current tree values using the provided function.
+   * `O(n)` It folds the current tree values using the provided function.
    *
    * @usecase def fold(f: (V, V) => V): V
    * @inheritdoc
@@ -178,7 +178,7 @@ trait Tree[+K, +V] {
   def fold[V1 >: V](f: (V1, V1) => V1): V1
 
   /**
-   * Convert this `Tree` to a `List` of pair.
+   * `O(n)` Convert this `Tree` to a `List` of pair.
    * @return the list with the pair `(key, value)` in this `Tree`
    */
   def toList: List[(K, V)]
