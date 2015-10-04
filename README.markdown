@@ -162,19 +162,19 @@ A binary tree is:
 
 ```scala
 trait Tree[+K, +V] {
-  def get: (K, V)
-  def depth: Int
-  def max: Maybe[K]
-  def min: Maybe[K]
-  def size: Int
-  def isEmpty: Boolean
-  def contains(key: K): Boolean
-  def lookup(key: K): Maybe[V]
-  def upsert(key: K, value: V)(f: V => V): Tree[K, V]
-  def insert(key: K, value: V): Tree[K, V]
-  def delete(key: K): (Maybe[V], Tree[K, V])
-  def map[V1](f: V => V1): Tree[K, V1] 
-  def toList: List[(K, V)]
+  def get: (K, V)                             // O(1)
+  def depth: Int                              // O(n)
+  def max: Maybe[K]                           // O(h)
+  def min: Maybe[K]                           // O(h)
+  def size: Int                               // O(n)
+  def isEmpty: Boolean                        // O(1)
+  def contains(key: K): Boolean               // O(h)
+  def lookup(key: K): Maybe[V]                // O(h)
+  def upsert(key: K, value: V)(f: V => V): Tree[K, V] // O(h)
+  def insert(key: K, value: V): Tree[K, V]    // O(h)
+  def delete(key: K): (Maybe[V], Tree[K, V])  // O(h) 
+  def map[V1](f: V => V1): Tree[K, V1]        // O(n)
+  def toList: List[(K, V)]                    // O(n)
 }
 ```
 

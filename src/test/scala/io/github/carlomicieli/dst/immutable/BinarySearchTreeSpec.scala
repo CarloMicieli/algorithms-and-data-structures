@@ -79,6 +79,11 @@ class BinarySearchTreeSpec extends AbstractSpec with BinarySearchTreesFixture {
         t should have size 2
         t.isEmpty shouldBe false
       }
+
+      it("should replace the value, if the tree already contains the key") {
+        val t = tree.insert(42, "answer")
+        t.lookup(42) shouldBe Just("answer")
+      }
     }
 
     describe("lookup") {

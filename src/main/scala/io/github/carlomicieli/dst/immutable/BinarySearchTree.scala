@@ -45,7 +45,7 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
     this match {
       case EmptyTree => new Node(key, value)
-      case node @ Node(k, _, _, _) if k == key => node
+      case node @ Node(k, _, _, _) if k == key => node.copy(value = value)
       case node @ Node(k, _, left, right) =>
         import Ordered._
         if (key < k)

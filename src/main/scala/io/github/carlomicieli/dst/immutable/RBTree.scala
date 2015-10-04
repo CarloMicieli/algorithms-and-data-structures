@@ -123,6 +123,14 @@ sealed trait RBTree[+K, +V] extends Tree[K, V] {
   override def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = ???
 
   override def map[V1](f: (V) => V1): Tree[K, V1] = ???
+
+  override def toString: String = {
+    this match {
+      case EmptyRBTree => "-"
+      case RBNode(_, l, k, v, r) =>
+        s"($l [$k->$v] $r)"
+    }
+  }
 }
 
 private[this]
