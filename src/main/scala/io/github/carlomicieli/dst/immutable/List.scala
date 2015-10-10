@@ -64,6 +64,17 @@ sealed trait List[+A] {
   def nonEmpty: Boolean = !isEmpty
 
   /**
+   * `O(n)` It computes the sum of the numbers of a structure.
+   * @usecase def sum: A
+   * @inheritdoc
+   * @param num the evidence the elements are numeric
+   * @tparam A1 the element type
+   * @return the list sum
+   */
+  def sum[A1 >: A](implicit num: Numeric[A1]): A1 =
+    this.foldLeft(num.zero)(num.plus)
+
+  /**
    * `O(1)` Adds an element at the beginning of this list.
    * @param x the element to add
    * @tparam A1 the list element type
@@ -317,7 +328,7 @@ sealed trait List[+A] {
    * `O(m)` Returns a tuple where first element is the prefix of length `m`
    * and second element is the remainder of the list.
    *
-   * @param m the index where the list will be splitted
+   * @param m the index where the list will be split
    * @return a pair of lists
    */
   def splitAt(m: Int): (List[A], List[A]) = (m, this) match {
@@ -346,7 +357,27 @@ sealed trait List[+A] {
   }
 
   /**
-   * It takes two lists and returns a list of corresponding pairs. If one input
+   * `O(n)` Determines whether all elements of this list satisfy the predicate.
+   * @param p the predicate to match
+   * @return `true` if all elements match the predicate; `false` otherwise
+   */
+  def all(p: A => Boolean): Boolean = this match {
+    case Nil     => true
+    case x +: xs => p(x) && xs.all(p)
+  }
+
+  /**
+   * `O(n)` Determines whether any elements of this list satisfy the predicate.
+   * @param p the predicate to match
+   * @return `true` if any elements match the predicate; `false` otherwise
+   */
+  def any(p: A => Boolean): Boolean = this match {
+    case Nil     => false
+    case x +: xs => p(x) || xs.any(p)
+  }
+
+  /**
+   * `O(n)` It takes two lists and returns a list of corresponding pairs. If one input
    * list is short, excess elements of the longer list are discarded.
    * @param that the second list
    * @tparam B the second list element type
@@ -357,6 +388,13 @@ sealed trait List[+A] {
     case (x +: xs, y +: ys)  =>
       (x, y) +: (xs zip ys)
   }
+
+  /**
+   * `O(1)` Decompose a list into its head and tail. If the list is empty, returns `None`. If the list is non-empty,
+   * returns `Just (x, xs)`, where `x` is the head of the list and `xs` its tail.
+   * @return optionally a pair with the list head and tail
+   */
+  def unCons: Maybe[(A, List[A])] = if (isEmpty) None else Just((head, tail))
 
   override def toString: String = mkString(", ", "[", "]")
 }

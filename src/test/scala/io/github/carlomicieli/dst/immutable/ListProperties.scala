@@ -59,6 +59,49 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
+  property("foldLeft: apply function to list elements") {
+    check(forAll { (xs: List[Int]) =>
+      xs.foldLeft(42)(_ + _) === xs.sum + 42
+    })
+  }
+
+  property("foldRight: apply function to list elements") {
+    check(forAll { (xs: List[Int]) =>
+      xs.foldRight(42)(_ + _) === xs.sum + 42
+    })
+  }
+
+  property("foldLeft and foldRight produce the same result for associative operations") {
+    check(forAll { (xs: List[Int]) =>
+      xs.foldLeft(0)(_ + _) === xs.foldRight(0)(_ + _)
+    })
+  }
+
+  property("isEmpty: true when length = 0") {
+    check(forAll { (xs: List[Int]) =>
+      xs.isEmpty === (xs.length == 0)
+    })
+  }
+
+  property("nonEmpty: true when length != 0") {
+    check(forAll { (xs: List[Int]) =>
+      xs.nonEmpty === (xs.length != 0)
+    })
+  }
+
+  property("isEmpty and nonEmpty cannot be both true for the same list") {
+    check(forAll { (xs: List[Int]) =>
+      xs.isEmpty === !xs.nonEmpty
+    })
+  }
+
+  property("filter: resulting list length") {
+    check(forAll { (xs: List[Int]) =>
+      val ys = xs.filter(_ % 2 == 0)
+      ys.length <= xs.length
+    })
+  }
+
   property("flatMap: resulting list has the same length as the original list") {
     check(forAll { (xs: List[Int]) =>
       xs.flatMap(x => List(2 * x)).length === xs.length
@@ -125,6 +168,70 @@ class ListProperties extends AbstractPropSpec {
   property("++: the resulting length is the sum of the two original lists") {
     check(forAll { (xs: List[Int], ys: List[Int]) =>
       (xs ++ ys).length === xs.length + ys.length
+    })
+  }
+
+  property("replicate: produce a list with length n") {
+    check(forAll(posNum[Int]) { (n: Int) =>
+      val ys = List.replicate(n)(42)
+      ys.length === n
+    })
+  }
+
+  property("flatten: resulting list has length with the sum of nested lists") {
+    check(forAll { (xss: List[List[Int]]) =>
+      val ys = xss.flatten
+      ys.length === xss.map(_.length).sum
+    })
+  }
+
+  property("all and any prop") {
+    check(forAll { (xs: List[Int]) =>
+      val p       = (x: Int) => x % 2 == 0
+      val negateP = (x: Int) => !p(x)
+      xs.all(p) === !xs.any(negateP)
+    })
+  }
+
+  property("sort: produce sorted list") {
+    check(forAll { (xs: List[Int]) =>
+      xs.nonEmpty ==> {
+        val ys = xs.sort
+        ys.zip(ys.tail).all(p => p._1 <= p._2)
+      }
+    })
+  }
+
+  property("span: sum of the two lists lenght is the same as the original") {
+    check(forAll { (xs: List[Int]) =>
+      val (ys, zs) = xs.span(_ % 2 == 0)
+      ys.length + zs.length === xs.length
+    })
+  }
+
+  property("span: divide list using the predicate") {
+    check(forAll { (xs: List[Int]) =>
+      val isEven = (x: Int) => x % 2 == 0
+
+      val (ys, zs) = xs.span(isEven)
+      ys.all(isEven) === true
+      zs.any(isEven) === false
+    })
+  }
+
+  property("splitAt: sum of resulting lists is egual to the original list length") {
+    check(forAll { (x: Int, xs: List[Int]) =>
+      val (ys, zs) = xs.splitAt(x)
+      ys.length + zs.length === xs.length
+    })
+  }
+
+  property("splitAt: length") {
+    check(forAll { (x: Int, xs: List[Int]) =>
+      val suffixLen = math.min(xs.length, math.max(0, x))
+      val (ys, zs) = xs.splitAt(x)
+      ys.length <= suffixLen
+      zs.length <= (xs.length - suffixLen)
     })
   }
 

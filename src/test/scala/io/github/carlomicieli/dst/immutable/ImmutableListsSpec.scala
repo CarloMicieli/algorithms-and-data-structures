@@ -379,6 +379,44 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
         numbersList.span(_ < 999) shouldBe ((numbersList, Nil))
       }
     }
+
+    describe("unCons") {
+      it("should return a None for the empty list") {
+        emptyList.unCons shouldBe None
+      }
+
+      it("should return a pair with head and tail for non empty lists") {
+        numbersList.unCons shouldBe Just((numbersList.head, numbersList.tail))
+      }
+    }
+
+    describe("all") {
+      it("should return true for the empty list") {
+        emptyList.all(_ > 100) shouldBe true
+      }
+
+      it("should return true if all elements match the predicate") {
+        numbersList.all(_ > 0) shouldBe true
+      }
+
+      it("should return false if any element doesn't match the predicate") {
+        numbersList.all(_ > 5) shouldBe false
+      }
+    }
+
+    describe("any") {
+      it("should return false for the empty list") {
+        emptyList.any(_ > 100) shouldBe false
+      }
+
+      it("should return true if all elements match the predicate") {
+        numbersList.any(_ > 0) shouldBe true
+      }
+
+      it("should return false if any element doesn't match the predicate") {
+        numbersList.any(_ > 999) shouldBe false
+      }
+    }
   }
 }
 
