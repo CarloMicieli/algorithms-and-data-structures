@@ -345,6 +345,19 @@ sealed trait List[+A] {
         (fst, x +: snd)
   }
 
+  /**
+   * It takes two lists and returns a list of corresponding pairs. If one input
+   * list is short, excess elements of the longer list are discarded.
+   * @param that the second list
+   * @tparam B the second list element type
+   * @return a list with corresponding pairs
+   */
+  def zip[B](that: List[B]): List[(A, B)] = (this, that) match {
+    case (_, Nil) | (Nil, _) => List.empty[(A, B)]
+    case (x +: xs, y +: ys)  =>
+      (x, y) +: (xs zip ys)
+  }
+
   override def toString: String = mkString(", ", "[", "]")
 }
 
