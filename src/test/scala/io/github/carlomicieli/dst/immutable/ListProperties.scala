@@ -165,9 +165,15 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
-  property("++: the resulting length is the sum of the two original lists") {
+  property("append: the resulting length is the sum of the two original lists") {
     check(forAll { (xs: List[Int], ys: List[Int]) =>
       (xs ++ ys).length === xs.length + ys.length
+    })
+  }
+
+  property("append and ++ are equivalent") {
+    check(forAll { (xs: List[Int], ys: List[Int]) =>
+      (xs ++ ys) === (xs append ys)
     })
   }
 
@@ -202,7 +208,7 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
-  property("span: sum of the two lists lenght is the same as the original") {
+  property("span: sum of the two lists length is the same as the original") {
     check(forAll { (xs: List[Int]) =>
       val (ys, zs) = xs.span(_ % 2 == 0)
       ys.length + zs.length === xs.length
@@ -219,7 +225,7 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
-  property("splitAt: sum of resulting lists is egual to the original list length") {
+  property("splitAt: sum of resulting lists is equal to the original list length") {
     check(forAll { (x: Int, xs: List[Int]) =>
       val (ys, zs) = xs.splitAt(x)
       ys.length + zs.length === xs.length

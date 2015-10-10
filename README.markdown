@@ -49,6 +49,8 @@ Machine used for the benchmark
 
 ## Data structures
 
+The `io.github.carlomicieli.dst` package includes both "*mutable*" and "*immutable*" data structures. 
+
 ### `Maybe`
 
 The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]` either contains a value of type `A` 
@@ -101,6 +103,8 @@ trait List[+A] {
   def head: A                                   // O(1)
   def headOption: Maybe[A]                      // O(1)
   def tail: List[A]                             // O(1)
+  def any(p: A => Boolean): Boolean             // O(n)
+  def all(p: A => Boolean): Boolean             // O(n)
   def isEmpty: Boolean                          // O(1)
   def nonEmpty: Boolean                         // O(1)
   def +:(x: A): List[A]                         // O(1)
@@ -116,14 +120,14 @@ trait List[+A] {
   def reverse: List[A]                          // O(n)
   def map[B](f: A => B): List[B]                // O(n)
   def flatMap[B](f: A => List[B]): List[B]      // O(n)
-  def ++(that: List[A]): List[A]                // O(n)
+  def append(that: List[A]): List[A]            // O(n)
   def intersperse(x: A): List[A]                // O(n)
   def foldRight[B](z: B)(f: (A, B) => B): B     // O(n)
-  def foldRight[B](continue: (A, => B) => B, z: B)(f: (A, B) => B): B
   def foldLeft[B](z: B)(f: (B, A) => B): B      // O(n)
-  def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
   def splitAt(m: Int): (List[A], List[A])       // O(m)
   def span(p: A => Boolean): (List[A], List[A]) // O(n)
+  def unCons: Maybe[(A, List[A])]               // O(1)
+  def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
 }
 ```
 

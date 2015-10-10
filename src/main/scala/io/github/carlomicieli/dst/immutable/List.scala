@@ -234,7 +234,18 @@ sealed trait List[+A] {
    * @tparam A1 the resulting list type
    * @return a list obtained appending the element of `that` to this list
    */
-  def ++[A1 >: A](that: List[A1]): List[A1] = (this, that) match {
+  def ++[A1 >: A](that: List[A1]): List[A1] = this append that
+
+  /**
+   * `O(n)` Returns a new list obtained appending the elements from `that` list to this one.
+   *
+   * @usecase def append(that: List[A]): List[A]
+   * @inheritdoc
+   * @param that the second list to append
+   * @tparam A1 the resulting list type
+   * @return a list obtained appending the element of `that` to this list
+   */
+  def append[A1 >: A](that: List[A1]): List[A1] = (this, that) match {
     case (Nil, ys) => ys
     case (xs, Nil) => xs
     case _ => foldRight(that)((x, xs) => x +: xs)
