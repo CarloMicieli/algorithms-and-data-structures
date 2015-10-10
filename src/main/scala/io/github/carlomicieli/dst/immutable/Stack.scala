@@ -77,6 +77,8 @@ trait Stack[+A] {
    * @return optionally the top element
    */
   def top: Maybe[A]
+
+  def foreach[U](f: A => U): Unit
 }
 
 object Stack {

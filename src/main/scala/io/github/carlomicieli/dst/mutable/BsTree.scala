@@ -44,7 +44,7 @@ final class BsTree[K, V] extends Tree[K, V] {
 
   override def successor(key: K)(implicit ord: Ordering[K]): K = {
     var x = findNode(key)
-    val succ: Node =
+    val next: Node =
       if (x.isNIL)
         x
       else if (x.right.isNotNIL)
@@ -58,14 +58,14 @@ final class BsTree[K, V] extends Tree[K, V] {
         y
       }
 
-    succ.keyOrThrow {
+    next.keyOrThrow {
       new NoSuchElementException(s"Successor not found for '$key'")
     }
   }
 
   override def predecessor(key: K)(implicit ord: Ordering[K]): K = {
     var x = findNode(key)
-    val pred: Node =
+    val prev: Node =
       if (x.isNIL)
         x
       else if (x.left.isNotNIL)
@@ -79,7 +79,7 @@ final class BsTree[K, V] extends Tree[K, V] {
         y
       }
 
-    pred.keyOrThrow {
+    prev.keyOrThrow {
       new NoSuchElementException(s"Predecessor not found for '$key'")
     }
   }

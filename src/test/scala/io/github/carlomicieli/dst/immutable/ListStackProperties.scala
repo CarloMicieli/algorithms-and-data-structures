@@ -23,33 +23,33 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import io.github.carlomicieli.util.{Good, Bad, Maybe, Or}
+import org.scalacheck.Prop.forAll
+import io.github.carlomicieli.test.AbstractPropSpec
 
-import scala.util.control.NoStackTrace
+class ListStackProperties extends AbstractPropSpec {
 
-private[this]
-class ListStack[+A](st: List[A]) extends Stack[A] {
-  override def push[B >: A](el: B): Stack[B] = new ListStack[B](el +: st)
+  property("push") {
+    check(forAll { (x: Int, stack: Stack[Int]) =>
+      val s = stack push x
+      val (y, _) = s.pop.get
+      y === x
+    })
+  }
 
-  override def size: Int = st.length
-
-  override def top: Maybe[A] = st.headOption
-
-  override def isEmpty: Boolean = st.isEmpty
-
-  override def nonEmpty: Boolean = st.nonEmpty
-
-  override def pop: Or[(A, Stack[A]), EmptyStackException] =
-    if (isEmpty) Bad(new EmptyStackException with NoStackTrace)
-    else {
-      val head +: tail = st
-      Good((head, new ListStack(tail)))
+  def fromOps(ops: List[StackOp[Int]]): Stack[Int] = {
+    
+    def step(stack: Stack[Int], op: StackOp[Int]): Stack[Int] = op match {
+      case PushOp(v) => stack push v
+      case PopOp     =>
+        if (stack.isEmpty)
+          stack
+        else {
+          val (_, st) = stack.pop.get
+          st
+        }
     }
-
-  override def foreach[U](f: (A) => U): Unit = st.foreach(f)
-}
-
-private[this]
-object ListStack {
-  def empty[A]: Stack[A] = new ListStack(List.empty[A])
+    
+    ops.foldLeft(ListStack.empty[Int])(step)
+  }
+  
 }
