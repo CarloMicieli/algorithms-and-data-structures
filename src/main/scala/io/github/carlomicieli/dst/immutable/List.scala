@@ -40,6 +40,19 @@ sealed trait List[+A] {
   def head: A
 
   /**
+   * `O(n)` Returns the last element of a list.
+   * @return the last element
+   */
+  def last: A = {
+    if (isEmpty)
+      throw new NoSuchElementException("List.last: empty list")
+    else {
+      val (h, t) = this.unCons.get
+      t.foldLeft(h)((last, x) => x)
+    }
+  }
+
+  /**
    * `O(1)` Optionally returns the first element of a list.
    * @return `Some(head)` if the list is not empty; `None` otherwise
    */
@@ -50,6 +63,18 @@ sealed trait List[+A] {
    * @return the elements after the head
    */
   def tail: List[A]
+
+  /**
+   * `O(n^2)` It returns all final segments of the argument, longest first.
+   * @return all final segments
+   */
+  def tails: List[List[A]] = this match {
+    case Nil      => List(List())
+    case x +: Nil => List(List(x), List())
+    case x +: xs  =>
+      val ts = xs.tails
+      (x +: ts.head) +: ts
+  }
 
   /**
    * `O(1)` Checks whether this list is empty.
@@ -64,6 +89,17 @@ sealed trait List[+A] {
   def nonEmpty: Boolean = !isEmpty
 
   /**
+   * `O(n)` It computes the sum of the numbers of a structure.
+   * @usecase def sum: A
+   * @inheritdoc
+   * @param num the evidence the elements are numeric
+   * @tparam A1 the element type
+   * @return the list sum
+   */
+  def sum[A1 >: A](implicit num: Numeric[A1]): A1 =
+    this.foldLeft(num.zero)(num.plus)
+
+  /**
    * `O(1)` Adds an element at the beginning of this list.
    * @param x the element to add
    * @tparam A1 the list element type
@@ -72,6 +108,20 @@ sealed trait List[+A] {
    * @inheritdoc
    */
   def +:[A1 >: A](x: A1): List[A1] = new Cons(x, this)
+
+  /**
+   * `O(n)` Checks whether this list contains a given value as an element.
+   * @usecase def elem: Boolean
+   * @inheritdoc
+   * @param x the element to find
+   * @tparam A1 the element type
+   * @return `true` if `x` is a list element; `false` otherwise
+   */
+  def elem[A1 >: A](x: A1): Boolean = this match {
+    case y +: _ if y == x => true
+    case _ +: ys          => ys elem x
+    case Nil              => false
+  }
 
   /**
    * `O(n)` Applies a function `f` to all elements of this list.
@@ -223,7 +273,18 @@ sealed trait List[+A] {
    * @tparam A1 the resulting list type
    * @return a list obtained appending the element of `that` to this list
    */
-  def ++[A1 >: A](that: List[A1]): List[A1] = (this, that) match {
+  def ++[A1 >: A](that: List[A1]): List[A1] = this append that
+
+  /**
+   * `O(n)` Returns a new list obtained appending the elements from `that` list to this one.
+   *
+   * @usecase def append(that: List[A]): List[A]
+   * @inheritdoc
+   * @param that the second list to append
+   * @tparam A1 the resulting list type
+   * @return a list obtained appending the element of `that` to this list
+   */
+  def append[A1 >: A](that: List[A1]): List[A1] = (this, that) match {
     case (Nil, ys) => ys
     case (xs, Nil) => xs
     case _ => foldRight(that)((x, xs) => x +: xs)
@@ -317,7 +378,7 @@ sealed trait List[+A] {
    * `O(m)` Returns a tuple where first element is the prefix of length `m`
    * and second element is the remainder of the list.
    *
-   * @param m the index where the list will be splitted
+   * @param m the index where the list will be split
    * @return a pair of lists
    */
   def splitAt(m: Int): (List[A], List[A]) = (m, this) match {
@@ -344,6 +405,55 @@ sealed trait List[+A] {
       else
         (fst, x +: snd)
   }
+
+  /**
+   * `O(n)` Determines whether all elements of this list satisfy the predicate.
+   * @param p the predicate to match
+   * @return `true` if all elements match the predicate; `false` otherwise
+   */
+  def all(p: A => Boolean): Boolean = this match {
+    case Nil     => true
+    case x +: xs => p(x) && xs.all(p)
+  }
+
+  /**
+   * `O(n)` Determines whether any elements of this list satisfy the predicate.
+   * @param p the predicate to match
+   * @return `true` if any elements match the predicate; `false` otherwise
+   */
+  def any(p: A => Boolean): Boolean = this match {
+    case Nil     => false
+    case x +: xs => p(x) || xs.any(p)
+  }
+
+  /**
+   * `O(n)` It takes two lists and returns a list of corresponding pairs. If one input
+   * list is short, excess elements of the longer list are discarded.
+   * @param that the second list
+   * @tparam B the second list element type
+   * @return a list with corresponding pairs
+   */
+  def zip[B](that: List[B]): List[(A, B)] = (this, that) match {
+    case (_, Nil) | (Nil, _) => List.empty[(A, B)]
+    case (x +: xs, y +: ys)  =>
+      (x, y) +: (xs zip ys)
+  }
+
+  /**
+   * `O(n)` Zips this list with its indices.
+   * @return a list of pair with the element and its index
+   */
+  def zipWithIndex: List[(A, Int)] = {
+    //TODO: improve this implementation
+    this zip List.fromRange(1 to length)
+  }
+
+  /**
+   * `O(1)` Decompose a list into its head and tail. If the list is empty, returns `None`. If the list is non-empty,
+   * returns `Just (x, xs)`, where `x` is the head of the list and `xs` its tail.
+   * @return optionally a pair with the list head and tail
+   */
+  def unCons: Maybe[(A, List[A])] = if (isEmpty) None else Just((head, tail))
 
   override def toString: String = mkString(", ", "[", "]")
 }
@@ -405,6 +515,10 @@ object List {
     }
 
     loop(z, List.empty[A])
+  }
+
+  def fromRange(r: Range): List[Int] = {
+    r.foldRight(List.empty[Int])(_ +: _)
   }
 }
 

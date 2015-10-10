@@ -23,7 +23,11 @@
  */
 package io.github.carlomicieli.dst
 
+import org.scalacheck.util.Buildable
+import org.scalacheck.{Gen, Arbitrary}
 import org.scalatest.enablers.{Length, Size}
+
+import scala.language.implicitConversions
 
 package object immutable {
   implicit val listLength: Length[List[_]] = new Length[List[_]] {
@@ -33,4 +37,41 @@ package object immutable {
   implicit val bsTreeSize: Size[Tree[_, _]] = new Size[Tree[_, _]] {
     def sizeOf(obj: Tree[_, _]): Long = obj.size
   }
+
+  implicit def listToTraversable[T](list: List[T]): Traversable[T] = new Traversable[T] {
+    override def foreach[U](f: (T) => U): Unit = list.foreach(f)
+  }
+
+  implicit def arbitraryList[T](implicit ev: Arbitrary[T]): Arbitrary[List[T]] = Arbitrary {
+    import Arbitrary._
+    import Gen._
+
+    val genEmptyList = const(List.empty[T])
+
+    val genSingletonList = for { x <- arbitrary[T] } yield List(x)
+
+    def genList(sz: Int): Gen[List[T]] = containerOfN[List, T](sz, arbitrary[T])
+
+    def sizedList(sz: Int) =
+      if (sz <= 0) genEmptyList
+      else Gen.frequency((1, genEmptyList), (1, genSingletonList), (8, genList(sz)))
+
+    Gen.sized(sz => sizedList(sz))
+  }
+
+  implicit def buildableList[T]: Buildable[T, List[T]] = new Buildable[T, List[T]] {
+    def builder = new scala.collection.mutable.Builder[T, List[T]]() {
+      private var list = List.empty[T]
+
+      override def +=(elem: T): this.type = {
+        list = elem +: list
+        this
+      }
+
+      override def result(): List[T] = list
+
+      override def clear(): Unit = list = List.empty[T]
+    }
+  }
+
 }

@@ -49,6 +49,8 @@ Machine used for the benchmark
 
 ## Data structures
 
+The `io.github.carlomicieli.dst` package includes both "*mutable*" and "*immutable*" data structures. 
+
 ### `Maybe`
 
 The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]` either contains a value of type `A` 
@@ -99,14 +101,17 @@ A list is either empty, or a constructed list with a `head` and a `tail`.
 ```scala
 trait List[+A] {
   def head: A                                   // O(1)
+  def last: A                                   // O(n)
   def headOption: Maybe[A]                      // O(1)
   def tail: List[A]                             // O(1)
+  def any(p: A => Boolean): Boolean             // O(n)
+  def all(p: A => Boolean): Boolean             // O(n)
   def isEmpty: Boolean                          // O(1)
   def nonEmpty: Boolean                         // O(1)
   def +:(x: A): List[A]                         // O(1)
   def foreach(f: A => Unit): Unit               // O(n)
+  def elem(x: A): Boolean                       // O(n)
   def filter(p: A => Boolean): List[A]          // O(n)
-  def withFilter(p: A => Boolean): WithFilter   // O(n)
   def filterNot(p: A => Boolean): List[A]       // O(n)
   def length: Int                               // O(n)
   def take(m: Int): List[A]                     // O(m)
@@ -116,14 +121,16 @@ trait List[+A] {
   def reverse: List[A]                          // O(n)
   def map[B](f: A => B): List[B]                // O(n)
   def flatMap[B](f: A => List[B]): List[B]      // O(n)
-  def ++(that: List[A]): List[A]                // O(n)
+  def append(that: List[A]): List[A]            // O(n)
   def intersperse(x: A): List[A]                // O(n)
   def foldRight[B](z: B)(f: (A, B) => B): B     // O(n)
-  def foldRight[B](continue: (A, => B) => B, z: B)(f: (A, B) => B): B
   def foldLeft[B](z: B)(f: (B, A) => B): B      // O(n)
-  def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
   def splitAt(m: Int): (List[A], List[A])       // O(m)
   def span(p: A => Boolean): (List[A], List[A]) // O(n)
+  def unCons: Maybe[(A, List[A])]               // O(1)
+  def zip(that: List[B]): List[(A, B)]          // O(n)
+  def zipWithIndex: List[(A, Int)]              // O(n)
+  def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
 }
 ```
 
@@ -181,8 +188,9 @@ trait Tree[+K, +V] {
 References
 ----------
 
-* __Robert Sedgewick, Kevin Wayne__, `Algorithms, 4th Edition`, 2011, Addison-Wesley Professional
-* __Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein__, `Introduction to Algorithms, 3rd Edition`, 2009, Mit Press
-* __Paul Chiusano and Rúnar Bjarnason__, `Functional Programming in Scala`, 2014, Manning Publications
-* __Larry LIU Xinyu__, `Elementary Algorithms`, 2014
-* __Chris Okasaki__, `Purely Functional Data Structures`, 1999, Cambridge University Press
+* Robert Sedgewick, Kevin Wayne. 2011. __Algorithms, 4th Edition__. Addison-Wesley Professional
+* Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein. 2009. __Introduction to Algorithms__ (3rd Edition). Mit Press
+* Paul Chiusano, Rúnar Bjarnason. 2014. __Functional Programming in Scala__. Manning Publications
+* Larry LIU Xinyu. 2014. __Elementary Algorithms__.
+* Chris Okasaki. 1999. __Purely Functional Data Structures__. Cambridge University Press
+* John Hughes. 2007. __QuickCheck testing for fun and profit__. In Proceedings of the 9th international conference on Practical Aspects of Declarative Languages (PADL'07)
