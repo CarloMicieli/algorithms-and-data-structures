@@ -101,6 +101,7 @@ A list is either empty, or a constructed list with a `head` and a `tail`.
 ```scala
 trait List[+A] {
   def head: A                                   // O(1)
+  def last: A                                   // O(n)
   def headOption: Maybe[A]                      // O(1)
   def tail: List[A]                             // O(1)
   def any(p: A => Boolean): Boolean             // O(n)
@@ -109,6 +110,7 @@ trait List[+A] {
   def nonEmpty: Boolean                         // O(1)
   def +:(x: A): List[A]                         // O(1)
   def foreach(f: A => Unit): Unit               // O(n)
+  def elem(x: A): Boolean                       // O(n)
   def filter(p: A => Boolean): List[A]          // O(n)
   def filterNot(p: A => Boolean): List[A]       // O(n)
   def length: Int                               // O(n)
@@ -126,6 +128,8 @@ trait List[+A] {
   def splitAt(m: Int): (List[A], List[A])       // O(m)
   def span(p: A => Boolean): (List[A], List[A]) // O(n)
   def unCons: Maybe[(A, List[A])]               // O(1)
+  def zip(that: List[B]): List[(A, B)]          // O(n)
+  def zipWithIndex: List[(A, Int)]              // O(n)
   def flatten[B](implicit ev: A => List[B]): List[B] // O(n)
 }
 ```

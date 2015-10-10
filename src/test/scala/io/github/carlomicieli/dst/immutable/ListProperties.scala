@@ -30,6 +30,40 @@ import org.scalacheck.Prop.{forAll, BooleanOperators}
 
 class ListProperties extends AbstractPropSpec {
 
+  property("tails: the first element is the original list") {
+    check(forAll { (xs: List[Int]) =>
+      xs.tails.head === xs
+    })
+  }
+
+  property("tails: the last element is the empty list") {
+    check(forAll { (xs: List[Int]) =>
+      xs.tails.last === List()
+    })
+  }
+
+  property("tails: resulting list has length equal original length + 1") {
+    check(forAll { (xs: List[Int]) =>
+      xs.tails.length === xs.length + 1
+    })
+  }
+
+  property("intersperse: length increased") {
+    check(forAll { (x: Int, xs: List[Int]) =>
+      (xs.length > 1) ==> {
+        xs.intersperse(x).length === (xs.length + xs.length - 1)
+      }
+    })
+  }
+
+  property("intersperse: contains element from the original list") {
+    check(forAll { (x: Int, xs: List[Int]) =>
+      val isOdd = (x: (Int, Int)) => x._2 % 2 == 1
+      val ys = xs.intersperse(x)
+      ys.zipWithIndex.filter(isOdd).map(_._1) === xs
+    })
+  }
+
   property("+: increase the list length by 1") {
     check(forAll { (x: Int, xs: List[Int]) =>
       val res = x +: xs
@@ -65,6 +99,18 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
+  property("foldRight: Nil and cons recreate the original list") {
+    check(forAll { (xs: List[Int]) =>
+      xs.foldRight(List.empty[Int])(_ +: _) === xs
+    })
+  }
+
+  property("foldLeft: Nil and cons recreate the original list reversed") {
+    check(forAll { (xs: List[Int]) =>
+      xs.foldLeft(List.empty[Int])((ys, y) => y +: ys) === xs.reverse
+    })
+  }
+
   property("foldRight: apply function to list elements") {
     check(forAll { (xs: List[Int]) =>
       xs.foldRight(42)(_ + _) === xs.sum + 42
@@ -95,10 +141,24 @@ class ListProperties extends AbstractPropSpec {
     })
   }
 
+  property("elem: find the element in a list") {
+    check(forAll { (x: Int, yz: List[Int], zs: List[Int]) =>
+      val xs = yz ++ (x +: zs)
+      xs elem x
+    })
+  }
+
   property("filter: resulting list length") {
     check(forAll { (xs: List[Int]) =>
       val ys = xs.filter(_ % 2 == 0)
       ys.length <= xs.length
+    })
+  }
+
+  property("filter and filterNot: consider all elements") {
+    check(forAll { (xs: List[Int]) =>
+      val isEven = (x: Int) => x % 2 == 0
+      xs.filter(isEven).length + xs.filterNot(isEven).length === xs.length
     })
   }
 

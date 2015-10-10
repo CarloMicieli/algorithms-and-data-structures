@@ -125,6 +125,22 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
       }
     }
 
+    describe("last") {
+      it("should throw an exception for the empty list") {
+        the [NoSuchElementException] thrownBy {
+          emptyList.last
+        } should have message "List.last: empty list"
+      }
+
+      it("should return the last element from the singleton list") {
+        List(42).last shouldBe 42
+      }
+
+      it("should return the last element from a list") {
+        numbersList.last shouldBe 10
+      }
+    }
+
     describe("tail") {
       it("should throws an exception getting the list tail") {
         the[NoSuchElementException] thrownBy {
@@ -415,6 +431,58 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
 
       it("should return false if any element doesn't match the predicate") {
         numbersList.any(_ > 999) shouldBe false
+      }
+    }
+
+    describe("elem") {
+      it("should return false for empty lists") {
+        emptyList elem 42 shouldBe false
+      }
+
+      it("should return true if the list contains the element") {
+        numbersList elem 6 shouldBe true
+      }
+
+      it("should return false if the list doesn't contain the element") {
+        numbersList elem 999 shouldBe false
+      }
+    }
+
+    describe("tails") {
+      it("should return the empty list for the empty list") {
+        emptyList.tails shouldBe List(List())
+      }
+
+      it("should return all final segments for a list") {
+        List(1, 2, 3, 4, 5).tails shouldBe List(
+          List(1, 2, 3, 4, 5),
+          List(2, 3, 4, 5),
+          List(3, 4, 5),
+          List(4, 5),
+          List(5),
+          List())
+      }
+    }
+
+    describe("zip") {
+      it("should produce the empty list if one the two lists is empty") {
+        emptyList zip numbersList shouldBe List()
+        numbersList zip emptyList shouldBe List()
+      }
+
+      it("should produce a number of elements as in the shortest list") {
+        List('a', 'b', 'c') zip numbersList shouldBe List(('a', 1), ('b', 2), ('c', 3))
+        numbersList zip List('a', 'b', 'c') shouldBe List((1, 'a'), (2, 'b'), (3, 'c'))
+      }
+    }
+
+    describe("zipWithIndex") {
+      it("should produce an empty list if the original list is empty") {
+        emptyList.zipWithIndex shouldBe List()
+      }
+
+      it("should create a list of pairs with the element and the corresponding index") {
+        List('a', 'b', 'c', 'd').zipWithIndex shouldBe List(('a', 1), ('b', 2), ('c', 3), ('d', 4))
       }
     }
   }

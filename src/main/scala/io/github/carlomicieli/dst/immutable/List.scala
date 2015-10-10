@@ -40,6 +40,19 @@ sealed trait List[+A] {
   def head: A
 
   /**
+   * `O(n)` Returns the last element of a list.
+   * @return the last element
+   */
+  def last: A = {
+    if (isEmpty)
+      throw new NoSuchElementException("List.last: empty list")
+    else {
+      val (h, t) = this.unCons.get
+      t.foldLeft(h)((last, x) => x)
+    }
+  }
+
+  /**
    * `O(1)` Optionally returns the first element of a list.
    * @return `Some(head)` if the list is not empty; `None` otherwise
    */
@@ -50,6 +63,18 @@ sealed trait List[+A] {
    * @return the elements after the head
    */
   def tail: List[A]
+
+  /**
+   * `O(n^2)` It returns all final segments of the argument, longest first.
+   * @return all final segments
+   */
+  def tails: List[List[A]] = this match {
+    case Nil      => List(List())
+    case x +: Nil => List(List(x), List())
+    case x +: xs  =>
+      val ts = xs.tails
+      (x +: ts.head) +: ts
+  }
 
   /**
    * `O(1)` Checks whether this list is empty.
@@ -83,6 +108,20 @@ sealed trait List[+A] {
    * @inheritdoc
    */
   def +:[A1 >: A](x: A1): List[A1] = new Cons(x, this)
+
+  /**
+   * `O(n)` Checks whether this list contains a given value as an element.
+   * @usecase def elem: Boolean
+   * @inheritdoc
+   * @param x the element to find
+   * @tparam A1 the element type
+   * @return `true` if `x` is a list element; `false` otherwise
+   */
+  def elem[A1 >: A](x: A1): Boolean = this match {
+    case y +: _ if y == x => true
+    case _ +: ys          => ys elem x
+    case Nil              => false
+  }
 
   /**
    * `O(n)` Applies a function `f` to all elements of this list.
@@ -401,6 +440,15 @@ sealed trait List[+A] {
   }
 
   /**
+   * `O(n)` Zips this list with its indices.
+   * @return a list of pair with the element and its index
+   */
+  def zipWithIndex: List[(A, Int)] = {
+    //TODO: improve this implementation
+    this zip List.fromRange(1 to length)
+  }
+
+  /**
    * `O(1)` Decompose a list into its head and tail. If the list is empty, returns `None`. If the list is non-empty,
    * returns `Just (x, xs)`, where `x` is the head of the list and `xs` its tail.
    * @return optionally a pair with the list head and tail
@@ -467,6 +515,10 @@ object List {
     }
 
     loop(z, List.empty[A])
+  }
+
+  def fromRange(r: Range): List[Int] = {
+    r.foldRight(List.empty[Int])(_ +: _)
   }
 }
 
