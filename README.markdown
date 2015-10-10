@@ -110,7 +110,6 @@ trait List[+A] {
   def +:(x: A): List[A]                         // O(1)
   def foreach(f: A => Unit): Unit               // O(n)
   def filter(p: A => Boolean): List[A]          // O(n)
-  def withFilter(p: A => Boolean): WithFilter   // O(n)
   def filterNot(p: A => Boolean): List[A]       // O(n)
   def length: Int                               // O(n)
   def take(m: Int): List[A]                     // O(m)
