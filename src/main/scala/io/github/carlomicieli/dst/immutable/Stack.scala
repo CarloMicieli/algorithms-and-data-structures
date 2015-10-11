@@ -88,6 +88,29 @@ object Stack {
    * @return a new empty `Stack`
    */
   def empty[A]: Stack[A] = new ListStack[A](List.empty[A])
+
+  /**
+   * Creates a new `Stack`, applying the list of operations `ops` in order.
+   * If any of the operations produce a wrong state, it is silently ignored.
+   *
+   * @param ops the list of operation
+   * @tparam T the `Stack` element type
+   * @return a new `Stack`
+   */
+  def fromOps[T](ops: List[StackOp[T]]): Stack[T] = {
+    def step(stack: Stack[T], op: StackOp[T]): Stack[T] = op match {
+      case PushOp(v) => stack push v
+      case PopOp     =>
+        if (stack.isEmpty)
+          stack
+        else {
+          val (_, st) = stack.pop.get
+          st
+        }
+    }
+
+    ops.foldLeft(ListStack.empty[T])(step)
+  }
 }
 
 class EmptyStackException extends Exception("Stack is empty")

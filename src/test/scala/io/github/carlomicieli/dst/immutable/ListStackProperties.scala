@@ -23,12 +23,12 @@
  */
 package io.github.carlomicieli.dst.immutable
 
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop.{forAll, BooleanOperators}
 import io.github.carlomicieli.test.AbstractPropSpec
 
 class ListStackProperties extends AbstractPropSpec {
 
-  property("push") {
+  property("push and pop: get the last inserted element") {
     check(forAll { (x: Int, stack: Stack[Int]) =>
       val s = stack push x
       val (y, _) = s.pop.get
@@ -36,20 +36,20 @@ class ListStackProperties extends AbstractPropSpec {
     })
   }
 
-  def fromOps(ops: List[StackOp[Int]]): Stack[Int] = {
-    
-    def step(stack: Stack[Int], op: StackOp[Int]): Stack[Int] = op match {
-      case PushOp(v) => stack push v
-      case PopOp     =>
-        if (stack.isEmpty)
-          stack
-        else {
-          val (_, st) = stack.pop.get
-          st
-        }
-    }
-    
-    ops.foldLeft(ListStack.empty[Int])(step)
+  property("push increase size by 1") {
+    check(forAll { (x: Int, stack: Stack[Int]) =>
+      val s = stack push x
+      s.size === stack.size + 1
+    })
   }
-  
+
+  property("top: return the top element") {
+    check(forAll { (stack: Stack[Int]) =>
+      stack.nonEmpty ==> {
+        val x = stack.top.get
+        val (topEl, _) = stack.pop.get
+        x === topEl
+      }
+    })
+  }
 }
