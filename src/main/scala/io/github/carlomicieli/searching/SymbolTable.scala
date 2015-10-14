@@ -23,10 +23,12 @@
  */
 package io.github.carlomicieli.searching
 
+import io.github.carlomicieli.util.Maybe
+
 trait SymbolTable[K, V] {
   def update(key: K, value: V): Unit
   def apply(key: K): V
-  def get(key: K): Option[V]
+  def get(key: K): Maybe[V]
   def delete(key: K): Unit
   def contains(key: K): Boolean
   def isEmpty: Boolean

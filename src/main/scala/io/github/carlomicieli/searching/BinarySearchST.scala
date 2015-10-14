@@ -24,6 +24,7 @@
 package io.github.carlomicieli.searching
 
 import io.github.carlomicieli.dst.mutable.DynamicArray
+import io.github.carlomicieli.util.Maybe
 
 import scala.reflect.ClassTag
 
@@ -33,7 +34,7 @@ final class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePai
 
   def update(key: K, value: V): Unit = ???
 
-  def get(key: K): Option[V] = ???
+  def get(key: K): Maybe[V] = ???
 
   def size: Int = s
 

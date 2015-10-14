@@ -23,12 +23,14 @@
  */
 package io.github.carlomicieli.dst.mutable
 
+import io.github.carlomicieli.util.Maybe
+
 import scala.reflect.ClassTag
 
 trait Stack[A] {
   def push(el: A): Unit
   def pop(): A
-  def top: Option[A]
+  def top: Maybe[A]
   def isEmpty: Boolean
   def nonEmpty: Boolean
   def size: Int

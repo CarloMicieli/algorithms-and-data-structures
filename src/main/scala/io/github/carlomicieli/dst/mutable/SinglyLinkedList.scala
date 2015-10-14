@@ -1,0 +1,236 @@
+/*
+ *                       __                  __
+ *      ______________ _/ /___ _      ____ _/ /___ _____
+ *     / ___/ ___/ __ `/ / __ `/_____/ __ `/ / __ `/ __ \
+ *    (__  ) /__/ /_/ / / /_/ /_____/ /_/ / / /_/ / /_/ /
+ *   /____/\___/\__,_/_/\__,_/      \__,_/_/\__, /\____/
+ *                                         /____/
+ *  Copyright (c) 2015 the original author or authors.
+ *  See the LICENCE.txt file distributed with this work for additional
+ *  information regarding copyright ownership.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package io.github.carlomicieli.dst.mutable
+
+import io.github.carlomicieli.util.{Maybe, Just, None, Good, Bad, Or}
+
+private[this]
+class SinglyLinkedList[A] extends LinkedList[A] {
+
+  private var headNode: Node = Nil
+  private var lastNode: Node = Nil
+
+  sealed trait Node {
+    def key: A
+    def key_=(x: A): Unit
+    def next: Node
+    def next_=(n: Node): Unit
+    def isEmpty: Boolean
+    def nonEmpty: Boolean = !isEmpty
+
+    def nextOrElse(n: => Node): Node = if (isEmpty) n else next
+  }
+
+  case class ListNode(var key: A, var next: Node) extends Node {
+    def isEmpty = false
+  }
+
+  case object Nil extends Node {
+    def key = throw new NoSuchElementException("Sentinel node has no key")
+    def key_=(x: A) = {}
+    def next = throw new NoSuchElementException("Sentinel node has no next")
+    def next_=(n: Node) = {}
+    def isEmpty = true
+  }
+
+  override def isEmpty: Boolean = headNode.isEmpty
+  override def nonEmpty: Boolean = headNode.nonEmpty
+
+  override def headOption: Maybe[A] = if (headNode.nonEmpty) Just(headNode.key) else None
+  override def lastOption: Maybe[A] = if (lastNode.nonEmpty) Just(lastNode.key) else None
+
+  override def addFront(el: A): Unit = {
+    headNode = ListNode(el, headNode)
+    if (lastNode.isEmpty)
+      lastNode = headNode
+  }
+
+  override def addBack(el: A): Unit = {
+    val newNode = ListNode(el, Nil)
+    if (lastNode.nonEmpty)
+      lastNode.next = newNode
+
+    lastNode = newNode
+
+    if (headNode.isEmpty)
+      headNode = newNode
+  }
+
+  override def insert(key: A)(implicit ord: Ordering[A]): Unit = {
+    import Ordered._
+
+    findNode(_ > key) match {
+      case None =>
+        val newNode = ListNode(key, Nil)
+        headNode = newNode
+        lastNode = newNode
+      case Just((curr, prev)) =>
+        val newNode = ListNode(key, curr)
+        prev.next = newNode
+        if (prev.isEmpty)
+          headNode = newNode
+    }
+  }
+
+  override def elements: Iterable[A] = new Iterable[A] {
+    override def iterator: Iterator[A] = new Iterator[A] {
+      var curr: Node = SinglyLinkedList.this.headNode
+      override def hasNext = curr.nonEmpty
+      override def next(): A = {
+        val k = curr.key
+        curr = curr.next
+        k
+      }
+    }
+  }
+
+  override def foreach[U](f: (A) => U): Unit = {
+    var curr = headNode
+    while (curr.nonEmpty) {
+      f(curr.key)
+      curr = curr.next
+    }
+  }
+
+  override def length: Int = {
+    foldLeft(0)((len, x) => len + 1)
+  }
+
+  override def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    loop(headNode)(z)(f)
+  }
+
+  override def foldRight[B](z: B)(f: (A, B) => B): B = {
+    val elements = foldLeft(Stack.empty[A])((st, x) => { st push x ; st })
+    var acc = z
+    while (elements.nonEmpty) {
+      acc = f(elements.pop(), acc)
+    }
+    acc
+  }
+
+  override def mkString(sep: String, start: String = "", end: String = ""): String = {
+    val itemsString = if (isEmpty) ""
+    else {
+      loop(headNode.next)(headNode.key.toString)((str, x) => str + sep + x)
+    }
+    s"$start$itemsString$end"
+  }
+
+  private def loop[B](start: Node)(z: B)(f: (B, A) => B): B = {
+    var acc = z
+    var curr = start
+    while (curr.nonEmpty) {
+      acc = f(acc, curr.key)
+      curr = curr.next
+    }
+    acc
+  }
+
+  override def contains(key: A): Boolean = {
+    find(_ == key).isDefined
+  }
+
+  override def find(p: (A) => Boolean): Maybe[A] = {
+    findNode(p) match {
+      case None => None
+      case Just((curr, _)) => Just(curr.key)
+    }
+  }
+
+  private def findNode(p: (A) => Boolean): Maybe[(Node, Node)] = {
+    if (isEmpty) None
+    else {
+      var found: Maybe[(Node, Node)] = None
+      var curr: Node = headNode
+      var prev: Node = Nil
+      while (curr.nonEmpty && found.isEmpty) {
+        found = if (p(curr.key)) Just((curr, prev)) else None
+        curr = curr.next
+        prev = prev.nextOrElse(headNode)
+      }
+      found
+    }
+  }
+
+  override def remove(key: A): Boolean = {
+    findNode(_ == key) match {
+      case None => false
+      case Just((curr, Nil)) =>
+        headNode = curr.nextOrElse(Nil)
+        lastNode = if (headNode.isEmpty) Nil else lastNode
+        true
+      case Just((curr, prev)) => {
+        prev.next = curr.nextOrElse(Nil)
+        true
+      }
+    }
+  }
+
+  def update[B, C](newKey: A)(implicit ev: (A) => (B, C)): Boolean = {
+    findNode(_._1 == newKey._1) match {
+      case None =>
+        addBack(newKey)
+        true
+      case Just((curr, _)) =>
+        curr.key = newKey
+        false
+    }
+  }
+
+  def removeHead(): A Or EmptyLinkedListException = {
+    (headNode, lastNode) match {
+      case (Nil, Nil) =>
+        Bad(new EmptyLinkedListException)
+      case (h, l) if h == l =>
+        headNode = Nil
+        lastNode = Nil
+        Good(h.key)
+      case (ListNode(k, next), _) =>
+        headNode = next
+        Good(k)
+    }
+  }
+}
+
+object SinglyLinkedList {
+  /**
+   * Creates an empty singly linked list.
+   * @tparam A the list element type
+   * @return an empty list
+   */
+  def empty[A]: LinkedList[A] = new SinglyLinkedList[A]
+
+  /**
+   * Creates a singly linked list with the given items.
+   * @param items the list items
+   * @tparam A the list element type
+   * @return a list
+   */
+  def apply[A](items: A*): LinkedList[A] = {
+    val l = SinglyLinkedList.empty[A]
+    for { el <- items } l.addBack(el)
+    l
+  }
+}

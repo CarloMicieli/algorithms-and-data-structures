@@ -23,6 +23,8 @@
  */
 package io.github.carlomicieli.dst.mutable
 
+import io.github.carlomicieli.util.{Just, Maybe, None}
+
 import scala.reflect.ClassTag
 
 private[this]
@@ -34,9 +36,9 @@ class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
   private var last = 0
   private var empty = true
 
-  def peek: Option[A] =
+  def peek: Maybe[A] =
     if (isEmpty) None
-    else Some(storage(first))
+    else Just(storage(first))
 
   def dequeue(): A = {
     if (isEmpty)

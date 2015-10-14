@@ -1,5 +1,6 @@
 package io.github.carlomicieli.searching
 
+import io.github.carlomicieli.util.{Just, None}
 import org.scalatest.{Matchers, FlatSpec}
 
 class SequentialSearchSTSpec extends FlatSpec with Matchers with SampleSymbolTables {
@@ -34,7 +35,7 @@ class SequentialSearchSTSpec extends FlatSpec with Matchers with SampleSymbolTab
   "Searching a key inserted in the ST" should "return its value" in {
     val st = numbersSeqST
     st("one") should be(1)
-    st.get("one") should be(Some(1))
+    st.get("one") should be(Just(1))
   }
 
   "Adding the same key twice to the ST" should "replace its value" in {

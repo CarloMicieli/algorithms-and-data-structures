@@ -23,10 +23,12 @@
  */
 package io.github.carlomicieli.dst.mutable
 
+import io.github.carlomicieli.util.Maybe
+
 import scala.reflect.ClassTag
 
 trait Queue[A] {
-  def peek: Option[A]
+  def peek: Maybe[A]
   def enqueue(el: A): Unit
   def dequeue(): A
   def size: Int

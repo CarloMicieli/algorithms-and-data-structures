@@ -23,6 +23,8 @@
  */
 package io.github.carlomicieli.dst.mutable
 
+import io.github.carlomicieli.util.{Maybe, Just, None}
+
 private[this]
 class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
   private val storage = st
@@ -38,8 +40,8 @@ class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
 
   def size: Int = topIndex
 
-  def top: Option[A] =
-    if (isEmpty) None else Some(storage(topIndex - 1))
+  def top: Maybe[A] =
+    if (isEmpty) None else Just(storage(topIndex - 1))
 
   def isEmpty: Boolean = topIndex == 0
 

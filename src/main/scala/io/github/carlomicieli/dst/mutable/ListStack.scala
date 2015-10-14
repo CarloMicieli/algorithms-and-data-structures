@@ -23,7 +23,7 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.Good
+import io.github.carlomicieli.util.{Maybe, Good}
 
 private[this]
 class ListStack[A] extends Stack[A] {
@@ -35,14 +35,14 @@ class ListStack[A] extends Stack[A] {
 
   override def size: Int = st.length
 
-  override def top: Option[A] = st.headOption
+  override def top: Maybe[A] = st.headOption
 
   override def isEmpty: Boolean = st.isEmpty
 
   override def nonEmpty: Boolean = st.nonEmpty
 
   override def pop(): A = {
-    val Good((head, _)) = st.removeHead()
+    val Good(head) = st.removeHead()
     head
   }
 }

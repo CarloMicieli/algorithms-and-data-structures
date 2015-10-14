@@ -24,6 +24,7 @@
 package io.github.carlomicieli.searching
 
 import io.github.carlomicieli.dst.mutable.LinkedList
+import io.github.carlomicieli.util.Maybe
 
 final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
   private type KeyValPair = (K, V)
@@ -36,7 +37,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
     storage.addFront((key, value))
   }
 
-  def get(key: K): Option[V] =
+  def get(key: K): Maybe[V] =
     containsKey(key).map(p => p._2)
 
   def size: Int = storage.length
@@ -56,7 +57,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
 
   def isEmpty: Boolean = storage.isEmpty
 
-  private def containsKey(key: K): Option[KeyValPair] = {
+  private def containsKey(key: K): Maybe[KeyValPair] = {
     storage.find(p => p._1 == key)
   }
 }

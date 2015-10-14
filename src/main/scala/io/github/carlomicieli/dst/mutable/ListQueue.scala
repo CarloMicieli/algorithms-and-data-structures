@@ -23,7 +23,7 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.{Good}
+import io.github.carlomicieli.util.{Maybe, Good}
 
 private[this]
 class ListQueue[A] extends Queue[A] {
@@ -37,11 +37,11 @@ class ListQueue[A] extends Queue[A] {
     if (isEmpty)
       throw new EmptyQueueException
 
-    val Good((head, _)) = storage.removeHead()
+    val Good(head) = storage.removeHead()
     head
   }
 
-  def peek: Option[A] = storage.headOption
+  def peek: Maybe[A] = storage.headOption
 
   def size: Int = storage.length
 

@@ -24,7 +24,7 @@
 package io.github.carlomicieli.dst.mutable
 
 import io.github.carlomicieli.dst.Container
-import io.github.carlomicieli.util.{Or, Bad, Good}
+import io.github.carlomicieli.util.{Maybe, Or}
 
 /**
  * It represents a mutable singly linked list.
@@ -39,6 +39,12 @@ trait LinkedList[A] extends Container[A] {
   def head: A = headOption.get
 
   /**
+   * `O(1)` Optionally returns the first element (if any) from this list
+   * @return the list head
+   */
+  def headOption: Maybe[A]
+
+  /**
    * `O(1)` Returns the last element (if any) from this list
    *
    * This method is assuming the linked list implementation will store a pointer to the last element.
@@ -47,20 +53,18 @@ trait LinkedList[A] extends Container[A] {
   def last: A = lastOption.get
 
   /**
-   * `O(1)` Optionally returns the first element (if any) from this list
-   * @return the list head
-   */
-  def headOption: Option[A]
-
-  def removeHead(): (A, LinkedList[A]) Or EmptyLinkedListException
-
-  /**
    * `O(1)` Optionally returns the last element (if any) from this list.
    *
    * This method is assuming the linked list implementation will store a pointer to the last element.
    * @return the list tail
    */
-  def lastOption: Option[A]
+  def lastOption: Maybe[A]
+
+  /**
+   * `O(1)` Remove the front element from the list
+   * @return optionally the original value
+   */
+  def removeHead(): A Or EmptyLinkedListException
 
   /**
    * `O(1)` Insert a new element in the front of the list.
@@ -68,6 +72,10 @@ trait LinkedList[A] extends Container[A] {
    */
   def +=(key: A): Unit = addBack(key)
 
+  /**
+   * Append the given elements to the list back
+   * @param keys the elements to add
+   */
   def ++=(keys: A*): Unit = {
     for (k <- keys)
       addBack(k)
@@ -107,10 +115,11 @@ trait LinkedList[A] extends Container[A] {
    * `O(n)` Inserts the element into the list at the first position where it
    * is less than or equal to the next element.
    *
+   * @usecase def insert(key: A): Unit
+   * @inheritdoc
    * @param key the element to insert
    * @param ord
    * @return
-   * @usecase def insert(key: A): Unit
    */
   def insert(key: A)(implicit ord: Ordering[A]): Unit
 
@@ -148,17 +157,17 @@ trait LinkedList[A] extends Container[A] {
 
   /**
    * Displays all elements of this list in a string.
-   * @param sep
-   * @return
+   * @param sep the string separator
+   * @return the string with the list elements
    */
-  def mkString(sep: String): String = mkString(sep)
+  def mkString(sep: String): String = mkString(sep, "", "")
 
   /**
    * Displays all elements of this list in a string.
-   * @param sep
-   * @param start
-   * @param end
-   * @return
+   * @param sep the string separator
+   * @param start the string prefix
+   * @param end the string suffix
+   * @return the string with the list elements
    */
   def mkString(sep: String, start: String = "", end: String = ""): String
 
@@ -177,11 +186,10 @@ trait LinkedList[A] extends Container[A] {
 
   /**
    * `O(n)` Finds the first element of this list satisfying a predicate, if any.
-   * @param p the predicate used to test elements.
-   * @return an option value containing the first element in the list that satisfies `p`,
-   *         or `None` if none exists.
+   * @param p the predicate used to test elements
+   * @return optionally the first element in the list that satisfies `p`
    */
-  def find(p: A => Boolean): Option[A]
+  def find(p: A => Boolean): Maybe[A]
 
   /**
    * `O(n)` Remove the element with the given `key` from the list, if exists.
@@ -194,6 +202,17 @@ trait LinkedList[A] extends Container[A] {
    */
   def remove(key: A): Boolean
 
+  /**
+   * `O(n)` Update the list element, when the list contains pairs.
+   *
+   * @usecase def update(k: (A, B)): Boolean
+   * @inheritdoc
+   * @param key the key to update
+   * @param ev
+   * @tparam B
+   * @tparam C
+   * @return
+   */
   def update[B, C](key: A)(implicit ev: A => (B, C)): Boolean
 
   def zip[B](that: LinkedList[B]): Iterable[(A, B)] = {
@@ -216,194 +235,6 @@ object LinkedList {
     else {
       val seq = list.foldRight(Seq.empty[A])((x, xs) => x +: xs)
       Some(seq)
-    }
-  }
-
-  private class SinglyLinkedList[A] extends LinkedList[A] {
-
-    private var headNode: Node = Nil
-    private var lastNode: Node = Nil
-
-    sealed trait Node {
-      def key: A
-      def key_=(x: A): Unit
-      def next: Node
-      def next_=(n: Node): Unit
-      def isEmpty: Boolean
-      def nonEmpty: Boolean = !isEmpty
-
-      def nextOrElse(n: => Node): Node = if (isEmpty) n else next
-    }
-
-    case class ListNode(var key: A, var next: Node) extends Node {
-      def isEmpty = false
-    }
-
-    case object Nil extends Node {
-      def key = throw new NoSuchElementException("Sentinel node has no key")
-      def key_=(x: A) = {}
-      def next = throw new NoSuchElementException("Sentinel node has no next")
-      def next_=(n: Node) = {}
-      def isEmpty = true
-    }
-
-    override def isEmpty: Boolean = headNode.isEmpty
-    override def nonEmpty: Boolean = headNode.nonEmpty
-
-    override def headOption: Option[A] = if (headNode.nonEmpty) Some(headNode.key) else None
-    override def lastOption: Option[A] = if (lastNode.nonEmpty) Some(lastNode.key) else None
-
-    override def addFront(el: A): Unit = {
-      headNode = ListNode(el, headNode)
-      if (lastNode.isEmpty)
-        lastNode = headNode
-    }
-
-    override def addBack(el: A): Unit = {
-      val newNode = ListNode(el, Nil)
-      if (lastNode.nonEmpty)
-        lastNode.next = newNode
-
-      lastNode = newNode
-
-      if (headNode.isEmpty)
-        headNode = newNode
-    }
-
-    override def insert(key: A)(implicit ord: Ordering[A]): Unit = {
-      import Ordered._
-
-      findNode(_ > key) match {
-        case None =>
-          val newNode = ListNode(key, Nil)
-          headNode = newNode
-          lastNode = newNode
-        case Some((curr, prev)) =>
-          val newNode = ListNode(key, curr)
-          prev.next = newNode
-          if (prev.isEmpty)
-            headNode = newNode
-      }
-    }
-
-    override def elements: Iterable[A] = new Iterable[A] {
-      override def iterator: Iterator[A] = new Iterator[A] {
-        var curr: Node = SinglyLinkedList.this.headNode
-        override def hasNext = curr.nonEmpty
-        override def next(): A = {
-          val k = curr.key
-          curr = curr.next
-          k
-        }
-      }
-    }
-
-    override def foreach[U](f: (A) => U): Unit = {
-      var curr = headNode
-      while (curr.nonEmpty) {
-        f(curr.key)
-        curr = curr.next
-      }
-    }
-
-    override def length: Int = {
-      foldLeft(0)((len, x) => len + 1)
-    }
-
-    override def foldLeft[B](z: B)(f: (B, A) => B): B = {
-      loop(headNode)(z)(f)
-    }
-
-    override def foldRight[B](z: B)(f: (A, B) => B): B = {
-      val elements = foldLeft(Stack.empty[A])((st, x) => { st push x ; st })
-      var acc = z
-      while (elements.nonEmpty) {
-        acc = f(elements.pop, acc)
-      }
-      acc
-    }
-
-    override def mkString(sep: String, start: String = "", end: String = ""): String = {
-      val itemsString = if (isEmpty) ""
-      else {
-        loop(headNode.next)(headNode.key.toString)((str, x) => str + sep + x)
-      }
-      s"$start$itemsString$end"
-    }
-
-    private def loop[B](start: Node)(z: B)(f: (B, A) => B): B = {
-      var acc = z
-      var curr = start
-      while (curr.nonEmpty) {
-        acc = f(acc, curr.key)
-        curr = curr.next
-      }
-      acc
-    }
-
-    override def contains(key: A): Boolean = {
-      find(_ == key).isDefined
-    }
-
-    override def find(p: (A) => Boolean): Option[A] = {
-      findNode(p) match {
-        case None => None
-        case Some((curr, _)) => Some(curr.key)
-      }
-    }
-
-    private def findNode(p: (A) => Boolean): Option[(Node, Node)] = {
-      if (isEmpty) None
-      else {
-        var found: Option[(Node, Node)] = None
-        var curr: Node = headNode
-        var prev: Node = Nil
-        while (curr.nonEmpty && found.isEmpty) {
-          found = if (p(curr.key)) Some((curr, prev)) else None
-          curr = curr.next
-          prev = prev.nextOrElse(headNode)
-        }
-        found
-      }
-    }
-
-    override def remove(key: A): Boolean = {
-      findNode(_ == key) match {
-        case None => false
-        case Some((curr, Nil)) =>
-          headNode = curr.nextOrElse(Nil)
-          lastNode = if (headNode.isEmpty) Nil else lastNode
-          true
-        case Some((curr, prev)) => {
-          prev.next = curr.nextOrElse(Nil)
-          true
-        }
-      }
-    }
-
-    def update[B, C](newKey: A)(implicit ev: (A) => (B, C)): Boolean = {
-      findNode(_._1 == newKey._1) match {
-        case None =>
-          addBack(newKey)
-          true
-        case Some((curr, _)) =>
-          curr.key = newKey
-          false
-      }
-    }
-
-    def removeHead(): (A, LinkedList[A]) Or EmptyLinkedListException = {
-      (headNode, lastNode) match {
-        case (Nil, Nil) =>
-          Bad(new EmptyLinkedListException)
-        case (h, l) if h == l =>
-          headNode = Nil
-          lastNode = Nil
-          Good((h.key, this))
-        case (ListNode(k, next), _) =>
-          headNode = next
-          Good((k, this))
-      }
     }
   }
 }
