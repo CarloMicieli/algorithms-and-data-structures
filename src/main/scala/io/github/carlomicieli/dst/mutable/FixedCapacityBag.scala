@@ -23,11 +23,10 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.Bag
-
 import scala.reflect.ClassTag
 
-final class FixedCapacityBag[A] private(st: Array[A]) extends Bag[A] {
+private[this]
+class FixedCapacityBag[A] private(st: Array[A]) extends Bag[A] {
 
   private val storage = st
   private var ind = 0

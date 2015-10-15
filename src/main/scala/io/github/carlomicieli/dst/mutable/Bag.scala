@@ -21,12 +21,35 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package io.github.carlomicieli.dst
+package io.github.carlomicieli.dst.mutable
 
-trait Container[A] {
-  def foreach[U](f: A => U): Unit
+/**
+ * 
+ * @tparam A the item type
+ */
+trait Bag[A] {
+  /**
+   * Add an item to this bag
+   * @param x the element to add
+   */
+  def add(x: A): Unit
+
+  /**
+   * Checks whether this bag is empty
+   * @return `true` if it's empty; `false` otherwise
+   */
   def isEmpty: Boolean
-  def nonEmpty = !isEmpty
+
+  /**
+   * Returns the number of items contained in this bag.
+   * @return the number of items
+   */
+  def size: Int
+
+  /**
+   * Checks whether this bag contains the given item
+   * @param x the item to search
+   * @return `true` if the bag contains the item; `false` otherwise
+   */
   def contains(x: A): Boolean
-  def mkString(sep: String): String
 }

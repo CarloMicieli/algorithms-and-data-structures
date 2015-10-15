@@ -23,32 +23,68 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.Bag
-import org.scalatest.{Matchers, FlatSpec}
+import io.github.carlomicieli.test.AbstractSpec
 
-class FixedCapacityBagSpec extends FlatSpec with Matchers with SampleBags {
-  "An empty Bag" should "have size equals to 0" in {
-    val bag = emptyFixedCapBag(16)
-    bag.size should be(0)
-    bag.isEmpty should be(true)
-  }
-
-  "Adding an element to a bag" should "increase its size" in {
-    val bag = emptyFixedCapBag(16)
-    bag.add(1)
-    bag.add(2)
-    bag.size should be(2)
-    bag.isEmpty should be(false)
-  }
+class FixedCapacityBagSpec extends AbstractSpec with FixedCapacityBagsFixture {
   
-  it should "check whether an element is contained in the bad" in {
-    val bag = fixedCapBag(1, 2, 3, 4)
-    bag.contains(1) should be(true)
-    bag.contains(9) should be(false)
+  describe("A fixed capacity bag") {
+    describe("isEmpty") {
+      it("should return 'true' for an empty bag") {
+        val bag = emptyFixedCapBag(16)
+        bag.isEmpty shouldBe true
+      }
+      
+      it("should return 'false' for non empty bags") {
+        val bag = fixedCapBag(1, 2, 3, 4)
+        bag.isEmpty shouldBe false
+      }
+    }
+    
+    describe("size") {
+      it("should return 0 for empty bags") {
+        val bag = emptyFixedCapBag(16)
+        bag.size shouldBe 0
+      }
+      
+      it("should return the number of items for non empty bags") {
+        val bag = fixedCapBag(1, 2, 3, 4)
+        bag.size shouldBe 4
+      }
+    }
+    
+    describe("add") {
+      it("should add items to bags") {
+        val bag = emptyFixedCapBag(16)
+        bag.add(1)
+        bag.add(2)
+        bag.add(3)
+        bag.size shouldBe 3
+      }
+      
+      it("should increase the bag size") {
+        val bag = emptyFixedCapBag(4)
+        bag.add(5)
+        bag.size shouldBe 1
+      }
+    }
+    
+    describe("contains") {
+      it("should 'false' searching an item in an empty bag") {
+        emptyFixedCapBag(16).contains(99) shouldBe false
+      }
+
+      it("should 'false' searching an item not in a bag") {
+        fixedCapBag(1, 2, 3, 4).contains(99) shouldBe false
+      }
+
+      it("should 'true' searching an item not in a bag") {
+        fixedCapBag(1, 2, 3, 4).contains(3) shouldBe true
+      }
+    }
   }
 }
 
-trait SampleBags {
+trait FixedCapacityBagsFixture {
   def emptyFixedCapBag(n: Int): Bag[Int] = FixedCapacityBag[Int](n)
   
   def fixedCapBag(items: Int*): Bag[Int] = {

@@ -23,14 +23,13 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.dst.Container
 import io.github.carlomicieli.util.{Maybe, Or}
 
 /**
  * It represents a mutable singly linked list.
  * @tparam A the list element type
  */
-trait LinkedList[A] extends Container[A] {
+trait LinkedList[A] {
 
   /**
    * `O(1)` Returns the first element (if any) from this list
