@@ -78,18 +78,19 @@ class SinglyLinkedList[A] extends LinkedList[A] {
   }
 
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = {
-    import Ordered._
+    if (isEmpty) {
+      addFront(key)
+    }
+    else {
+      import Ordered._
 
-    findNode(_ > key) match {
-      case None =>
-        val newNode = ListNode(key, Nil)
-        headNode = newNode
-        lastNode = newNode
-      case Just((curr, prev)) =>
-        val newNode = ListNode(key, curr)
-        prev.next = newNode
-        if (prev.isEmpty)
-          headNode = newNode
+      var prev: Node = headNode
+      var curr: Node = headNode
+      while (curr.nonEmpty && curr.key < key) {
+        prev = curr
+        curr = curr.next
+      }
+      prev.next = ListNode(key, curr)
     }
   }
 
@@ -202,7 +203,7 @@ class SinglyLinkedList[A] extends LinkedList[A] {
   def removeHead(): A Or EmptyLinkedListException = {
     (headNode, lastNode) match {
       case (Nil, Nil) =>
-        Bad(new EmptyLinkedListException)
+        Bad(new EmptyLinkedListException("removeHead"))
       case (h, l) if h == l =>
         headNode = Nil
         lastNode = Nil

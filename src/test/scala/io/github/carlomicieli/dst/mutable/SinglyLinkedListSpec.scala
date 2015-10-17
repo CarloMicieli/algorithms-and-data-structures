@@ -30,9 +30,9 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
   describe("A singly linked list") {
     describe("head") {
       it("should throw an exception for the empty list") {
-        the [NoSuchElementException] thrownBy {
+        the [EmptyLinkedListException] thrownBy {
           emptyList.head
-        } should have message "Maybe.get: a value doesn't exist"
+        } should have message "LinkedList.head: this list is empty"
       }
 
       it("should return the first element in the list") {
@@ -52,9 +52,9 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
 
     describe("last") {
       it("should throw an exception for the empty list") {
-        the [NoSuchElementException] thrownBy {
+        the [EmptyLinkedListException] thrownBy {
           emptyList.last
-        } should have message "Maybe.get: a value doesn't exist"
+        } should have message "LinkedList.last: this list is empty"
       }
 
       it("should return the last element in the list") {
@@ -148,7 +148,7 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     }
 
     describe("insert") {
-      ignore("should produce sorted lists") {
+      it("should produce sorted lists") {
         val l = emptyList
         l.insert(1)
         l.insert(42)

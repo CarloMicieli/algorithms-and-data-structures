@@ -35,7 +35,7 @@ trait LinkedList[A] {
    * `O(1)` Returns the first element (if any) from this list
    * @return the list head
    */
-  def head: A = headOption.get
+  def head: A = headOption.orElseThrow(new EmptyLinkedListException("head"))
 
   /**
    * `O(1)` Optionally returns the first element (if any) from this list
@@ -49,7 +49,7 @@ trait LinkedList[A] {
    * This method is assuming the linked list implementation will store a pointer to the last element.
    * @return the list tail
    */
-  def last: A = lastOption.get
+  def last: A = lastOption.orElseThrow(new EmptyLinkedListException("last"))
 
   /**
    * `O(1)` Optionally returns the last element (if any) from this list.
@@ -235,4 +235,4 @@ object LinkedList {
   }
 }
 
-class EmptyLinkedListException extends Exception("LinkedList is empty")
+class EmptyLinkedListException(op: String) extends Exception(s"LinkedList.$op: this list is empty")

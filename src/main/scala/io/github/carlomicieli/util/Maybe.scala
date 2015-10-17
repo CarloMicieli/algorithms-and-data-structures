@@ -52,7 +52,8 @@ sealed trait Maybe[+A] {
    * @tparam A1 the element type
    * @return
    */
-  def getOrElse[A1 >: A](default: => A1): A1 = if (isDefined) get else default
+  def getOrElse[A1 >: A](default: => A1): A1 =
+    if (isDefined) get else default
 
   /**
    * It returns the first `Maybe` if it’s defined; otherwise, it returns
@@ -64,7 +65,17 @@ sealed trait Maybe[+A] {
    * @tparam A1 the element type
    * @return
    */
-  def orElse[A1 >: A](that: => Maybe[A1]): Maybe[A1] = if (isDefined) this else that
+  def orElse[A1 >: A](that: => Maybe[A1]): Maybe[A1] =
+    if (isDefined) this else that
+
+  /**
+   * Returns the contained value if this is `Just`; throw the provided exception
+   * if this is a `None`.
+   * @param ex the exception to throw for `None` values
+   * @return the element contained in this value; or throw the exception
+   */
+  def orElseThrow(ex: => Throwable): A =
+    if (isDefined) get else throw ex
 
   /**
    * Returns `true` iff its argument is of the form `Just[_]`.

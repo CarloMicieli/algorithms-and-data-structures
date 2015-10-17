@@ -69,7 +69,7 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
     }
 
     describe("getOrElse") {
-      it("should provide the contained value in Good values") {
+      it("should provide the contained value in Just values") {
         just42.getOrElse(-1) shouldBe 42
       }
 
@@ -83,9 +83,21 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
         none.orElse(just42) shouldBe just42
       }
 
-      it("should return the same value, if it's a Good") {
+      it("should return the same value, if it's a Just value") {
         just42.orElse(Just(99)) shouldBe just42
         just42 should be theSameInstanceAs just42
+      }
+    }
+
+    describe("orElseThrow") {
+      it("should return the contained value if it's Just") {
+        just42.orElseThrow(new Exception("my exception")) shouldBe 42
+      }
+
+      it("should throw the provided exception for None values") {
+        the [Exception] thrownBy {
+          none.orElseThrow(new Exception("my exception"))
+        } should have message "my exception"
       }
     }
 
