@@ -203,9 +203,6 @@ trait LinkedList[A] {
 
   /**
    * `O(n)` Update the list element, when the list contains pairs.
-   *
-   * @usecase def update(k: (A, B)): Boolean
-   * @inheritdoc
    * @param key the key to update
    * @param ev
    * @tparam B
