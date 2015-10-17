@@ -23,50 +23,149 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import org.scalatest.{Matchers, FlatSpec}
+import io.github.carlomicieli.test.AbstractSpec
 
-class DynamicArraySpec extends FlatSpec with Matchers {
-  "An empty DynamicArray" should "have a length" in {
-    val a = DynamicArray.empty[Int](10)
-    a.length should be(10)
+class DynamicArraySpec extends AbstractSpec with DynamicArrayFixture {
+
+  describe("A Dynamic array") {
+    describe("size") {
+      it("should be the max number of elements") {
+        val a = DynamicArray.empty[Int](10)
+        a.size shouldBe 10
+      }
+    }
+
+    describe("isDefinedAt") {
+      it("should return 'true' when index is inside the bounds") {
+        emptyArray.isDefinedAt(1) shouldBe true
+        emptyArray.isDefinedAt(0) shouldBe true
+        emptyArray.isDefinedAt(emptyArray.size - 1) shouldBe true
+      }
+
+      it("should return 'false' when index is out of bounds") {
+        emptyArray.isDefinedAt(-1) shouldBe false
+        emptyArray.isDefinedAt(99) shouldBe false
+      }
+    }
+
+    describe("apply") {
+      it("should return the element at given index") {
+        numbersArray(4) shouldBe 5
+      }
+
+      it("should throw an exception when the index is out of bounds") {
+        the [ArrayIndexOutOfBoundsException] thrownBy {
+          numbersArray(99)
+        } should have message "99"
+      }
+    }
+
+    describe("update") {
+      it("should replace a value in the array at given index") {
+        val a = emptyArray
+        a(1) = 1
+        a(2) = 2
+        a(1) shouldBe 1
+        a(2) shouldBe 2
+      }
+
+      it("should throw an exception when the index is out of bounds") {
+        val a = emptyArray
+        the [ArrayIndexOutOfBoundsException] thrownBy {
+          a(99) = 100
+        } should have message "99"
+      }
+    }
+
+    describe("shift") {
+      it("should slide all elements from starting point in DynamicArray") {
+        val a = DynamicArray(40, 41, 42, 43, 44, 45, 46)
+        a.shift(1, 1)
+        a shouldBe DynamicArray(40, 41, 41, 42, 43, 44, 45)
+      }
+    }
+
+    describe("insert") {
+      it("should insert the new element at the first where the predicate matches") {
+        val a = DynamicArray(1, 2, 4, 5, 0)
+        val inserted = a.insert(3)(_ <= _)
+        inserted shouldBe true
+        a.toString shouldBe "[1, 2, 3, 4, 5]"
+      }
+    }
+
+    describe("expand") {
+      it("should grow") {
+        val a = DynamicArray.empty[Int](10)
+        a.size shouldBe 10
+
+        val b = a.expand
+        b.size shouldBe 15
+      }
+    }
+
+    describe("shrink") {
+      it("should shrink") {
+        val a = DynamicArray.empty[Int](10)
+        a.size shouldBe 10
+
+        val b = a.shrink
+        b.size shouldBe 6
+      }
+    }
+
+    describe("toString") {
+      it("should produce a string for empty arrays") {
+        emptyArray.toString() shouldBe "[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]"
+      }
+
+      it("should produce a string with the array elements") {
+        numbersArray.toString() shouldBe "[1, 2, 3, 4, 5, 6]"
+      }
+    }
+
+    describe("swap") {
+      it("should swap two array elements") {
+        val a = numbersArray
+        val prev1 = a(1)
+        val prev2 = a(2)
+        a.swap(1, 2)
+        a(1) shouldBe prev2
+        a(2) shouldBe prev1
+      }
+
+      it("should do nothing when i and j are the same index") {
+        val a = numbersArray
+        val prev = a(1)
+        a.swap(1, 1)
+        a(1) shouldBe prev
+      }
+    }
+
+    describe("equals") {
+      it("should return 'false' when the two arrays are different") {
+        val a1 = emptyArray
+        val a2 = numbersArray
+        a1 == a2 shouldBe false
+      }
+
+      it("should return 'true' when the two arrays are equals") {
+        val a1 = numbersArray
+        val a2 = numbersArray
+        a1 == a2 shouldBe true
+      }
+    }
+
+    describe("elements") {
+      it("should return an iterator with the array elements") {
+        numbersArray.elements.mkString(" - ") shouldBe "1 - 2 - 3 - 4 - 5 - 6"
+      }
+    }
   }
+}
 
-  "Setting element to DynamicArray" should "be index based" in {
-    val a = DynamicArray.empty[Int](10)
-    a(0) = 1
-    a(1) = 2
-    a(0) should be(1)
-    a(1) should be(2)
-  }
-
-  "resize operation" should "change the DynamicArray size" in {
-    val a = DynamicArray.empty[Int](5)
-    val b = a.resize(2.0)
-    b.length should be(10)
-  }
-
-  "shift" should "slide all elements from starting point in DynamicArray" in {
-    val a = DynamicArray(1, 2, 3, 4, 5)
-    a.shift(1, 1)
-
-    a.toString should be("[1, 2, 2, 3, 4]")
-  }
-
-  "insert()" should "insert the new element when the predicate is true" in {
-    val a = DynamicArray(1, 2, 4, 5, 0)
-    val inserted = a.insert(3)(_ <= _)
-    inserted should be(true)
-    a.toString should be("[1, 2, 3, 4, 5]")
-  }
-
-  "DynamicArray" should "growth and shrink" in {
-    val a = DynamicArray.empty[Int](10)
-    a.length should be(10)
-
-    val b = a.expand
-    b.length should be(15)
-
-    val c = a.shrink
-    c.length should be(6)
-  }
+trait DynamicArrayFixture {
+  def emptyArray: DynamicArray[Int] = DynamicArray.empty[Int](10)
+  def dynArray(items: Int*): DynamicArray[Int] = DynamicArray(items.head, items.tail: _*)
+  def numbersArray: DynamicArray[Int] = DynamicArray(1, 2, 3, 4, 5, 6)
 }

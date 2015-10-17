@@ -25,78 +25,81 @@ package io.github.carlomicieli.dst.mutable
 
 import scala.reflect.ClassTag
 
-final class DynamicArray[A: ClassTag] private(st: Array[A]) {
+/**
+ * It represents a resizable array.
+ * @tparam A the element type
+ */
+trait DynamicArray[A] extends PartialFunction[Int, A] {
+  /**
+   * Updates the element at index `i` with the given value `v`.
+   * @param i the element index
+   * @param v the new value
+   */
+  def update(i: Int, v: A): Unit
 
-  def update(i: Int, v: A): Unit = st(i) = v
+  /**
+   * Returns the element at index `i` in this array.
+   * @param i the element index
+   * @return the element at index `i`
+   */
+  def apply(i: Int): A
 
-  def apply(i: Int): A = st(i)
+  /**
+   * Returns the max number of elements allowed in `this` array.
+   * @return the max number of elements
+   */
+  def size: Int
 
-  def length: Int = st.length
+  /**
+   * Grows this array, according to the default ratio (ie 3/2).
+   * @return a new array
+   */
+  def expand: DynamicArray[A]
 
-  def expand: DynamicArray[A] = resize(3.0 / 2)
-  def shrink: DynamicArray[A] = resize(2.0 / 3)
+  /**
+   * Shrinks this array, according to the default ratio (ie 2/3).
+   * @return a new array
+   */
+  def shrink: DynamicArray[A]
 
-  def resize(ratio: Double): DynamicArray[A] = {
-    val newCapacity = (st.length * ratio).toInt
-    val newArr = DynamicArray.empty[A](newCapacity)
-    for (i <- 0 until math.min(newCapacity, st.length)) {
-      newArr(i) = st(i)
-    }
-    newArr
-  }
+  /**
+   * Shifts the array elements by `step` position, starting at index `start`. Elements that will be out of bounds
+   * after this operation are discarded from the array
+   * @param step the number of shift
+   * @param start the starting index
+   */
+  def shift(step: Int, start: Int): Unit
 
-  def shift(n: Int, s: Int): Unit = {
-    import IntImplicits._
-    for (i <- last downTo (s + n)) {
-      st(i) = st(i - n)
-    }
-  }
+  /**
+   * Inserts the new element before the first index that doesn't match the predicate, sliding the remaining elements.
+   * @param el the element to be added
+   * @param p the predicate to find the insertion point
+   * @return `true` if any element has been inserted; `false` otherwise
+   */
+  def insert(el: A)(p: (A, A) => Boolean): Boolean
 
-  def insert(el: A)(p: (A, A) => Boolean): Boolean = {
-    @annotation.tailrec
-    def loop(i: Int): Option[Int] = {
-      if (i >= length) None
-      else {
-        if (p(el, st(i))) Some(i) else loop(i + 1)
-      }
-    }
+  /**
+   * Swap the elements at index `i` and `j`, if those indexes are different.
+   * @param i the first index
+   * @param j the second index
+   */
+  def swap(i: Int, j: Int): Unit
 
-    loop(0).map { i =>
-        shift(1, i)
-        update(i, el)
-        i
-    }.isDefined
-  }
-
-  def swap(i: Int, j: Int): Unit = {
-    if (i != j) {
-      val tmp = st(i)
-      st(i) = st(j)
-      st(j) = tmp
-    }
-  }
-
-  def elements: Iterable[A] = new Iterable[A] {
-    def iterator: Iterator[A] = new Iterator[A] {
-      private var curr = 0
-      def hasNext: Boolean = curr < st.length
-      def next(): A = {
-        val el = st(curr)
-        curr = curr + 1
-        el
-      }
-    }
-  }
-
-  override def toString = {
-    val items = st.mkString(", ")
-    s"[$items]"
-  }
-
-  private def last: Int = st.length - 1
+  /**
+   * Returns an iterator for the array elements.
+   * @return an iterator
+   */
+  def elements: Iterable[A]
 }
 
 object DynamicArray {
+  /**
+   * Creates a new `DynamicArray` with the provided elements.
+   * @param el the first element
+   * @param items the rest of the elements
+   * @tparam A the element type
+   * @return a new `DynamicArray`
+   */
   def apply[A: ClassTag](el: A, items: A*): DynamicArray[A] = {
     val arr = DynamicArray.empty[A](items.length + 1)
     arr(0) = el
@@ -106,14 +109,93 @@ object DynamicArray {
     arr
   }
 
+  /**
+   * Creates a new empty `DynamicArray`.
+   * @param size the number of elements
+   * @tparam A the element type
+   * @return an empty array
+   */
   def empty[A: ClassTag](size: Int): DynamicArray[A] = {
     val st = new Array[A](size)
-    new DynamicArray[A](st)
+    new DynamicArrayImpl[A](st)
   }
-}
 
-object IntImplicits {
-  implicit class IntOps(val n: Int) extends AnyVal {
-    def downTo(start: Int): Range = (start to n).reverse
+  private class DynamicArrayImpl[A: ClassTag](private val storage: Array[A]) extends DynamicArray[A] {
+    private val ResizeRatio: Double = 3.0 / 2
+
+    override def update(i: Int, v: A): Unit = { storage(i) = v }
+
+    override def shrink: DynamicArray[A] = resize(2.0 / 3)
+
+    override def expand: DynamicArray[A] = resize(ResizeRatio)
+
+    override def swap(i: Int, j: Int): Unit = {
+      if (i != j) {
+        val tmp = storage(i)
+        storage(i) = storage(j)
+        storage(j) = tmp
+      }
+    }
+
+    override def insert(el: A)(p: (A, A) => Boolean): Boolean = {
+      @annotation.tailrec
+      def loop(i: Int): Option[Int] = {
+        if (i >= size) None
+        else {
+          if (p(el, storage(i))) Some(i) else loop(i + 1)
+        }
+      }
+
+      loop(0).map { i =>
+        shift(1, i)
+        update(i, el)
+        i
+      }.isDefined
+    }
+
+    override def size: Int = storage.length
+
+    override def elements: Iterable[A] = new Iterable[A] {
+      def iterator: Iterator[A] = new Iterator[A] {
+        private var curr = 0
+        def hasNext: Boolean = curr < storage.length
+        def next(): A = {
+          val el = storage(curr)
+          curr = curr + 1
+          el
+        }
+      }
+    }
+
+    override def apply(i: Int): A = storage(i)
+
+    override def shift(n: Int, s: Int): Unit = {
+      for (i <- last downTo (s + n)) {
+        storage(i) = storage(i - n)
+      }
+    }
+
+    override def isDefinedAt(x: Int): Boolean = x >= 0 && x < size
+
+    override def toString() = {
+      val items = storage.mkString(", ")
+      s"[$items]"
+    }
+
+    override def equals(o: Any): Boolean = o match {
+      case that: DynamicArrayImpl[A] => this.storage sameElements that.storage
+      case _                         => false
+    }
+
+    def resize(ratio: Double): DynamicArray[A] = {
+      val newCapacity = (storage.length * ratio).toInt
+      val newArr = DynamicArray.empty[A](newCapacity)
+      for (i <- 0 until math.min(newCapacity, storage.length)) {
+        newArr(i) = storage(i)
+      }
+      newArr
+    }
+
+    private def last: Int = storage.length - 1
   }
 }
