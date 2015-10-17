@@ -130,6 +130,22 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
         l.addBack(42)
         l.last shouldBe 42
       }
+
+      it("should work as operator as well") {
+        val l = numbersList
+        l += 1
+        l += 42
+        l.length shouldBe numbersList.length + 2
+        l.last shouldBe 42
+      }
+    }
+
+    describe("++=") {
+      it("should append items to a linked list") {
+        val l = numbersList
+        l ++= (1, 2, 3)
+        l.toString shouldBe "[1, 2, 3, 4, 5, 6, 1, 2, 3]"
+      }
     }
 
     describe("addFront and addBack") {
@@ -254,6 +270,12 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
         l.headOption shouldBe None
         l.lastOption shouldBe None
       }
+
+      it("should work as operator as well") {
+        val l = numbersList
+        l -= 6
+        l.length shouldBe 5
+      }
     }
 
     describe("removeHead") {
@@ -314,6 +336,14 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
 
       it("should apply a function starting from right to left") {
         numbersList.foldRight("")((str, s) => s"($str $s)") shouldBe "(1 (2 (3 (4 (5 (6 ))))))"
+      }
+    }
+
+    describe("clear") {
+      it("should remove all the element") {
+        val l = numbersList
+        l.clear()
+        l.isEmpty shouldBe true
       }
     }
   }

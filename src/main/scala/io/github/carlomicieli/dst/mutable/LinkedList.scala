@@ -211,6 +211,11 @@ trait LinkedList[A] {
    */
   def update[B, C](key: A)(implicit ev: A => (B, C)): Boolean
 
+  /**
+   * Remove all the elements from this list.
+   */
+  def clear(): Unit
+
   def zip[B](that: LinkedList[B]): Iterable[(A, B)] = {
     this.elements.zip(that.elements)
   }

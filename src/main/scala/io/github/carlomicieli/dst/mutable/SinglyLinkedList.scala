@@ -213,6 +213,11 @@ class SinglyLinkedList[A] extends LinkedList[A] {
         Good(k)
     }
   }
+
+  override def clear(): Unit = {
+    headNode = Nil
+    lastNode = Nil
+  }
 }
 
 object SinglyLinkedList {
