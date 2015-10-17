@@ -238,6 +238,15 @@ object LinkedList {
       Some(seq)
     }
   }
+
+  /**
+   * Returns an unmodifiable view of the specified linked list.
+   * @param list the list for which the view is returned
+   * @tparam A the list element
+   * @return an unmodifiable view of the list
+   */
+  def unmodifiableList[A](list: LinkedList[A]): LinkedList[A] =
+    new UnmodifiableLinkedList[A](list)
 }
 
 class EmptyLinkedListException(op: String) extends Exception(s"LinkedList.$op: this list is empty")
