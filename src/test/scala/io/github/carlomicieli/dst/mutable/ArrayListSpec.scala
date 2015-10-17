@@ -96,6 +96,7 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
     describe("capacity") {
       it("should be initial capacity for empty array lists") {
         emptyArray.capacity shouldBe ArrayList.InitialCapacity
+        emptyArray.loadFactor shouldBe 0
       }
     }
 
@@ -105,6 +106,54 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
         var res = 0
         arr.foreach(x => res = res + x)
         res shouldBe 21
+      }
+    }
+
+    describe("foldLeft") {
+      it("should apply a function from left to right") {
+        numbersArray.foldLeft("")((str, x) => s"($x $str)") shouldBe "(6 (5 (4 (3 (2 (1 ))))))"
+        numbersArray.foldLeft(0)(_ + _) shouldBe 21
+      }
+    }
+
+    describe("foldRight") {
+      it("should apply a function from right to left") {
+        numbersArray.foldRight("")((x, str) => s"($x $str)") shouldBe "(1 (2 (3 (4 (5 (6 ))))))"
+        numbersArray.foldRight(0)(_ + _) shouldBe 21
+      }
+    }
+
+    describe("remove") {
+      it("should return 'false' removing an element from the empty array list") {
+        val arr = emptyArray
+        arr.remove(42) shouldBe false
+        arr.size shouldBe 0
+      }
+
+      it("should return 'false' if the element to remove is not contained in the array list") {
+        val arr = numbersArray
+        arr.remove(42) shouldBe false
+        arr.size shouldBe 6
+      }
+
+      it("should return 'true' when an element has been removed") {
+        val arr = numbersArray
+        arr.remove(5) shouldBe true
+        arr.toString() shouldBe "[1, 2, 3, 4, 6]"
+      }
+    }
+
+    describe("equals") {
+      it("should check whether two array lists are equals") {
+        val x = numbersArray
+        val y = numbersArray
+        x.equals(y) shouldBe true
+      }
+
+      it("should check whether two array lists are different") {
+        val x = numbersArray
+        val y = emptyArray
+        x.equals(y) shouldBe false
       }
     }
   }

@@ -27,7 +27,7 @@ import io.github.carlomicieli.util.Default
 
 import scala.reflect.ClassTag
 
-class ArrayList[A] private(st: Array[A]) extends RandomAccess[A] {
+class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
 
   require(st != null)
   require(st.length != 0)
@@ -52,11 +52,40 @@ class ArrayList[A] private(st: Array[A]) extends RandomAccess[A] {
 
   override def capacity: Int = storage.length
 
-  override def remove(x: A): Boolean = ???
+  override def remove(x: A): Boolean = {
+    var removed = false
+    val arrIndices = 0 until size
 
-  override def foldRight[B](z: B)(f: (A, B) => B): B = ???
+    for (i <- arrIndices) {
+      if (storage(i) == x) {
+        removed = true
+      }
 
-  override def foldLeft[B](z: B)(f: (B, A) => B): B = ???
+      if (removed && i < currentSize) {
+        storage(i) = storage(i + 1)
+        currentSize = currentSize - 1
+      }
+    }
+
+    resizeStorage()
+    removed
+  }
+
+  override def foldRight[B](z: B)(f: (A, B) => B): B = {
+    var acc = z
+    for (i <- size - 1 downTo 0) {
+      acc = f(storage(i), acc)
+    }
+    acc
+  }
+
+  override def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    var acc = z
+    for (i <- 0 until size) {
+      acc = f(acc, storage(i))
+    }
+    acc
+  }
 
   override def mkString(sep: String, start: String, end: String): String = {
     val itemsString = if (isEmpty) ""
@@ -77,6 +106,7 @@ class ArrayList[A] private(st: Array[A]) extends RandomAccess[A] {
   }
 
   override def add(x: A): Unit = {
+    resizeStorage()
     storage(currentSize) = x
     currentSize = currentSize + 1
   }
@@ -86,10 +116,29 @@ class ArrayList[A] private(st: Array[A]) extends RandomAccess[A] {
   override def apply(i: Int): A = storage(i)
 
   override def toString(): String = this.mkString(", ", "[", "]")
+
+  override def equals(o: Any): Boolean = o match {
+    case that: ArrayList[A] => this.storage sameElements that.storage
+    case _                  => false
+  }
+
+  private def resizeStorage(): Unit = {
+    import ArrayList._
+    storage = if (loadFactor > 0.75f) {
+      resize(ResizeRatio)(storage)
+    }
+    //else if (loadFactor < 0.25f) {
+    //  resize(1.0f / ResizeRatio)(storage)
+    //}
+    else {
+      storage
+    }
+  }
 }
 
 object ArrayList {
   val InitialCapacity: Int = 16
+  val ResizeRatio: Double = 3.0 / 2
 
   def empty[A: ClassTag]: ArrayList[A] = {
     new ArrayList[A](newArray(InitialCapacity))
@@ -107,4 +156,14 @@ object ArrayList {
   }
 
   private def newArray[A: ClassTag](size: Int): Array[A] = new Array[A](size)
+
+  private def resize[A: ClassTag](ratio: Double)(array: Array[A]): Array[A] = {
+    val newCapacity = (array.length * ratio).toInt
+    val newArr = newArray[A](newCapacity)
+    for (i <- 0 until math.min(newCapacity, array.length)) {
+      newArr(i) = array(i)
+    }
+    newArr
+  }
+
 }
