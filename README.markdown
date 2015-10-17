@@ -193,4 +193,6 @@ References
 * Paul Chiusano, Rúnar Bjarnason. 2014. __Functional Programming in Scala__. Manning Publications
 * Larry LIU Xinyu. 2014. __Elementary Algorithms__.
 * Chris Okasaki. 1999. __Purely Functional Data Structures__. Cambridge University Press
-* John Hughes. 2007. __QuickCheck testing for fun and profit__. In Proceedings of the 9th international conference on Practical Aspects of Declarative Languages (PADL'07)
+* John Hughes. 2007. __QuickCheck testing for fun and profit__. Proceedings of the 9th international conference on Practical Aspects of Declarative Languages (PADL'07)
+* Jean Niklas L'orange. __Understanding Clojure's Persistent Vectors__. Blog post (link [here](http://hypirion.com/musings/understanding-persistent-vector-pt-1))
+* Paul F. Dietz. 1989. __Fully Persistent Arrays (Extended Array)__. Proceedings of the Workshop on Algorithms and Data Structures (WADS '89)
