@@ -23,48 +23,39 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.test.AbstractTestSpec
-import io.github.carlomicieli.util.Just
+import io.github.carlomicieli.util.{Maybe, Good}
 
-class ListStackSpec extends AbstractTestSpec with ExampleStacks {
+private[this]
+class LinkedListStack[A] extends Stack[A] {
+  private val st = LinkedList.empty[A]
 
-  "An empty stack" should "have size equals to 0" in {
-    val empty = Stack.empty[Int]
-    empty.size shouldBe 0
-    empty.isEmpty shouldBe true
-    empty.nonEmpty shouldBe false
+  override def push(el: A): Unit = {
+    st.addFront(el)
   }
 
-  "Push elements to a stack" should "increase its size" in {
-    val stack = emptyStack
-    stack.push(1)
+  override def size: Int = st.length
 
-    stack.size shouldBe 1
-    stack.isEmpty shouldBe false
-  }
+  override def top: Maybe[A] = st.headOption
 
-  "Pop elements out of a stack" should "happen in LIFO fashion" in {
-    val stack = emptyStack
-    stack.push(1)
-    stack.push(2)
+  override def isEmpty: Boolean = st.isEmpty
 
-    val out = stack.pop
-    out shouldBe 2
-  }
+  override def nonEmpty: Boolean = st.nonEmpty
 
-  "peek()" should "return the first element, without changing the stack" in {
-    val first = stack.top
-    first shouldBe Just(1)
+  override def pop(): A = {
+    val Good(head) = st.removeHead()
+    head
   }
 }
 
-trait ExampleStacks {
-  def emptyStack = Stack.empty[Int]
-  def stack = {
-    val st = Stack.empty[Int]
-    st.push(3)
-    st.push(2)
-    st.push(1)
-    st
-  }
+/**
+ * A `Stack` implementation based on a linked list.
+ */
+object LinkedListStack {
+
+  /**
+   * Creates an empty stack
+   * @tparam A the element type
+   * @return an empty stack
+   */
+  def empty[A]: Stack[A] = new LinkedListStack[A]
 }

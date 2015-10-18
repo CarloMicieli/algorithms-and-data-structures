@@ -25,6 +25,8 @@ package io.github.carlomicieli.dst.mutable
 
 import io.github.carlomicieli.util.{Maybe, Just, None}
 
+import scala.reflect.ClassTag
+
 private[this]
 class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
   private val storage = st
@@ -56,4 +58,16 @@ class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
   }
 
   private def isFull = storage.length == topIndex
+}
+
+/**
+ * A Stack implementation based on an Array.
+ */
+object FixedCapacityStack {
+  def empty[A: ClassTag]: Stack[A] = FixedCapacityStack.apply[A](16)
+
+  def apply[A: ClassTag](size: Int): Stack[A] = {
+    val st: Array[A] = new Array[A](size)
+    new FixedCapacityStack[A](st)
+  }
 }

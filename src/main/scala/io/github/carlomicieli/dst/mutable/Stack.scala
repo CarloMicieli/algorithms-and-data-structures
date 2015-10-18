@@ -25,24 +25,55 @@ package io.github.carlomicieli.dst.mutable
 
 import io.github.carlomicieli.util.Maybe
 
-import scala.reflect.ClassTag
-
+/**
+ * It represents a mutable `Stack`, a ''LIFO (last in, first out)'' data structure.
+ * 
+ * This implementation provides constant time operations for `push`, `pop` and `top`. The implementor classes
+ * shouldn't provide any operation to look inside the data structure. Elements must added/removed only from the top
+ * position in the stack.
+ * 
+ * @tparam A the element type
+ */
 trait Stack[A] {
-  def push(el: A): Unit
+  /**
+   * Adds a new element `x` into the top position in the `Stack`.
+   * @param x the new element
+   */
+  def push(x: A): Unit
+
+  /**
+   * Removes the element in the top position in the `Stack`
+   * @return
+   */
   def pop(): A
+
+  /**
+   * Optionally returns the top element from this `Stack`.
+   * @return optionally the top element
+   */
   def top: Maybe[A]
+
+  /**
+   * Checks whether this `Stack` is empty.
+   * @return `true` if the `Stack` is empty; `false` otherwise
+   */
   def isEmpty: Boolean
+
+  /**
+   * Checks whether this `Stack` is not empty.
+   * @return `true` if the `Stack` is not empty; `false` otherwise
+   */
   def nonEmpty: Boolean
+
+  /**
+   * Returns the number of elements contained in the `Stack`.
+   * @return the number of elements
+   */
   def size: Int
 }
 
 object Stack {
-  def empty[A]: Stack[A] = new ListStack[A]
-
-  def fixed[A: ClassTag](size: Int): Stack[A] = {
-    val st: Array[A] = new Array[A](size)
-    new FixedCapacityStack[A](st)
-  }
+  def empty[A]: Stack[A] = new LinkedListStack[A]
 }
 
 class FullStackException extends Exception("Stack is full")

@@ -29,7 +29,7 @@ import io.github.carlomicieli.util.Just
 class FixedCapacityStackSpec extends AbstractTestSpec with SampleFixedCapacityStacks {
 
   "A fixed capacity stack" should "has size equal 0 if empty" in {
-    val empty = Stack.fixed(16)
+    val empty = FixedCapacityStack(16)
     empty.size shouldBe 0
     empty.isEmpty shouldBe true
   }
@@ -82,7 +82,5 @@ class FixedCapacityStackSpec extends AbstractTestSpec with SampleFixedCapacitySt
 }
 
 trait SampleFixedCapacityStacks {
-  def stack(n: Int): Stack[Int] = {
-    Stack.fixed[Int](n)
-  }
+  def stack(n: Int): Stack[Int] = FixedCapacityStack(n)
 }
