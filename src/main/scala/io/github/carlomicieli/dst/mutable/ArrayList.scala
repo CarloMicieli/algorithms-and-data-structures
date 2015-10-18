@@ -27,6 +27,45 @@ import io.github.carlomicieli.util.Default
 
 import scala.reflect.ClassTag
 
+/**
+ * It represents a resizable array implementation of the `RandomAccess` trait.
+ *
+ * This class provides constant time implementation for `size`, `capacity`, `apply`, `update`,
+ * `isEmpty` operations.
+ *
+ * With the automatic growing for the `ArrayList` the `add` operation runs
+ * in ''amortized constant time'', adding `n` elements requires `O(n)` running time.
+ *
+ * Other operations (like `contains`, `foldLeft` and `foldRight`) are running in linear time.
+ *
+ * {{{
+ *   scala> val al = ArrayList.empty[Int]
+ *   al: io.github.carlomicieli.dst.mutable.ArrayList[Int] = []
+ *
+ *   scala> al.add(1)
+ *   scala> al.add(42)
+ *   scala> al.add(15)
+ *   scala> al.add(99)
+ *
+ *   scala> al
+ *   res4: io.github.carlomicieli.dst.mutable.ArrayList[Int] = [1, 42, 15, 99]
+ *
+ *   scala> al.size
+ *   res5: Int = 4
+ *
+ *   scala> al.contains(-1)
+ *   res6: Boolean = false
+ *
+ *   scala> al.contains(42)
+ *   res7: Boolean = true
+ *
+ *   scala> al.foldLeft(0)(_ + _)
+ *   res8: Int = 157
+ * }}}
+ *
+ * @param st the underlying array
+ * @tparam A the element type
+ */
 class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
 
   require(st != null)
@@ -43,13 +82,6 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
       i = i + 1
     }
     found
-  }
-
-  override def update(i: Int, x: A): Unit = {
-    if (!isDefinedAt(i))
-      throw new IndexOutOfBoundsException(i.toString)
-
-    storage(i) = x
   }
 
   override def trimToSize(): Unit = {
@@ -135,9 +167,21 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
     currentSize = currentSize + 1
   }
 
+  override def update(i: Int, x: A): Unit = {
+    if (!isDefinedAt(i))
+      throw new IndexOutOfBoundsException(i.toString)
+
+    storage(i) = x
+  }
+
   override def isDefinedAt(i: Int): Boolean = i >= 0 && i < size
 
-  override def apply(i: Int): A = storage(i)
+  override def apply(i: Int): A = {
+    if (!isDefinedAt(i))
+      throw new IndexOutOfBoundsException(i.toString)
+
+    storage(i)
+  }
 
   override def toString(): String = this.mkString(", ", "[", "]")
 

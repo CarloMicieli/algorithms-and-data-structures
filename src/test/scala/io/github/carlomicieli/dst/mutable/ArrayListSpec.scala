@@ -201,6 +201,13 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
           arr(99)
         } should have message "99"
       }
+
+      it("should throw an exception when the index is greater than size") {
+        val arr = numbersArray
+        the [IndexOutOfBoundsException] thrownBy {
+          arr(numbersArray.size + 1)
+        } should have message (numbersArray.size + 1).toString
+      }
     }
 
     describe("clear") {
