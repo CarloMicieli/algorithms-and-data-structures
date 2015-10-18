@@ -35,6 +35,16 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
   private var currentSize: Int = 0
   private var storage = st
 
+  override def contains(x: A): Boolean = {
+    var i = 0
+    var found = false
+    while (i < size && !found) {
+      found = storage(i) == x
+      i = i + 1
+    }
+    found
+  }
+
   override def update(i: Int, x: A): Unit = {
     if (!isDefinedAt(i))
       throw new IndexOutOfBoundsException(i.toString)

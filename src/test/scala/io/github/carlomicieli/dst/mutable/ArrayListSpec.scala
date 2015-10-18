@@ -152,6 +152,23 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
       }
     }
 
+    describe("contains") {
+      it("should return 'false' searching the element in a empty array list") {
+        val arr = emptyArray
+        arr.contains(42) shouldBe false
+      }
+
+      it("should return 'false' when the array list doesn't contain the element") {
+        val arr = numbersArray
+        arr.contains(42) shouldBe false
+      }
+
+      it("should return 'true' when the element is contained in the array list") {
+        val arr = numbersArray
+        arr.contains(4) shouldBe true
+      }
+    }
+
     describe("equals") {
       it("should check whether two array lists are equals") {
         val x = numbersArray

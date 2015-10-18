@@ -54,6 +54,13 @@ trait RandomAccess[A] extends PartialFunction[Int, A] {
   def add(x: A): Unit
 
   /**
+   * Checks whether this array list contains the given element `x`.
+   * @param x the element to be tested
+   * @return `true` if the element is this array list; `false` otherwise
+   */
+  def contains(x: A): Boolean
+
+  /**
    * Removes the element with value `x`, and slide the remaining elements
    * to the left.
    *
