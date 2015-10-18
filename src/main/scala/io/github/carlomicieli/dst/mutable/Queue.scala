@@ -27,11 +27,40 @@ import io.github.carlomicieli.util.Maybe
 
 import scala.reflect.ClassTag
 
+/**
+ * It represents a mutable ''FIFO (first-in, first-out)'' data structure.
+ *
+ * @tparam A the element type
+ */
 trait Queue[A] {
+  /**
+   * Returns the first element in this queue, without removing it.
+   * @return optionally the top element
+   */
   def peek: Maybe[A]
-  def enqueue(el: A): Unit
+
+  /**
+   * Inserts the element at the end of the list.
+   * @param x the new element to add
+   */
+  def enqueue(x: A): Unit
+
+  /**
+   * Returns the first element and remove it from this queue.
+   * @return the first element
+   */
   def dequeue(): A
+
+  /**
+   * Returns the number of elements in this queue.
+   * @return the number of elements
+   */
   def size: Int
+
+  /**
+   * Checks whether this queue is empty, or not.
+   * @return `true` if this queue is empty, `false` otherwise
+   */
   def isEmpty: Boolean
 }
 

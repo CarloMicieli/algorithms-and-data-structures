@@ -80,6 +80,8 @@ class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
 }
 
 object FixedCapacityQueue {
+  def empty[A: ClassTag]: Queue[A] = FixedCapacityQueue(16)
+
   def apply[A: ClassTag](n: Int): Queue[A] = {
     val st = new Array[A](n)
     new FixedCapacityQueue[A](st)

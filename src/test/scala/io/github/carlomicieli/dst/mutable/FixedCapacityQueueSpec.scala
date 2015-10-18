@@ -23,7 +23,7 @@
  */
 package io.github.carlomicieli.dst.mutable
 
-import io.github.carlomicieli.util.None
+import io.github.carlomicieli.util.{Just, None}
 import io.github.carlomicieli.test.AbstractTestSpec
 
 class FixedCapacityQueueSpec extends AbstractTestSpec {
@@ -66,6 +66,15 @@ class FixedCapacityQueueSpec extends AbstractTestSpec {
 
     queue.peek.get shouldBe 2
     queue.size shouldBe 4
+  }
+
+  "A fixed capacity queue" should "return its first element" in {
+    val queue = FixedCapacityQueue[Int](4)
+    queue.enqueue(1)
+    queue.enqueue(2)
+    queue.enqueue(3)
+
+    queue.peek shouldBe Just(1)
   }
 
   "An equal number of enqueue and dequeue operations" should "leave the queue empty" in {
