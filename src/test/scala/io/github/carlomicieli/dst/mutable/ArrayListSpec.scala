@@ -211,14 +211,6 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
     }
 
     describe("clear") {
-      it("should remove all elements from array list") {
-        val arr = numbersArray
-        arr.clear
-
-        arr(0) shouldBe 0
-        arr(1) shouldBe 0
-      }
-
       it("should reduce the size to 0")
       {
         val arr = numbersArray
