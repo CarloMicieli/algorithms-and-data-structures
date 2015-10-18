@@ -43,6 +43,15 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
         arr.size shouldBe 3
         arr(2) shouldBe 3
       }
+
+      it("should increase the capacity of the array list") {
+        val arr = numbersArray
+        for (x <- 10 to 20)
+          arr.add(x)
+
+        arr.size shouldBe 17
+        arr.capacity shouldBe 28
+      }
     }
 
     describe("size") {
@@ -155,7 +164,69 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
         val y = emptyArray
         x.equals(y) shouldBe false
       }
+
+      it("should check the size") {
+        val x = numbersArray
+        val y = ArrayList(1, 2, 3, 4, 5, 6)
+        x.equals(y) shouldBe true
+      }
     }
+
+    describe("apply") {
+      it("should return the element at the given index") {
+        val arr = numbersArray
+        arr(2) shouldBe 3
+      }
+
+      it("should throw an exception when the index is out of bounds") {
+        val arr = numbersArray
+        the [IndexOutOfBoundsException] thrownBy {
+          arr(99)
+        } should have message "99"
+      }
+    }
+
+    describe("clear") {
+      it("should remove all elements from array list") {
+        val arr = numbersArray
+        arr.clear
+
+        arr(0) shouldBe 0
+        arr(1) shouldBe 0
+      }
+
+      it("should reduce the size to 0")
+      {
+        val arr = numbersArray
+        arr.clear
+        arr.size shouldBe 0
+        arr.capacity shouldBe ArrayList.InitialCapacity
+      }
+    }
+
+    describe("ensureCapacity") {
+      it("should be a no op when the newCapacity is lesser than size") {
+        val arr = numbersArray
+        arr.ensureCapacity(4)
+        arr.capacity shouldBe numbersArray.capacity
+      }
+
+      it("should change the capacity value") {
+        val arr = numbersArray
+        arr.ensureCapacity(32)
+        arr.capacity shouldBe 32
+        arr.toString() shouldBe numbersArray.toString()
+      }
+    }
+
+    describe("trimToSize") {
+      it("should reduce the size of this array list") {
+        val arr = numbersArray
+        arr.trimToSize()
+        arr.capacity shouldBe arr.size
+      }
+    }
+
   }
 }
 
@@ -165,4 +236,14 @@ trait ArrayListFixture {
   def singletonArray: ArrayList[Int] = ArrayList(42)
 
   def numbersArray: ArrayList[Int] = ArrayList(1, 2, 3, 4, 5, 6)
+
+  def hugeArray: ArrayList[Int] = fromRange(1 to 100000)
+
+  def fromRange(r: Range): ArrayList[Int] = {
+    val arr = ArrayList.empty[Int]
+    for (x <- r) {
+      arr.add(x)
+    }
+    arr
+  }
 }

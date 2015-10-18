@@ -112,10 +112,29 @@ trait RandomAccess[A] extends PartialFunction[Int, A] {
    */
   def nonEmpty: Boolean = size != 0
 
+  /**
+   * Apply the function `f` to all array list elements, for its side-effects.
+   * @param f the function to apply
+   * @tparam U
+   */
   def foreach[U](f: A => U): Unit
 
+  /**
+   * Apply a function from right to left, with the given starting value `z`.
+   * @param z the initial value
+   * @param f the function to apply
+   * @tparam B the resulting value type
+   * @return the result
+   */
   def foldRight[B](z: B)(f: (A, B) => B): B
 
+  /**
+   * Apply a function from left to right, with the given starting value `z`.
+   * @param z the initial value
+   * @param f the function to apply
+   * @tparam B the resulting value type
+   * @return the result
+   */
   def foldLeft[B](z: B)(f: (B, A) => B): B
 
   /**
@@ -125,5 +144,12 @@ trait RandomAccess[A] extends PartialFunction[Int, A] {
    */
   def clear(implicit default: Default[A]): Unit
 
+  /**
+   * Returns a string representation for the array list elements.
+   * @param sep the string separator
+   * @param start the prefix for the resulting string
+   * @param end the suffix for the resulting string
+   * @return the string for the array list elements
+   */
   def mkString(sep: String, start: String = "", end: String = ""): String
 }

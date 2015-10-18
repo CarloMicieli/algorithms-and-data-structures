@@ -42,11 +42,25 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
     storage(i) = x
   }
 
-  override def trimToSize(): Unit = ???
+  override def trimToSize(): Unit = {
+    trimStorage(size)
+  }
 
-  override def ensureCapacity(newCapacity: Int): Unit = ???
+  override def ensureCapacity(newCapacity: Int): Unit = {
+    if (newCapacity <= size) ()
+    else {
+      trimStorage(newCapacity)
+    }
+  }
 
-  override def clear(implicit default: Default[A]): Unit = ???
+  override def clear(implicit d: Default[A]): Unit = {
+    import ArrayList._
+    for (i <- 0 until math.min(InitialCapacity, size)) {
+      storage(i) = d.default
+    }
+    trimStorage(InitialCapacity)
+    currentSize = 0
+  }
 
   override def size: Int = currentSize
 
@@ -118,8 +132,15 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
   override def toString(): String = this.mkString(", ", "[", "]")
 
   override def equals(o: Any): Boolean = o match {
-    case that: ArrayList[A] => this.storage sameElements that.storage
+    case that: ArrayList[A] => areEquals(this, that)
     case _                  => false
+  }
+
+  private def areEquals(x: ArrayList[A], y: ArrayList[A]): Boolean = {
+    if (x.size != y.size) false
+    else {
+      x.storage.take(x.size) sameElements y.storage.take(y.size)
+    }
   }
 
   private def resizeStorage(): Unit = {
@@ -127,12 +148,13 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
     storage = if (loadFactor > 0.75f) {
       resize(ResizeRatio)(storage)
     }
-    //else if (loadFactor < 0.25f) {
-    //  resize(1.0f / ResizeRatio)(storage)
-    //}
     else {
       storage
     }
+  }
+
+  private def trimStorage(newCapacity: Int) = {
+    storage = ArrayList.resize(newCapacity)(storage)
   }
 }
 
@@ -140,10 +162,21 @@ object ArrayList {
   val InitialCapacity: Int = 16
   val ResizeRatio: Double = 3.0 / 2
 
+  /**
+   * Creates a new empty `ArrayList`.
+   * @tparam A the array list element type
+   * @return a new empty array
+   */
   def empty[A: ClassTag]: ArrayList[A] = {
     new ArrayList[A](newArray(InitialCapacity))
   }
 
+  /**
+   * Creates a new `ArrayList` with the given items.
+   * @param items the items for the array
+   * @tparam A the element type
+   * @return the array
+   */
   def apply[A: ClassTag](items: A*): ArrayList[A] = {
     val size = (items.length * 1.5).toInt
     val al = new ArrayList[A](newArray(size))
@@ -157,8 +190,7 @@ object ArrayList {
 
   private def newArray[A: ClassTag](size: Int): Array[A] = new Array[A](size)
 
-  private def resize[A: ClassTag](ratio: Double)(array: Array[A]): Array[A] = {
-    val newCapacity = (array.length * ratio).toInt
+  private def resize[A: ClassTag](newCapacity: Int)(array: Array[A]): Array[A] = {
     val newArr = newArray[A](newCapacity)
     for (i <- 0 until math.min(newCapacity, array.length)) {
       newArr(i) = array(i)
@@ -166,4 +198,8 @@ object ArrayList {
     newArr
   }
 
+  private def resize[A: ClassTag](ratio: Double)(array: Array[A]): Array[A] = {
+    val newCapacity = (array.length * ratio).toInt
+    resize(newCapacity)(array)
+  }
 }
