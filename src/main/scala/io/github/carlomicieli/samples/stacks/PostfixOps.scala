@@ -30,9 +30,13 @@ sealed trait Symbol
 object Symbol {
   def isOperator(ch: Char): Boolean = operators contains ch
   def isNumber  (ch: Char): Boolean = ch >= '0' && ch <= '9'
+  def isParen   (ch: Char): Boolean = ch == '(' || ch == ')'
 
   private val operators = List('+', '-', '*', '/')
 }
+
+case object OpenParen         extends Symbol
+case object ClosedParen       extends Symbol
 case class Number(n: Int)     extends Symbol
 case class Operator(op: Char) extends Symbol {
   def apply(x: Int, y: Int): Int = op match {
@@ -41,6 +45,55 @@ case class Operator(op: Char) extends Symbol {
     case '/' => x / y
     case '-' => x - y
   }
+}
+
+object symbol2char extends (Symbol => Char) {
+  override def apply(s: Symbol): Char = s match {
+    case Number(n)   => ('0'.toInt + n).toChar
+    case Operator(o) => o
+    case OpenParen   => '('
+    case ClosedParen => ')'
+  }
+}
+
+object char2symbol extends PartialFunction[Char, Symbol] {
+  import Symbol._
+
+  override def apply(ch: Char): Symbol = ch match {
+    case _ if isOperator(ch) => Operator(ch)
+    case _ if isNumber(ch)   => Number(ch.toInt - '0'.toInt)
+    case _ if ch == '('      => OpenParen
+    case _ if ch == ')'      => ClosedParen
+  }
+
+  override def isDefinedAt(x: Char): Boolean = isParen(x) || isNumber(x) || isOperator(x)
+}
+
+object infix2postfix {
+  def apply(exp: String): String = {
+    extractSymbols(exp) match {
+      case List()  => exp
+      case symbols => convertExpression.andThen(symbolsToString)(symbols)
+    }
+  }
+
+  private val convertExpression: (List[Symbol] => List[Symbol]) = as => {
+    val zero = (Stack.empty[Symbol], List(as.head))
+    def step(acc: (Stack[Symbol], List[Symbol]), s: Symbol): (Stack[Symbol], List[Symbol]) = {
+      val (ops, symbols) = acc
+      s match {
+        case op@Operator(_) => (ops push op, symbols)
+        case sym@Number(n)  =>
+          (ops, symbols :+ sym)
+        case _              => acc
+      }
+    }
+
+    val (_, symbols) = as.tail.foldLeft(zero)(step)
+    symbols
+  }
+
+  private val symbolsToString: List[Symbol] => String = _.map(symbol2char).mkString("")
 }
 
 object PostfixOps {
@@ -66,6 +119,7 @@ object PostfixOps {
             case _              =>
               throw new InvalidPostfixExpressionException()
           }
+        case OpenParen | ClosedParen => st
       }
     }
 
@@ -73,15 +127,11 @@ object PostfixOps {
     val st = as.foldLeft(zero)(step)
     st.top.get
   }
+}
 
-  private def extractSymbols(exp: String): List[Symbol] = {
-    import Symbol._
-    def toSymbol: PartialFunction[Char, Symbol] = {
-      case(ch) if isOperator(ch) => Operator(ch)
-      case(ch) if isNumber(ch)   => Number(ch.toInt - '0'.toInt)
-    }
-
-    exp.toList.collect(toSymbol)
+object extractSymbols extends (String => List[Symbol]) {
+  def apply(exp: String): List[Symbol] = {
+    exp.toList.collect(char2symbol)
   }
 }
 

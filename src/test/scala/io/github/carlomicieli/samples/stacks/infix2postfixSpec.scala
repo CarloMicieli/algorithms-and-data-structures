@@ -25,30 +25,13 @@ package io.github.carlomicieli.samples.stacks
 
 import io.github.carlomicieli.test.AbstractTestSpec
 
-class PostfixOpsSpec extends AbstractTestSpec {
+class infix2postfixSpec extends AbstractTestSpec {
 
-  it should "evaluate an empty expression to 0" in {
-    PostfixOps.eval("") shouldBe 0
+  it should "convert an empty infix expression to an empty expression" in {
+    infix2postfix("") shouldBe ""
   }
 
-  it should "evaluate a simple expression" in {
-    PostfixOps.eval("65+") shouldBe 11
-    PostfixOps.eval("56-") shouldBe 1
-    PostfixOps.eval("26/") shouldBe 3
-    PostfixOps.eval("65*") shouldBe 30
-  }
-
-  it should "evaluate an expression with two operators" in {
-    PostfixOps.eval("234*+") shouldBe 2 + 3 * 4
-  }
-
-  it should "evaluate expressions" in {
-    PostfixOps.eval("6523 + 8 *+ 3 +*") shouldBe 288
-  }
-
-  it should "throw an exception for invalid expressions" in {
-    the [InvalidPostfixExpressionException] thrownBy {
-      PostfixOps.eval("65*+")
-    } should have message "Invalid expression"
+  it should "convert a simple infix expression to an postfix expression" in {
+    infix2postfix("1+2") shouldBe "12"
   }
 }
