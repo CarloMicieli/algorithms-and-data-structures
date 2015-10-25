@@ -270,7 +270,7 @@ class ListProperties extends AbstractPropSpec {
 
   property("span: sum of the two lists length is the same as the original") {
     check(forAll { (xs: List[Int]) =>
-      val (ys, zs) = xs.span(_ % 2 == 0)
+      val (ys, zs) = xs.partition(_ % 2 == 0)
       ys.length + zs.length === xs.length
     })
   }
@@ -279,7 +279,7 @@ class ListProperties extends AbstractPropSpec {
     check(forAll { (xs: List[Int]) =>
       val isEven = (x: Int) => x % 2 == 0
 
-      val (ys, zs) = xs.span(isEven)
+      val (ys, zs) = xs.partition(isEven)
       ys.all(isEven) === true
       zs.any(isEven) === false
     })

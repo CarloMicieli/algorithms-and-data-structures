@@ -39,6 +39,11 @@ class ListStack[+A](st: List[A]) extends Stack[A] {
 
   override def nonEmpty: Boolean = st.nonEmpty
 
+  override def popUntil(p: (A) => Boolean): (List[A], Stack[A]) = {
+    val (removed, remaining) = st.span(p)
+    (removed, new ListStack(remaining))
+  }
+
   override def pop: Or[(A, Stack[A]), EmptyStackException] =
     if (isEmpty) Bad(new EmptyStackException with NoStackTrace)
     else {
@@ -47,9 +52,15 @@ class ListStack[+A](st: List[A]) extends Stack[A] {
     }
 
   override def foreach[U](f: (A) => U): Unit = st.foreach(f)
+
+  override def toString: String = {
+    if (isEmpty)
+      "<emptystack>"
+    else
+      s"<stack:top = ${top.get}>"
+  }
 }
 
-private[this]
 object ListStack {
   def empty[A]: Stack[A] = new ListStack(List.empty[A])
 }

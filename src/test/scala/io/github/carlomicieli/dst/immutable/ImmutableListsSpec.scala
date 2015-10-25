@@ -380,19 +380,31 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
 
     describe("span") {
       it("should produce a pair of empty lists, when applied to empty lists") {
-        emptyList.span(_ > 100) shouldBe ((Nil, Nil))
+        emptyList.span(_ % 2 == 0) shouldBe ((Nil, Nil))
+      }
+
+      it("should produce a pair of lists") {
+        numbersList.span(_ != 4) shouldBe ((List(1, 2, 3), List(4, 5, 6, 7, 8, 9, 10)))
+        numbersList.span(_ == 4) shouldBe ((List(), List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)))
+        numbersList.span(_ != 11) shouldBe ((List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), List()))
+      }
+    }
+
+    describe("partition") {
+      it("should produce a pair of empty lists, when applied to empty lists") {
+        emptyList.partition(_ > 100) shouldBe ((Nil, Nil))
       }
 
       it("should produce a pair of list applying a predicate") {
-        numbersList.span(_ % 2 == 0) shouldBe ((List(2, 4, 6, 8, 10), List(1, 3, 5, 7, 9)))
+        numbersList.partition(_ % 2 == 0) shouldBe ((List(2, 4, 6, 8, 10), List(1, 3, 5, 7, 9)))
       }
 
       it("should produce a pair with a Nil as first element, if no element is matching the predicate") {
-        numbersList.span(_ > 999) shouldBe ((Nil, numbersList))
+        numbersList.partition(_ > 999) shouldBe ((Nil, numbersList))
       }
 
       it("should produce a pair with a Nil as second element, if no element is matching the predicate") {
-        numbersList.span(_ < 999) shouldBe ((numbersList, Nil))
+        numbersList.partition(_ < 999) shouldBe ((numbersList, Nil))
       }
     }
 

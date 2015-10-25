@@ -55,6 +55,13 @@ trait Stack[+A] {
   def pop: (A, Stack[A]) Or EmptyStackException
 
   /**
+   * `O(k)` Eventually pops the top k elements in this Stack until they match the given predicate `p`.
+   * @param p the predicate to match
+   * @return a pair with the list of elements popped and the new Stack
+   */
+  def popUntil(p: A => Boolean): (List[A], Stack[A])
+
+  /**
    * `O(1)` Check whether this `Stack` is empty.
    * @return `true` if this `Stack` is empty; `false` otherwise
    */

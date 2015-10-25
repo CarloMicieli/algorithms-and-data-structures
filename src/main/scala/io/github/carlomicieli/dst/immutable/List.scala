@@ -396,10 +396,25 @@ sealed trait List[+A] {
    * @param p the predicate to apply
    * @return a pair of lists.
    */
-  def span(p: A => Boolean): (List[A], List[A]) = this match {
+  def span(p: A => Boolean): (List[A], List[A]) = {
+    this match {
+      case Nil              => (Nil, Nil)
+      case x +: xs if !p(x) => (Nil, this)
+      case x +: xs          =>
+        val (fst, snd) = xs span p
+        (x +: fst, snd)
+    }
+  }
+
+  /**
+   * `O(n)` Partitions this `List` in two lists according to the given predicate.
+   * @param p the predicate to match
+   * @return a pair of Lists
+   */
+  def partition(p: A => Boolean): (List[A], List[A]) = this match {
     case Nil     => (Nil, Nil)
     case x +: xs =>
-      val (fst, snd) = xs span p
+      val (fst, snd) = xs partition p
       if (p(x))
         (x +: fst, snd)
       else
