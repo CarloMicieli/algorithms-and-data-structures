@@ -28,6 +28,44 @@ import io.github.carlomicieli.util.{Maybe, Just, None}
 /**
  * A list is either empty, or a constructed list with a `head` and a `tail`.
  *
+ * {{{
+ *  scala> val xs = List(1, 23, 15, 42, 77)
+ *  xs: io.github.carlomicieli.dst.immutable.List[Int] = [1, 23, 15, 42, 77]
+ *
+ *  scala> xs.isEmpty
+ *  res0: Boolean = false
+ *
+ *  scala> xs.length
+ *  res1: Int = 5
+ *
+ *  scala> xs.head
+ *  res2: Int = 1
+ *
+ *  scala> xs.tail
+ *  res3: io.github.carlomicieli.dst.immutable.List[Int] = [23, 15, 42, 77]
+ *
+ *  scala> xs.tails
+ *  res4: io.github.carlomicieli.dst.immutable.List[io.github.carlomicieli.dst.immutable.List[Int]] = [[1, 23, 15, 42, 77], [23, 15, 42, 77], [15, 42, 77], [42, 77], [77], []]
+ *
+ *  scala> xs.map(_ * 2)
+ *  res5: io.github.carlomicieli.dst.immutable.List[Int] = [2, 46, 30, 84, 154]
+ *
+ *  scala> xs.flatMap(x => List(x, x))
+ *  res6: io.github.carlomicieli.dst.immutable.List[Int] = [1, 1, 23, 23, 15, 15, 42, 42, 77, 77]
+ *
+ *  scala> xs.toString
+ *  res7: String = [1, 23, 15, 42, 77]
+ *
+ *  scala> xs.filter(_ > 25)
+ *  res8: io.github.carlomicieli.dst.immutable.List[Int] = [42, 77]
+ *
+ *  scala> xs.foldLeft(0)(_ + _)
+ *  res9: Int = 158
+ *
+ *  scala> xs.foldRight(0)(_ + _)
+ *  res10: Int = 158
+ * }}}
+ *
  * @tparam A the list element type
  */
 sealed trait List[+A] {
@@ -532,6 +570,11 @@ object List {
     loop(z, List.empty[A])
   }
 
+  /**
+   * Creates a new List with the elements contained in the provided `Range`.
+   * @param r the range with the list elements
+   * @return a new List
+   */
   def fromRange(r: Range): List[Int] = {
     r.foldRight(List.empty[Int])(_ +: _)
   }
