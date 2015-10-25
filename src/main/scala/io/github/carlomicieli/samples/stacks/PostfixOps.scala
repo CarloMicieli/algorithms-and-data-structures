@@ -26,7 +26,11 @@ package io.github.carlomicieli.samples.stacks
 import io.github.carlomicieli.dst.immutable.Stack
 import io.github.carlomicieli.util.Good
 
-sealed trait Symbol
+sealed trait Symbol {
+  val precedence: Int
+  def toChar: Char
+}
+
 object Symbol {
   def isOperator(ch: Char): Boolean = operators contains ch
   def isNumber  (ch: Char): Boolean = ch >= '0' && ch <= '9'
@@ -35,10 +39,21 @@ object Symbol {
   private val operators = List('+', '-', '*', '/')
 }
 
-case object OpenParen         extends Symbol
-case object ClosedParen       extends Symbol
-case class Number(n: Int)     extends Symbol
-case class Operator(op: Char) extends Symbol {
+case object OpenParen extends Symbol {
+  override val precedence = 5
+  override def toChar = '('
+}
+case object ClosedParen extends Symbol {
+  override val precedence = 5
+  override def toChar = ')'
+}
+case class Number(n: Int) extends Symbol {
+  override val precedence = 1
+  override def toChar = ('0'.toInt + n).toChar
+}
+class Operator private(op: Char, prec: Int) extends Symbol {
+  override val precedence = prec
+  override def toChar = op
   def apply(x: Int, y: Int): Int = op match {
     case '+' => x + y
     case '*' => x * y
@@ -46,14 +61,17 @@ case class Operator(op: Char) extends Symbol {
     case '-' => x - y
   }
 }
+object Operator {
+  def apply(op: Char): Operator = op match {
+    case '+' | '-' => new Operator(op, 2)
+    case '*' | '/' => new Operator(op, 3)
+  }
+
+  def unapply(op: Operator): Option[Char] = Some(op.toChar)
+}
 
 object symbol2char extends (Symbol => Char) {
-  override def apply(s: Symbol): Char = s match {
-    case Number(n)   => ('0'.toInt + n).toChar
-    case Operator(o) => o
-    case OpenParen   => '('
-    case ClosedParen => ')'
-  }
+  override def apply(s: Symbol): Char = s.toChar
 }
 
 object char2symbol extends PartialFunction[Char, Symbol] {
@@ -78,19 +96,20 @@ object infix2postfix {
   }
 
   private val convertExpression: (List[Symbol] => List[Symbol]) = as => {
-    val zero = (Stack.empty[Symbol], List(as.head))
-    def step(acc: (Stack[Symbol], List[Symbol]), s: Symbol): (Stack[Symbol], List[Symbol]) = {
-      val (ops, symbols) = acc
+    val zero = (Stack.empty[Symbol], Vector(as.head))
+    def step(acc: (Stack[Symbol], Vector[Symbol]), s: Symbol): (Stack[Symbol], Vector[Symbol]) = {
+      val (ops, output) = acc
       s match {
-        case op@Operator(_) => (ops push op, symbols)
+        case OpenParen      => (ops, output)
+        case ClosedParen    => (ops, output)
+        case op@Operator(_) => (ops push op, output)
         case sym@Number(n)  =>
-          (ops, symbols :+ sym)
-        case _              => acc
+          (ops, output :+ sym)
       }
     }
 
     val (_, symbols) = as.tail.foldLeft(zero)(step)
-    symbols
+    symbols.toList
   }
 
   private val symbolsToString: List[Symbol] => String = _.map(symbol2char).mkString("")

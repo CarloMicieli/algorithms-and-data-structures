@@ -51,4 +51,17 @@ class PostfixOpsSpec extends AbstractTestSpec {
       PostfixOps.eval("65*+")
     } should have message "Invalid expression"
   }
+
+  it should "have different precedence for operators" in {
+    char2symbol('9').precedence < char2symbol('+').precedence shouldBe true
+    char2symbol('(').precedence > char2symbol('*').precedence shouldBe true
+    char2symbol('*').precedence > char2symbol('+').precedence shouldBe true
+  }
+
+  it should "return the character for the symbol" in {
+    char2symbol('9').toChar shouldBe '9'
+    char2symbol('(').toChar shouldBe '('
+    char2symbol(')').toChar shouldBe ')'
+    char2symbol('*').toChar shouldBe '*'
+  }
 }
