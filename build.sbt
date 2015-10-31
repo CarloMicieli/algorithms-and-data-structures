@@ -26,3 +26,11 @@ scalacOptions ++= Seq(
 )
 
 fork in run := true
+
+site.settings
+
+site.includeScaladoc()
+
+ghpages.settings
+
+git.remoteRepo := "git@github.com:CarloMicieli/algorithms-and-data-structures.git"
