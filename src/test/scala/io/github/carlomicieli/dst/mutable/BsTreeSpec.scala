@@ -25,78 +25,165 @@ package io.github.carlomicieli.dst.mutable
 
 import java.util.NoSuchElementException
 
-import io.github.carlomicieli.test.AbstractTestSpec
+import io.github.carlomicieli.test.AbstractSpec
 import io.github.carlomicieli.util.{None, Just}
 
-class BsTreeSpec extends AbstractTestSpec with BsTreesFixture {
-  "An empty BS tree" should "have size 0" in {
-    val empty = BsTree.empty[Int, Int]
-    empty.isEmpty shouldBe true
-    empty.size shouldBe 0
-  }
+class BsTreeSpec extends AbstractSpec with BsTreesFixture {
+  describe("A mutable Binary Search tree") {
+    describe("fromList") {
+      it("should create an empty tree from the empty list") {
+        val empty = BsTree.fromList(List.empty[(Int, Int)])
+        empty.size shouldBe 0
+        empty.isEmpty shouldBe true
+      }
 
-  "Adding an element to a BS tree" should "increase its size" in {
-    val t = newTree
-    t.insert(1, "one")
-    t.insert(2, "two")
-    t.insert(3, "three")
-    t.size shouldBe 3
-  }
-
-  "it" should "search for elements in a BS tree" in {
-    val t = tree
-    t.search(18) shouldBe Just("(18)")
-    t.search(99) shouldBe None
-
-    val empty = newTree
-    empty.search(99) shouldBe None
-  }
-
-  "min" should "throw an exception if the BS tree is empty" in {
-    val r = intercept[NoSuchElementException] {
-      emptyTree.min
+      it("should create a tree with the list elements") {
+        val xs = List((1, 1), (2, 2), (3, 3))
+        val tree = BsTree.fromList(xs)
+        tree.size shouldBe xs.length
+      }
     }
-  }
 
-  "min" should "return the minimum key in the BS tree" in {
-    tree.min shouldBe 2
-  }
+    describe("size") {
+      it("should be 0 for the empty tree") {
+        val empty = BsTree.empty[Int, Int]
+        empty.size shouldBe 0
+      }
 
-  "max" should "throw an exception if the BS tree is empty" in {
-    val r = intercept[NoSuchElementException] {
-      emptyTree.max
+      it("should be the number of nodes in the tree") {
+        tree.size shouldBe 11
+      }
     }
-  }
 
-  "max" should "return the maximum key in the BS tree" in {
-    tree.max shouldBe 20
-  }
+    describe("isEmpty") {
+      it("should be 'true' for the empty tree") {
+        emptyTree.isEmpty shouldBe true
+      }
 
-  "successor" should "find the smallest key greater than the one provided" in {
-    tree.successor(15) shouldBe 17
-  }
+      it("should be 'false' for the empty tree") {
+        tree.isEmpty shouldBe false
+      }
+    }
 
-  "successor" should "throw an exception if no successor is found" in {
-    the [NoSuchElementException] thrownBy tree.successor(20) should have message "Successor not found for '20'"
-  }
+    describe("insert") {
+      it("should change the tree size") {
+        val t1 = emptyTree
+        val t2 = tree
+        t1.insert(42, "answer")
+        t1.size shouldBe 1
 
-  "predecessor" should "find with the greatest key smaller than the one provided" in {
-    tree.predecessor(15) shouldBe 13
-  }
+        t2.insert(42, "answer")
+        t2.size shouldBe 12
+      }
 
-  "predecessor" should "throw an exception if no predecessor is found" in {
-    the [NoSuchElementException] thrownBy tree.predecessor(2) should have message "Predecessor not found for '2'"
-  }
+      it("should insert the new element") {
+        val t = tree
+        t.insert(42, "answer")
+        t.search(42) shouldBe Just("answer")
+      }
+    }
 
-  "inorderTreeWalk" should "traverse the tree elements in order" in {
-    var str = ""
-    tree.inorderWalk(kv => str = str + s"${kv.key} > ")
-    str shouldBe "2 > 3 > 4 > 6 > 7 > 9 > 13 > 15 > 17 > 18 > 20 > "
+    describe("search") {
+      it("should search for elements in the tree") {
+        val t = tree
+        t.search(18) shouldBe Just("(18)")
+        t.search(99) shouldBe None
+      }
+
+      it("should always return None for the empty tree") {
+        emptyTree.search(99) shouldBe None
+      }
+    }
+
+    describe("min") {
+      it("should throw an exception for the empty tree") {
+        the [NoSuchElementException] thrownBy {
+          emptyTree.min
+        } should have message "min: tree is empty"
+      }
+
+      it("should return the min key from a non empty tree") {
+        tree.min shouldBe 2
+      }
+    }
+
+    describe("max") {
+      it("should throw an exception for the empty tree") {
+        the [NoSuchElementException] thrownBy {
+          emptyTree.max
+        } should have message "max: tree is empty"
+      }
+
+      it("should return the max key from a non empty tree") {
+        tree.max shouldBe 20
+      }
+    }
+
+    describe("successor") {
+      it("should find the smallest key greater than the one provided") {
+        tree.successor(15) shouldBe 17
+      }
+
+      it("should throw an exception if no successor is found") {
+        the [NoSuchElementException] thrownBy {
+          tree.successor(20)
+        } should have message "Successor not found for '20'"
+      }
+
+      it("should throw an exception for the empty tree") {
+        the [NoSuchElementException] thrownBy {
+          emptyTree.successor(20)
+        } should have message "Successor not found for '20'"
+      }
+    }
+
+    describe("predecessor") {
+      it("should find the smallest key greater than the one provided") {
+        tree.predecessor(15) shouldBe 13
+      }
+
+      it("should throw an exception if no predecessor is found") {
+        the [NoSuchElementException] thrownBy {
+          tree.predecessor(2)
+        } should have message "Predecessor not found for '2'"
+      }
+
+      it("should throw an exception for the empty tree") {
+        the [NoSuchElementException] thrownBy {
+          emptyTree.predecessor(20)
+        } should have message "Predecessor not found for '20'"
+      }
+    }
+
+    describe("inorderTreeWalk") {
+      it("should traverse the tree elements in order") {
+        var str = ""
+        tree.inorderWalk(kv => str = str + s"${kv.key} > ")
+        str shouldBe "2 > 3 > 4 > 6 > 7 > 9 > 13 > 15 > 17 > 18 > 20 > "
+      }
+    }
+
+    describe("delete") {
+      it("should return a None deleting an element from the empty tree") {
+        emptyTree.delete(99) shouldBe None
+      }
+
+      it("should return a None if the key is not found") {
+        val t = tree
+        t.delete(42) shouldBe None
+      }
+
+      it("should remove the element with the given key") {
+        val t = tree
+        t.delete(6) shouldBe Just("( 6)")
+        t.search(6) shouldBe None
+      }
+    }
   }
 }
 
 trait BsTreesFixture {
-  val emptyTree: Tree[Int, String] = BsTree.empty[Int, String]
+  def emptyTree: Tree[Int, String] = BsTree.empty[Int, String]
   def newTree: Tree[Int, String] = BsTree.empty[Int, String]
   def tree: Tree[Int, String] = {
     val t = newTree

@@ -26,7 +26,7 @@ package io.github.carlomicieli.dst.mutable
 import io.github.carlomicieli.util.{Just, Maybe, None}
 
 private[this]
-final class BsTree[K, V] extends Tree[K, V] {
+class BsTree[K, V] extends Tree[K, V] {
   private var root: Node = NIL
 
   override def inorderWalk(f: KeyValuePair[K, V] => Unit): Unit = {
@@ -84,7 +84,14 @@ final class BsTree[K, V] extends Tree[K, V] {
     }
   }
 
-  override def delete(key: K)(implicit ord: Ordering[K]): Maybe[V] = ???
+  override def delete(key: K)(implicit ord: Ordering[K]): Maybe[V] = {
+    findNode(key) match {
+      case NIL => None
+      case z =>
+        treeDelete(z)
+        z.toMaybe.map(_._2)
+    }
+  }
 
   override def min: K = {
     if (isEmpty)
@@ -134,6 +141,41 @@ final class BsTree[K, V] extends Tree[K, V] {
 
   override def search(key: K)(implicit ord: Ordering[K]): Maybe[V] = {
     findNode(key).toMaybe.map { p => p._2 }
+  }
+
+  private def treeDelete(z: Node): Unit = {
+    if (z.left.isNIL)
+      transplant(z, z.right)
+    else if (z.right.isNIL)
+      transplant(z, z.left)
+    else {
+      val y = treeMin(z.right)
+      if (y.parent != z) {
+        transplant(y, y.right)
+        y.right = z.right
+        y.right.parent = y
+      }
+
+      transplant(z, y)
+      y.left = z.left
+      y.left.parent = y
+    }
+  }
+
+  private def transplant(u: Node, v: Node): Unit = {
+    if (u.parent.isNIL) {
+      root = v
+    }
+    else if (u == u.parent.left) {
+      u.parent.left = v
+    }
+    else {
+      u.parent.right == v
+    }
+
+    if (v.isNotNIL) {
+      v.parent = u.parent
+    }
   }
 
   private def treeMax(node: Node): Node = {
@@ -215,5 +257,26 @@ final class BsTree[K, V] extends Tree[K, V] {
 }
 
 object BsTree {
+
+  /**
+   * Creates a new empty Binary Search tree.
+   * @param ord the keys ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return an empty tree
+   */
   def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = new BsTree[K, V]
+
+  /**
+   * Creates a new tree with list elements
+   * @param items the elements list
+   * @param ord the key ordering
+   * @tparam K the key type
+   * @tparam V the value type
+   * @return a tree
+   */
+  def fromList[K, V](items: List[(K, V)])(implicit ord: Ordering[K]): Tree[K, V] = {
+    items.foldLeft(BsTree.empty[K, V])((tree, p) => { tree.insert(p._1, p._2); tree })
+  }
+
 }
