@@ -127,6 +127,7 @@ trait List[+A] {
   def foldLeft[B](z: B)(f: (B, A) => B): B      // O(n)
   def splitAt(m: Int): (List[A], List[A])       // O(m)
   def span(p: A => Boolean): (List[A], List[A]) // O(n)
+  def partition(p: A => Boolean): (List[A], List[A]) // O(n)
   def unCons: Maybe[(A, List[A])]               // O(1)
   def zip(that: List[B]): List[(A, B)]          // O(n)
   def zipWithIndex: List[(A, Int)]              // O(n)
@@ -162,10 +163,10 @@ trait Queue[+A] {
 
 ### `Tree`
 
-It represents a binary search tree.
+It represents a __binary search tree__.
 A binary tree is:
-* either an empty node;
-* or a node contains 3 parts, a value, two children which are also trees.
+* either an empty tree;
+* or a node contains 3 parts, a pair `(Key, Value)` and two children which are also trees.
 
 ```scala
 trait Tree[+K, +V] {
@@ -195,5 +196,4 @@ References
 * Chris Okasaki. 1999. __Purely Functional Data Structures__. Cambridge University Press
 * John Hughes. 2007. __QuickCheck testing for fun and profit__. Proceedings of the 9th international conference on Practical Aspects of Declarative Languages (PADL'07)
 * Jean Niklas L'orange. __Understanding Clojure's Persistent Vectors__. Blog post ([link](http://hypirion.com/musings/understanding-persistent-vector-pt-1))
-* Paul F. Dietz. 1989. __Fully Persistent Arrays (Extended Array)__. Proceedings of the Workshop on Algorithms and Data Structures (WADS '89)
 * Bill Venners. 2015. Simplifying Scala Collections. ScalaWorld Conference. YouTube video ([link](https://www.youtube.com/watch?v=UBjzbkhvYTU))
