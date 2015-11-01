@@ -85,6 +85,11 @@ trait Stack[+A] {
    */
   def top: Maybe[A]
 
+  /**
+   * `O(n)` Apply the function `f` to all stack elements, just for its side-effects.
+   * @param f the function to apply
+   * @tparam U
+   */
   def foreach[U](f: A => U): Unit
 }
 
