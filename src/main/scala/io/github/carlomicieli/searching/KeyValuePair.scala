@@ -23,46 +23,13 @@
  */
 package io.github.carlomicieli.searching
 
-import io.github.carlomicieli.dst.mutable.LinkedList
-import io.github.carlomicieli.util.Maybe
+case class KeyValuePair[K: Ordering, V](key: K, value: V)
 
-final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
-  private type KeyValPair = (K, V)
-  private val storage: LinkedList[KeyValPair] = LinkedList.empty[KeyValPair]
-
-  def update(key: K, value: V): Unit = {
-    containsKey(key) foreach {
-      n => storage.remove(n)
-    }
-    storage.addFront((key, value))
-  }
-
-  def get(key: K): Maybe[V] =
-    containsKey(key).map(p => p._2)
-
-  def size: Int = storage.length
-
-  def delete(key: K): Unit = {
-    containsKey(key) foreach {
-      n => storage.remove(n)
+object KeyValuePair {
+  implicit def pairOrdering[K: Ordering, V] = new Ordering[KeyValuePair[K, V]] {
+    def compare(x: KeyValuePair[K, V], y: KeyValuePair[K, V]): Int = {
+      import Ordered._
+      x.key.compare(y.key)
     }
   }
-
-  def keys: Iterable[K] = storage.elements.map(p => p._1)
-
-  def isDefinedAt(key: K): Boolean = containsKey(key).isDefined
-
-  def apply(key: K): V = get(key).get
-
-  def contains(key: K): Boolean = containsKey(key).isDefined
-
-  def isEmpty: Boolean = storage.isEmpty
-
-  private def containsKey(key: K): Maybe[KeyValPair] = {
-    storage.find(p => p._1 == key)
-  }
-}
-
-object SequentialSearchST {
-  def empty[K, V]: SymbolTable[K, V] = new SequentialSearchST[K, V]()
 }

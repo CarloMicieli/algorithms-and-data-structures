@@ -28,7 +28,7 @@ import io.github.carlomicieli.util.Maybe
 
 import scala.reflect.ClassTag
 
-final class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePair[K, V]]) extends SymbolTable[K, V] {
+class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePair[K, V]]) extends SymbolTable[K, V] {
 
   private var s = 0
 
@@ -41,6 +41,8 @@ final class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePai
   def delete(key: K): Unit = ???
 
   def keys: Iterable[K] = ???
+
+  def isDefinedAt(key: K): Boolean = ???
 
   def apply(key: K): V = ???
 
@@ -62,14 +64,3 @@ object BinarySearchST {
   }
 }
 
-case class KeyValuePair[K: Ordering, V](key: K, value: V)
-
-object KeyValuePair {
-
-  implicit def pairOrdering[K: Ordering, V] = new Ordering[KeyValuePair[K, V]] {
-    def compare(x: KeyValuePair[K, V], y: KeyValuePair[K, V]): Int = {
-      import Ordered._
-      x.key.compare(y.key)
-    }
-  }
-}
