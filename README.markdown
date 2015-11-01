@@ -17,6 +17,7 @@ To generate the `Scaladoc` documentation:
 
 Documentation will be available under `./target/scala-2.11/api/`.
 
+The project documentation is published [here](http://carlomicieli.github.io/algorithms-and-data-structures/latest/api/)
 
 ## Sorting Algorithms
 
@@ -45,7 +46,7 @@ Machine used for the benchmark
 * 16 Gb RAM
 * SSD hard disk
 * Ubuntu 14.04.3
-* Java SE 1.8u60 / Scala 2.11.7
+* Java SE 1.8u66 / Scala 2.11.7
 
 ## Data structures
 
