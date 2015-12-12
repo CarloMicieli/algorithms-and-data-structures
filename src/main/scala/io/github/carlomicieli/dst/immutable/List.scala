@@ -26,48 +26,48 @@ package io.github.carlomicieli.dst.immutable
 import io.github.carlomicieli.util.{Maybe, Just, None}
 
 /**
- * A list is either empty, or a constructed list with a `head` and a `tail`.
- *
- * {{{
- *  scala> val xs = List(1, 23, 15, 42, 77)
- *  xs: io.github.carlomicieli.dst.immutable.List[Int] = [1, 23, 15, 42, 77]
- *
- *  scala> xs.isEmpty
- *  res0: Boolean = false
- *
- *  scala> xs.length
- *  res1: Int = 5
- *
- *  scala> xs.head
- *  res2: Int = 1
- *
- *  scala> xs.tail
- *  res3: io.github.carlomicieli.dst.immutable.List[Int] = [23, 15, 42, 77]
- *
- *  scala> xs.tails
- *  res4: io.github.carlomicieli.dst.immutable.List[io.github.carlomicieli.dst.immutable.List[Int]] = [[1, 23, 15, 42, 77], [23, 15, 42, 77], [15, 42, 77], [42, 77], [77], []]
- *
- *  scala> xs.map(_ * 2)
- *  res5: io.github.carlomicieli.dst.immutable.List[Int] = [2, 46, 30, 84, 154]
- *
- *  scala> xs.flatMap(x => List(x, x))
- *  res6: io.github.carlomicieli.dst.immutable.List[Int] = [1, 1, 23, 23, 15, 15, 42, 42, 77, 77]
- *
- *  scala> xs.toString
- *  res7: String = [1, 23, 15, 42, 77]
- *
- *  scala> xs.filter(_ > 25)
- *  res8: io.github.carlomicieli.dst.immutable.List[Int] = [42, 77]
- *
- *  scala> xs.foldLeft(0)(_ + _)
- *  res9: Int = 158
- *
- *  scala> xs.foldRight(0)(_ + _)
- *  res10: Int = 158
- * }}}
- *
- * @tparam A the list element type
- */
+  * A list is either empty, or a constructed list with a `head` and a `tail`.
+  *
+  * {{{
+  *  scala> val xs = List(1, 23, 15, 42, 77)
+  *  xs: List[Int] = [1, 23, 15, 42, 77]
+  *
+  *  scala> xs.isEmpty
+  *  res0: Boolean = false
+  *
+  *  scala> xs.length
+  *  res1: Int = 5
+  *
+  *  scala> xs.head
+  *  res2: Int = 1
+  *
+  *  scala> xs.tail
+  *  res3: List[Int] = [23, 15, 42, 77]
+  *
+  *  scala> xs.tails
+  *  res4: List[List[Int]] = [[1, 23, 15, 42, 77], [23, 15, 42, 77], [15, 42, 77], [42, 77], [77], []]
+  *
+  *  scala> xs.map(_ * 2)
+  *  res5: List[Int] = [2, 46, 30, 84, 154]
+  *
+  *  scala> xs.flatMap(x => List(x, x))
+  *  res6: List[Int] = [1, 1, 23, 23, 15, 15, 42, 42, 77, 77]
+  *
+  *  scala> xs.toString
+  *  res7: String = [1, 23, 15, 42, 77]
+  *
+  *  scala> xs.filter(_ > 25)
+  *  res8: List[Int] = [42, 77]
+  *
+  *  scala> xs.foldLeft(0)(_ + _)
+  *  res9: Int = 158
+  *
+  *  scala> xs.foldRight(0)(_ + _)
+  *  res10: Int = 158
+  * }}}
+  *
+  * @tparam A the list element type
+  */
 sealed trait List[+A] {
   self =>
 
@@ -486,10 +486,21 @@ sealed trait List[+A] {
    * @tparam B the second list element type
    * @return a list with corresponding pairs
    */
-  def zip[B](that: List[B]): List[(A, B)] = (this, that) match {
-    case (_, Nil) | (Nil, _) => List.empty[(A, B)]
+  def zip[B](that: List[B]): List[(A, B)] = this.zipWith(that)(Tuple2.apply)
+
+  /**
+    * `O(n)` It takes two lists and returns a list applying `f` to each corresponding pair. If one input
+    * list is short, excess elements of the longer list are discarded.
+    * @param that the second list
+    * @param f the function to produce elements in the resulting list
+    * @tparam B the second list element type
+    * @tparam C the resulting list element type
+    * @return a list
+    */
+  def zipWith[B, C](that: List[B])(f: (A, B) => C): List[C] = (this, that) match {
+    case (_, Nil) | (Nil, _) => List.empty[C]
     case (x +: xs, y +: ys)  =>
-      (x, y) +: (xs zip ys)
+      f(x, y) +: xs.zipWith(ys)(f)
   }
 
   /**

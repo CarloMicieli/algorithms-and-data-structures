@@ -28,7 +28,7 @@ import org.scalacheck.{Arbitrary, Gen}
 import Gen._
 import org.scalacheck.Prop.{forAll, BooleanOperators}
 
-class ListProperties extends AbstractPropSpec {
+class ImmutableListProperties extends AbstractPropSpec {
 
   property("tails: the first element is the original list") {
     check(forAll { (xs: List[Int]) =>

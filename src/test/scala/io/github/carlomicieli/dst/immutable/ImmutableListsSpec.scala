@@ -497,6 +497,16 @@ class ImmutableListsSpec extends AbstractSpec with ImmutableListsFixture {
         List('a', 'b', 'c', 'd').zipWithIndex shouldBe List(('a', 1), ('b', 2), ('c', 3), ('d', 4))
       }
     }
+
+    describe("zipWith") {
+      it("should produce an empty list if the original list is empty") {
+        emptyList.zipWith(randomList)((a, b) => a) shouldBe List()
+      }
+
+      it("should create a new list applying the function to each corresponding pair") {
+        numbersList.zipWith(numbersList)((a, b) => a + b) shouldBe List(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
+      }
+    }
   }
 }
 
