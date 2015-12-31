@@ -20,10 +20,10 @@ The project documentation is published [here](http://carlomicieli.github.io/algo
 
 The project includes the following subprojects:
     
-    * `common`: common library;
-    * `fp`: purely functional algorithms and data structures;
-    * `oop`: object oriented algorithms and data structures;
-    * `benchmarks`: algorithms and data structures micro-benchmarks.
+* `common`: common library;
+* `fp`: purely functional algorithms and data structures;
+* `oop`: object oriented algorithms and data structures;
+* `benchmarks`: algorithms and data structures micro-benchmarks.
 
 Sorting Algorithms
 ------------------
@@ -45,10 +45,10 @@ Machine used for the benchmark
 Data Structures
 ---------------
 
-    * List
-    * Binary search tree (normal and Red-Black)
-    * Queue
-    * Stack
+* List
+* Binary search tree (normal and Red-Black)
+* Queue
+* Stack
 
 References
 ----------
