@@ -23,8 +23,9 @@
  * limitations under the License.
  *
  */
-
 package io.github.carlomicieli.fp.dst
+
+import io.github.carlomicieli.fp.typeclasses.Show
 
 /**
   * The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]`
@@ -191,6 +192,10 @@ object Maybe {
     */
   def catMaybes[A](xs: List[Maybe[A]]): List[A] = {
     for { Just(x) <- xs } yield x
+  }
+
+  implicit def toShowMaybe[A: Show]: Show[Maybe[A]] = new Show[Maybe[A]] {
+    override def show(x: Maybe[A]): String = x.toString
   }
 }
 

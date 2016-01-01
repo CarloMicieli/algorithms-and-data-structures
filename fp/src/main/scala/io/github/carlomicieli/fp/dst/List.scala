@@ -25,6 +25,9 @@
  */
 package io.github.carlomicieli.fp.dst
 
+import io.github.carlomicieli.fp.typeclasses.Show
+import scala.language.implicitConversions
+
 /**
   * A list is either empty, or a constructed list with a `head` and a `tail`.
   *
@@ -587,6 +590,10 @@ object List {
     */
   def fromRange(r: Range): List[Int] = {
     r.foldRight(List.empty[Int])(_ +: _)
+  }
+
+  implicit def toShowList[A: Show]: Show[List[A]] = new Show[List[A]] {
+    override def show(x: List[A]): String = Show[A].showList(x)
   }
 }
 

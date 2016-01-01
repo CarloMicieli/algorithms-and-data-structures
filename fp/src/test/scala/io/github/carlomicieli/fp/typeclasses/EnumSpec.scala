@@ -25,8 +25,6 @@
  */
 package io.github.carlomicieli.fp.typeclasses
 
-import org.scalatest.FunSuite
-
 import io.github.carlomicieli.test.AbstractSpec
 import Enum._
 
