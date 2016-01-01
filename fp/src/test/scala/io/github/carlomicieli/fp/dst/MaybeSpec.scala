@@ -102,6 +102,26 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
       }
     }
 
+    describe("mapOrElse") {
+      it("should return the orElse value for None values") {
+        none.mapOrElse(_ * 2)(Just(999)) shouldBe Just(999)
+      }
+
+      it("should return the value after the function has been applied for Just values") {
+        just42.mapOrElse(_ * 2)(Just(999)) shouldBe Just(84)
+      }
+    }
+
+    describe("fold") {
+      it("should return the orElse value for None values") {
+        none.fold(_ * 2)(999) shouldBe 999
+      }
+
+      it("should return the value after the function has been applied for Just values") {
+        just42.fold(_ * 2)(999) shouldBe 84
+      }
+    }
+
     describe("foreach") {
       it("should apply a function f to Just values for its side effects") {
         var res = 0

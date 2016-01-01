@@ -111,9 +111,9 @@ sealed trait Maybe[+A] {
     *
     * @usecase def map(f: A => A): Maybe[A]
     * @inheritdoc
-    * @param f
+    * @param f the function to apply
     * @tparam A1
-    * @return
+    * @return a new `Maybe` where the function `f` has been applied to the value.
     */
   def map[A1](f: A => A1): Maybe[A1] =
     if (isDefined) Just(f(get)) else None
@@ -124,12 +124,32 @@ sealed trait Maybe[+A] {
     *
     * @usecase def flatMap(f: A => Maybe[A]): Maybe[A]
     * @inheritdoc
-    * @param f
+    * @param f the function to apply
     * @tparam A1
-    * @return
+    * @return a new `Maybe` where the function `f` has been applied to the value.
     */
   def flatMap[A1](f: A => Maybe[A1]): Maybe[A1] =
     if (isDefined) f(get) else None
+
+  /**
+    * It is applying the function `f` the the contained value if this is a `Just`, simply returns
+    * `orElse` otherwise.
+    * @param f the function to apply
+    * @param orElse the value returned if this is a `None`
+    * @tparam A1 the resulting type
+    * @return a new `Maybe` after applying `f` if this is a `Just` value, `orElse` otherwise
+    */
+  def mapOrElse[A1](f: A => A1)(orElse: => Maybe[A1]): Maybe[A1] = map(f).orElse(orElse)
+
+  /**
+    * Returns the value after the function `f` has been applied to the wrapped value if this is a
+    * `Just`, simply returns `orElse` otherwise.
+    * @param f the function to apply
+    * @param orElse the value returned for `None` values
+    * @tparam B the resulting type
+    * @return
+    */
+  def fold[B](f: A => B)(orElse: => B): B = map(f).getOrElse(orElse)
 
   /**
     * Returns this `Maybe` if it is nonempty and applying the predicate `p` to
@@ -149,15 +169,13 @@ sealed trait Maybe[+A] {
     * @tparam B the `Bad` element type
     * @return
     */
-  def toGood[B](bad: => B): Or[A, B] =
-    if (isDefined) Good(get) else Bad(bad)
+  def toGood[B](bad: => B): Or[A, B] = fold[A Or B](Good(_))(Bad(bad))
 
   /**
     * Returns an empty list when given `None` or a singleton list when given a `Just[_]`.
     * @return a list
     */
-  def toList: List[A] =
-    if (isDefined) List(get) else List.empty[A]
+  def toList: List[A] = fold(List(_))(List.empty[A])
 
   class WithFilter(p: A => Boolean) {
     def flatMap[B](f: A => Maybe[B]): Maybe[B] = self filter p flatMap f
