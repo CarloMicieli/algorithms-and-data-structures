@@ -25,6 +25,7 @@
  */
 package io.github.carlomicieli.fp.dst
 
+import io.github.carlomicieli.fp.typeclasses.{Ord, Eq, Show, Ordering}
 import io.github.carlomicieli.test.AbstractSpec
 
 class MaybeSpec extends AbstractSpec with MaybeFixture {
@@ -184,6 +185,11 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
       it("should convert a None value to the empty list") {
         none.toList shouldBe List()
       }
+
+      it("should flatten list values, keeping only the Just") {
+        val xs = List(Just(1), None, None, Just(4), Just(5))
+        xs.flatten shouldBe List(1, 4, 5)
+      }
     }
 
     describe("catMaybes") {
@@ -204,6 +210,36 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
 
       it("should return None, if it's None") {
         none.filter(_ % 2 != 0) shouldBe none
+      }
+    }
+
+    describe("show") {
+      it("should return 'None' for None values") {
+        Show[Maybe[Int]].show(none) shouldBe "None"
+      }
+
+      it("should return 'Just( )' for Just values") {
+        Show[Maybe[Int]].show(just42) shouldBe "Just(42)"
+      }
+    }
+
+    describe("eq") {
+      it("should be an instance of the eq type class") {
+        Eq[Maybe[Int]].eq(just42, just42) shouldBe true
+        Eq[Maybe[Int]].eq(none, none) shouldBe true
+        Eq[Maybe[Int]].eq(none, just42) shouldBe false
+        Eq[Maybe[Int]].eq(just42, none) shouldBe false
+      }
+    }
+
+    describe("ord") {
+      it("should be an instance of the Ord type class") {
+        val ord = Ord[Maybe[Int]]
+        ord.compare(none, none) shouldBe Ordering.EQ
+        ord.compare(none, just42) shouldBe Ordering.LT
+        ord.compare(Maybe(41), Maybe(42)) shouldBe Ordering.LT
+        ord.compare(Maybe(41), none) shouldBe Ordering.GT
+        ord.compare(Maybe(42), Maybe(41)) shouldBe Ordering.GT
       }
     }
   }

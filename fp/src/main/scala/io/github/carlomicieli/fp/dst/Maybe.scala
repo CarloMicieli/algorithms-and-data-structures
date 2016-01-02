@@ -25,7 +25,8 @@
  */
 package io.github.carlomicieli.fp.dst
 
-import io.github.carlomicieli.fp.typeclasses.Show
+import scala.language.implicitConversions
+import io.github.carlomicieli.fp.typeclasses.{Ordering, Ord, Eq, Show}
 
 /**
   * The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]`
@@ -34,7 +35,7 @@ import io.github.carlomicieli.fp.typeclasses.Show
   *
   * @tparam A the element type
   */
-sealed trait Maybe[+A] {
+sealed trait Maybe[+A] extends Product with Serializable {
   self =>
 
   /**
@@ -215,6 +216,21 @@ object Maybe {
   implicit def toShowMaybe[A: Show]: Show[Maybe[A]] = new Show[Maybe[A]] {
     override def show(x: Maybe[A]): String = x.toString
   }
+
+  implicit def toEqMaybe[A: Eq]: Eq[Maybe[A]] = new Eq[Maybe[A]] {
+    def eq(lhs: Maybe[A], rhs: Maybe[A]): Boolean = lhs == rhs
+  }
+
+  implicit def toOrdMaybe[A: Ord]: Ord[Maybe[A]] = new Ord[Maybe[A]] {
+    def compare(x: Maybe[A], y: Maybe[A]): Ordering = (x, y) match {
+      case (None, None)       => Ordering.EQ
+      case (None, _)          => Ordering.LT
+      case (Just(_), None)    => Ordering.GT
+      case (Just(a), Just(b)) => Ord[A].compare(a, b)
+    }
+  }
+
+  implicit def toList[A](x: Maybe[A]): List[A] = x.toList
 }
 
 case class Just[A](get: A) extends Maybe[A] {
