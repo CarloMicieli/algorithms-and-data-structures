@@ -23,7 +23,7 @@
  * limitations under the License.
  *
  */
-package io.github.carlomicieli.oop.samples
+package io.github.carlomicieli.samples
 
 import scala.io.Source
 

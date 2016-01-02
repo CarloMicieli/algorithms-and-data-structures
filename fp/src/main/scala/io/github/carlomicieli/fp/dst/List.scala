@@ -521,6 +521,19 @@ sealed trait List[+A] {
     */
   def unCons: Maybe[(A, List[A])] = if (isEmpty) None else Just((head, tail))
 
+  /**
+    * `O(n)` The group function takes a list and returns a list of lists such that the concatenation of the result
+    * is equal to the argument. Moreover, each sublist in the result contains only equal elements.
+    * @return
+    */
+  def group: List[List[A]] = {
+    def step(xss: List[List[A]], x: A): List[List[A]] = xss match {
+      case (p@(y +: ys)) +: yss => if (y == x) (x +: p) +: yss else List(x) +: xss
+      case     List()           => List(List(x))
+    }
+    foldLeft(List.empty[List[A]])(step).reverse
+  }
+
   override def toString: String = mkString(", ", "[", "]")
 }
 
@@ -543,6 +556,10 @@ object List {
     else {
       items.head +: apply(items.tail: _*)
     }
+
+  def unapplySeq[A](xs: List[A]): Option[Seq[A]] = {
+    Some(xs.foldRight(Seq.empty[A])((x, sq) => x +: sq))
+  }
 
   /**
     * Returns a list of length `n` with `el` the value of every element.
@@ -592,14 +609,25 @@ object List {
     r.foldRight(List.empty[Int])(_ +: _)
   }
 
+  private[dst]
+  def areEquals[A](xs: List[A], ys: List[A]): Boolean = (xs, ys) match {
+    case (Nil, Nil)          => true
+    case (Nil, _) | (_, Nil) => false
+    case (l +: ls, r +: rs)  => if (l != r) false else areEquals(ls, rs)
+  }
+
   implicit def toShowList[A: Show]: Show[List[A]] = new Show[List[A]] {
     override def show(x: List[A]): String = Show[A].showList(x)
   }
 }
 
 private[this]
-case class Cons[A](head: A, tail: List[A]) extends List[A] {
+class Cons[A](val head: A, val tail: List[A]) extends List[A] {
   override def isEmpty: Boolean = false
+  override def equals(o: Any): Boolean = o match {
+    case that: Cons[A] => List.areEquals(this, that)
+    case _             => false
+  }
 }
 
 object +: {

@@ -30,6 +30,44 @@ import io.github.carlomicieli.test.AbstractSpec
 class ListsSpec extends AbstractSpec with ListsFixture {
 
   describe("An immutable list") {
+
+    describe("group") {
+      it("should return the empty list when applied to the empty list") {
+        emptyList.group shouldBe emptyList
+      }
+
+      it("should group the same elements") {
+        val cs: List[Char] = List('M', 'i', 's', 's', 'i', 's', 's', 'i', 'p', 'p', 'i')
+        cs.group shouldBe List(
+          List('M'),
+          List('i'),
+          List('s', 's'),
+          List('i'),
+          List('s', 's'),
+          List('i'),
+          List('p', 'p'),
+          List('i'))
+      }
+    }
+
+    describe("Patter match") {
+      it("should match the empty list") {
+        val res = emptyList match {
+          case List() => true
+          case _      => false
+        }
+        res shouldBe true
+      }
+
+      it("should match the constructed list") {
+        val res = List(1, 2, 3) match {
+          case List(1, 2, 3) => true
+          case _             => false
+        }
+        res shouldBe true
+      }
+    }
+
     describe("+:") {
       it("should add the new element in front of the list") {
         val list = 1 +: emptyList
