@@ -27,6 +27,7 @@ package io.github.carlomicieli.oop.samples
 
 import io.github.carlomicieli.oop.dst.MinPQ
 import io.github.carlomicieli.oop.searching.SymbolTable
+import io.github.carlomicieli.samples.Words
 
 object FrequencyCounter {
   case class WordCount(word: String, count: Int)
