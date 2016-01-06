@@ -49,7 +49,7 @@ trait Num[A] {
     * @param y the second operand
     * @return the subtraction of `x` and `y`
     */
-  def sub(x: A, y: A): A
+  def sub(x: A, y: A): A = add(x, negate(y))
 
   /**
     * The multiplication operation
@@ -71,7 +71,7 @@ trait Num[A] {
     * @param x the operand
     * @return the absolute value of `x`
     */
-  def abs(x: A): A
+  def abs(x: A): A = mul(x, signum(x))
 
   /**
     * Returns the sign of a number.
@@ -90,6 +90,8 @@ trait Num[A] {
 
 object Num {
   def apply[A](implicit n: Num[A]): Num[A] = n
+  implicit def fromFractional[A: Fractional]: Num[A] = apply[A]
+  implicit def fromIntegral[A: Integral]: Num[A] = apply[A]
 
   trait NumOps[A] {
     def self: A
@@ -107,54 +109,6 @@ object Num {
       override def self: A = x
       override def numInstance: Num[A] = implicitly[Num[A]]
     }
-  }
-
-  implicit val floatToNum: Num[Float] = numBuilder[Float](0.0f, 1.0f,
-    {
-      case 0.0        =>  0
-      case x if x < 0 => -1
-      case x if x > 0 =>  1
-    }, _ + _, _ * _ , x => -x
-  )
-
-  implicit val doubleToNum: Num[Double] = numBuilder[Double](0.0, 1.0,
-    {
-      case 0.0        =>  0
-      case x if x < 0 => -1
-      case x if x > 0 =>  1
-    }, _ + _, _ * _ , x => -x
-  )
-
-  implicit val intToNum: Num[Int] = numBuilder[Int](0, 1,
-    {
-      case 0          =>  0
-      case x if x < 0 => -1
-      case x if x > 0 =>  1
-    }, _ + _, _ * _ , x => -x
-  )
-
-  implicit val longToNum: Num[Long] = numBuilder[Long](0L, 1L,
-    {
-      case 0          =>  0L
-      case x if x < 0 => -1L
-      case x if x > 0 =>  1L
-    }, _ + _, _ * _ , x => -x
-  )
-
-  private def numBuilder[A](zeroValue: A,
-                            oneValue: A,
-                            signF: A => A,
-                            addF: (A, A) => A,
-                            mulF: (A, A) => A,
-                            negF: A => A) = new Num[A] {
-    override val zero = zeroValue
-    override val one = oneValue
-    override def mul(x: A, y: A): A = mulF(x, y)
-    override def sub(x: A, y: A): A = add(x, negate(y))
-    override def negate(x: A): A = negF(x)
-    override def abs(x: A): A = mul(signum(x), x)
-    override def signum(x: A): A = signF(x)
-    override def add(x: A, y: A): A = addF(x, y)
   }
 }
 

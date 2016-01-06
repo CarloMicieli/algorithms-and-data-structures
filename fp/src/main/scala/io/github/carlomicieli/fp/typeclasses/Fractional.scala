@@ -23,13 +23,16 @@
  */
 package io.github.carlomicieli.fp.typeclasses
 
+import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
 
 /**
   * It represents the type class for fractional numbers, supporting real division.
   */
-trait Fractional[A] {
+@implicitNotFound("The type ${A} was not made an instance of the Fractional type class")
+trait Fractional[A] extends Num[A] {
   def div(x: A, y: A): A
+  def recip(x: A): A = div(one, x)
 }
 
 object Fractional {
@@ -39,6 +42,13 @@ object Fractional {
     def self: A
     def fractionalInstance: Fractional[A]
 
+    def recip: A = fractionalInstance.recip(self)
+    def abs: A = fractionalInstance.abs(self)
+    def negate: A = fractionalInstance.negate(self)
+    def signum: A = fractionalInstance.signum(self)
+    def +(other: A): A = fractionalInstance.add(self, other)
+    def -(other: A): A = fractionalInstance.sub(self, other)
+    def *(other: A): A = fractionalInstance.mul(self, other)
     def /(other: A): A = fractionalInstance.div(self, other)
   }
 
@@ -51,10 +61,40 @@ object Fractional {
 
   implicit val floatToFractional: Fractional[Float] = new Fractional[Float] {
     override def div(x: Float, y: Float): Float = x / y
+
+    override def mul(x: Float, y: Float): Float = x * y
+
+    override def negate(x: Float): Float = -x
+
+    override def signum(x: Float): Float = x match {
+      case 0.0f          => 0.0f
+      case _ if x > 0.0f => 1.0f
+      case _ if x < 0.0f => -1.0f
+    }
+
+    override def add(x: Float, y: Float): Float = x + y
+
+    override val one: Float = 1.0f
+    override val zero: Float = 0.0f
   }
 
   implicit val doubleToFractional: Fractional[Double] = new Fractional[Double] {
     override def div(x: Double, y: Double): Double = x / y
+
+    override def mul(x: Double, y: Double): Double = x * y
+
+    override def negate(x: Double): Double = -x
+
+    override def signum(x: Double): Double = x match {
+      case 0.0          => 0.0
+      case _ if x > 0.0 => 1.0
+      case _ if x < 0.0 => -1.0
+    }
+
+    override def add(x: Double, y: Double): Double = x + y
+
+    override val zero: Double = 0.0
+    override val one: Double = 1.0
   }
 }
 
