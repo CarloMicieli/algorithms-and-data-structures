@@ -40,6 +40,8 @@ object CaesarCipher {
     'v' -> 1.0f, 'w' -> 2.4f, 'x' -> 0.2f,
     'y' -> 2.0f, 'z' -> 0.1f)
 
+  val table = frequencyTable.toList.sorted.map { case (_, v) => v }
+
   def isLower(ch: Char): Boolean = ch >= 'a' && ch <= 'z'
 
   def char2int(ch: Char): Int = ch.toInt - 'a'.toInt
@@ -58,31 +60,40 @@ object CaesarCipher {
     if (res < 0) res + y else res
   }
 
-  def encode(n: Int, cs: String): String = {
+  def encode(n: Int, cs: List[Char]): List[Char] = {
     cs.map(shift(n, _: Char))
   }
 
-  def percent(a: Int, b: Int): Float = (a.toFloat / b.toFloat) * 100.0f
+  def encode(n: Int, cs: String): String = {
+    encode(n, cs.toList).mkString
+  }
+
+  def percent(a: Int, b: Int): Float = {
+    round((a.toFloat / b.toFloat) * 100.0f, 2)
+  }
+
+  private def round(n: Float, scale: Int): Float = {
+    BigDecimal(n.toDouble)
+      .setScale(scale, BigDecimal.RoundingMode.HALF_UP)
+      .toFloat
+  }
+
+  private val round1 = (n: Float) => round(n, 1)
+
+  private def count(c: Char, cs: List[Char]): Int = cs.count { _ == c }
+  private def lowers(xs: List[Char]): Int = xs.count(isLower)
 
   def freqs(cs: List[Char]): List[(Char, Float)] = {
-    val length = cs.length
     val letters = ('a' to 'z').toList
-
-    def notBlank(ch: Char) = ch != ' '
-
-    val freqsMap = cs.filter(notBlank).sorted.groupBy(x => x).map { case (k, v) => k -> v.length }
-    def count(ch: Char): (Char, Float) = {
-      val freq = freqsMap.getOrElse(ch, 0)
-      ch -> percent(freq, length)
-    }
-
-    letters.map(count)
+    val n = lowers(cs)
+    letters.map(x => x -> percent(count(x, cs), n))
   }
 
   // A standard method for comparing a list of observed frequencies os with a list
   // of expected frequencies es is the chi-square statistic.
   def chiSquare(os: List[Float], es: List[Float]): Float = {
-    (os zip es).map { case(o, e) => math.pow(o - e, 2).toFloat }.sum
+    val chiFun = (o: Float, e: Float) => round1(math.pow(o - e, 2).toFloat)
+    (os zip es).map(chiFun.tupled).sum
   }
 
   def rotate[A](n: Int, xs: List[A]): List[A] = xs.drop(n) ::: xs.take(n)
@@ -94,15 +105,15 @@ object CaesarCipher {
     xs.zipWithIndex.collect { case (`a`, k) => k }
   }
 
+  def solutions(cs: List[Char]): List[(Float, Int)] = {
+    val tablePrime = freqs(cs).map { case(_, fr) => fr }
+    val f = (n: Int) => chiSquare(rotate(n, tablePrime), table)
+    (0 to 25).toList.map(f).zipWithIndex.sorted.take(1)
+  }
+
   def crack(msg: String): String = {
     val cs: List[Char] = msg.toList
-    val table = freqs(cs).map { case (_, v) => v}
-
-    def chiTabRow(n: Int): Float = chiSquare(rotate(n, table), frequencyTable.values.toList)
-
-    val chiTable: List[Float] = (0 to 25).map(chiTabRow).toList
-    val factor = positions(chiTable.min, chiTable).head
-
+    val (_, factor) :: _ = solutions(cs)
     encode(-factor, msg)
   }
 }
