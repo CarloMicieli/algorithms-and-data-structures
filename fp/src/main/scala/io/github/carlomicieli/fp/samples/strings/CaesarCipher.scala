@@ -48,9 +48,14 @@ object CaesarCipher {
 
   def shift(n: Int, c: Char): Char = {
     if (isLower(c))
-      int2char((char2int(c) + n + 26) % 26)
+      int2char(mod(char2int(c) + n, 26))
     else
       c
+  }
+
+  private def mod(x: Int, y: Int): Int = {
+    val res = x % y
+    if (res < 0) res + y else res
   }
 
   def encode(n: Int, cs: String): String = {
@@ -59,4 +64,45 @@ object CaesarCipher {
 
   def percent(a: Int, b: Int): Float = (a.toFloat / b.toFloat) * 100.0f
 
+  def freqs(cs: List[Char]): List[(Char, Float)] = {
+    val length = cs.length
+    val letters = ('a' to 'z').toList
+
+    def notBlank(ch: Char) = ch != ' '
+
+    val freqsMap = cs.filter(notBlank).sorted.groupBy(x => x).map { case (k, v) => k -> v.length }
+    def count(ch: Char): (Char, Float) = {
+      val freq = freqsMap.getOrElse(ch, 0)
+      ch -> percent(freq, length)
+    }
+
+    letters.map(count)
+  }
+
+  // A standard method for comparing a list of observed frequencies os with a list
+  // of expected frequencies es is the chi-square statistic.
+  def chiSquare(os: List[Float], es: List[Float]): Float = {
+    (os zip es).map { case(o, e) => math.pow(o - e, 2).toFloat }.sum
+  }
+
+  def rotate[A](n: Int, xs: List[A]): List[A] = xs.drop(n) ::: xs.take(n)
+
+  // A function that returns the list of all positions
+  // at which a value occurs in a list, by pairing each
+  // element with its position
+  def positions[A](a: A, xs: List[A]): List[Int] = {
+    xs.zipWithIndex.collect { case (`a`, k) => k }
+  }
+
+  def crack(msg: String): String = {
+    val cs: List[Char] = msg.toList
+    val table = freqs(cs).map { case (_, v) => v}
+
+    def chiTabRow(n: Int): Float = chiSquare(rotate(n, table), frequencyTable.values.toList)
+
+    val chiTable: List[Float] = (0 to 25).map(chiTabRow).toList
+    val factor = positions(chiTable.min, chiTable).head
+
+    encode(-factor, msg)
+  }
 }
