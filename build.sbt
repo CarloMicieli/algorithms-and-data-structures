@@ -1,4 +1,4 @@
-val scalaTestVersion = "2.2.4"
+val scalaTestVersion = "2.2.6"
 val scalaCheckVersion = "1.12.5"
 
 val commonSettings = Seq(
