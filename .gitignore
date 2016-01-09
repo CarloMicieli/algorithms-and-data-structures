@@ -1,11 +1,10 @@
 *.class
 *.log
 
-.gradle
+.sbt_completion_cache
 .settings
 .classpath
 .project
-.springBeans
 out
 bin
 build
