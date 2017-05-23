@@ -63,7 +63,7 @@ References
 * Bill Venners. 2015. __Simplifying Scala Collections__. ScalaWorld Conference. (Retrieved from [https://www.youtube.com/watch?v=UBjzbkhvYTU](https://www.youtube.com/watch?v=UBjzbkhvYTU))
 * Chris Allen. 2015. __Modeling Data in Haskell for Beginners__. LambdaConf 2015. (Retrieved from [https://www.youtube.com/watch?v=p-NBJm0kIYU](https://www.youtube.com/watch?v=p-NBJm0kIYU))
 
-Licence
+License
 -------
 
     Copyright 2016 Carlo Micieli
