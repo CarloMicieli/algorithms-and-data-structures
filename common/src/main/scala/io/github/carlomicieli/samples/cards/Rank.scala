@@ -26,15 +26,15 @@ package io.github.carlomicieli.samples.cards
 
 sealed trait Rank {
   def value: Int = this match {
-    case Ace => 1
+    case Ace       => 1
     case Number(n) => n
-    case Jack => 11
-    case Queen => 12
-    case King => 13
+    case Jack      => 11
+    case Queen     => 12
+    case King      => 13
   }
 }
-case object Ace   extends Rank
-case class  Number(n: Int) extends Rank
-case object Jack  extends Rank
+case object Ace extends Rank
+case class Number(n: Int) extends Rank
+case object Jack extends Rank
 case object Queen extends Rank
-case object King  extends Rank
+case object King extends Rank

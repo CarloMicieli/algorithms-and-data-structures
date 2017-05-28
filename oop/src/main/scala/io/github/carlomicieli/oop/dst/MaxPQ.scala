@@ -59,8 +59,7 @@ final class MaxPQ[A] private (storage: Array[A], size: Int) {
       largest flatMap { el =>
         if (checkHeapProp(el, r))
           Some(r)
-        else
-        if (el == i) None else Some(el)
+        else if (el == i) None else Some(el)
       }
     }
 

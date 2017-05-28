@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.searching
 
-import io.github.carlomicieli.oop.dst.{KeyValuePair, DynamicArray}
+import io.github.carlomicieli.oop.dst.{ KeyValuePair, DynamicArray }
 
 import scala.reflect.ClassTag
 

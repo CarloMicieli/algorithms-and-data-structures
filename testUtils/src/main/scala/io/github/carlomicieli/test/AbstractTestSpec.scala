@@ -25,7 +25,7 @@
  */
 package io.github.carlomicieli.test
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 abstract class AbstractTestSpec extends FlatSpec with Matchers {
 }

@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-private[this]
-class BsTree[K, V] extends Tree[K, V] {
+private[this] class BsTree[K, V] extends Tree[K, V] {
   private var root: Node = NIL
 
   override def inorderWalk(f: KeyValuePair[K, V] => Unit): Unit = {
@@ -164,11 +163,9 @@ class BsTree[K, V] extends Tree[K, V] {
   private def transplant(u: Node, v: Node): Unit = {
     if (u.parent.isNIL) {
       root = v
-    }
-    else if (u == u.parent.left) {
+    } else if (u == u.parent.left) {
       u.parent.left = v
-    }
-    else {
+    } else {
       u.parent.right == v
     }
 
@@ -257,8 +254,7 @@ class BsTree[K, V] extends Tree[K, V] {
 
 object BsTree {
 
-  /**
-    * Creates a new empty Binary Search tree.
+  /** Creates a new empty Binary Search tree.
     * @param ord the keys ordering
     * @tparam K the key type
     * @tparam V the value type
@@ -266,8 +262,7 @@ object BsTree {
     */
   def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = new BsTree[K, V]
 
-  /**
-    * Creates a new tree with list elements
+  /** Creates a new tree with list elements
     * @param items the elements list
     * @param ord the key ordering
     * @tparam K the key type

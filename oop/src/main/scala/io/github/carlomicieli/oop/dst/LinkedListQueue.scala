@@ -24,10 +24,9 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
-private[this]
-class LinkedListQueue[A] extends Queue[A] {
+private[this] class LinkedListQueue[A] extends Queue[A] {
   private val st = LinkedList.empty[A]
 
   override def peek: Option[A] = st.headOption
@@ -35,7 +34,7 @@ class LinkedListQueue[A] extends Queue[A] {
   override def dequeue(): A = {
     st.removeHead() match {
       case Success(v) => v
-      case Failure(_)  => throw new EmptyQueueException
+      case Failure(_) => throw new EmptyQueueException
     }
   }
 
@@ -46,12 +45,10 @@ class LinkedListQueue[A] extends Queue[A] {
   override def isEmpty: Boolean = st.isEmpty
 }
 
-/**
-  * A Queue based on linked list.
+/** A Queue based on linked list.
   */
 object LinkedListQueue {
-  /**
-    * Creates a new empty queue.
+  /** Creates a new empty queue.
     * @tparam A the element type
     * @return an empty queue
     */

@@ -45,7 +45,8 @@ class ListsSpec extends AbstractSpec with ListsFixture {
           List('s', 's'),
           List('i'),
           List('p', 'p'),
-          List('i'))
+          List('i')
+        )
       }
     }
 
@@ -157,7 +158,7 @@ class ListsSpec extends AbstractSpec with ListsFixture {
       }
 
       it("should throw an exception for empty lists head") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyList.head
         } should have message "List.head: empty list"
       }
@@ -165,7 +166,7 @@ class ListsSpec extends AbstractSpec with ListsFixture {
 
     describe("last") {
       it("should throw an exception for the empty list") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyList.last
         } should have message "List.last: empty list"
       }
@@ -229,12 +230,12 @@ class ListsSpec extends AbstractSpec with ListsFixture {
 
     describe("map") {
       it("should return an empty list, when the function is applied to empty lists") {
-        val l = emptyList map { _ *  2}
+        val l = emptyList map { _ * 2 }
         l.isEmpty shouldBe true
       }
 
       it("should apply a function to list elements") {
-        val l = numbersList.map { _ *  2}
+        val l = numbersList.map { _ * 2 }
         l shouldBe List(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
       }
     }
@@ -400,7 +401,7 @@ class ListsSpec extends AbstractSpec with ListsFixture {
 
     describe("splitAt") {
       it("should produce two empty lists, splitting an empty list") {
-        emptyList.splitAt(1) should be ((emptyList, emptyList))
+        emptyList.splitAt(1) should be((emptyList, emptyList))
       }
 
       it("should split the list at the given index") {
@@ -510,7 +511,8 @@ class ListsSpec extends AbstractSpec with ListsFixture {
           List(3, 4, 5),
           List(4, 5),
           List(5),
-          List())
+          List()
+        )
       }
     }
 

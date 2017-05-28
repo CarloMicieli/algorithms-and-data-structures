@@ -206,7 +206,7 @@ class BinarySearchTreeSpec extends AbstractSpec with BinarySearchTreesFixture {
 
     describe("fold") {
       it("should throw an exception folding an empty tree") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyTree.fold(_ + _)
         } should have message "fold: tree is empty"
       }

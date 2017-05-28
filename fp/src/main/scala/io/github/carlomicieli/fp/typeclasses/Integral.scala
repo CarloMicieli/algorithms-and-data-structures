@@ -27,8 +27,7 @@ package io.github.carlomicieli.fp.typeclasses
 import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
 
-/**
-  * It represents the type class for types that implement the numeric operation for
+/** It represents the type class for types that implement the numeric operation for
   * whole numbers.
   *
   * @tparam A the type class instance type
@@ -36,24 +35,21 @@ import scala.language.implicitConversions
 @implicitNotFound("The type ${A} was not made an instance of the Integral type class")
 trait Integral[A] extends Num[A] {
 
-  /**
-    * Returns the integer division operation
+  /** Returns the integer division operation
     * @param a the first operand
     * @param b the second operand
     * @return the division
     */
   def div(a: A, b: A): A
 
-  /**
-    * Returns the integer remainder operation
+  /** Returns the integer remainder operation
     * @param a the first operand
     * @param b the second operand
     * @return the remainder
     */
   def mod(a: A, b: A): A
 
-  /**
-    * Returns the integer division and remainder operation
+  /** Returns the integer division and remainder operation
     * @param a the first operand
     * @param b the second operand
     * @return a pair with division and remainder
@@ -96,9 +92,9 @@ object Integral {
     override def negate(x: Int): Int = -x
 
     override def signum(x: Int): Int = x match {
-      case 0 => 0
+      case 0          => 0
       case _ if x < 0 => -1
-      case _ if x > 0 =>  1
+      case _ if x > 0 => 1
     }
 
     override def add(x: Int, y: Int): Int = x + y
@@ -117,9 +113,9 @@ object Integral {
     override def negate(x: Long): Long = -x
 
     override def signum(x: Long): Long = x match {
-      case 0 => 0
+      case 0          => 0
       case _ if x < 0 => -1
-      case _ if x > 0 =>  1
+      case _ if x > 0 => 1
     }
 
     override def add(x: Long, y: Long): Long = x + y

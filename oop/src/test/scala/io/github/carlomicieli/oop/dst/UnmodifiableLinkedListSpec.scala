@@ -48,27 +48,27 @@ class UnmodifiableLinkedListSpec extends AbstractSpec with UnmodifiableLinkedLis
         val expectedMsg: String = "This list is unmodifiable"
         val l = unmodifiableList(numbersList)
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.addBack(42)
         } should have message expectedMsg
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.addFront(42)
         } should have message expectedMsg
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.clear()
         } should have message expectedMsg
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.remove(42)
         } should have message expectedMsg
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.insert(42)
         } should have message expectedMsg
 
-        the [UnsupportedOperationException] thrownBy {
+        the[UnsupportedOperationException] thrownBy {
           l.removeHead()
         } should have message expectedMsg
       }

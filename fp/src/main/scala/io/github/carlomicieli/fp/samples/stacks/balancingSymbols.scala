@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.fp.samples.stacks
 
-import io.github.carlomicieli.fp.dst.{Good, Just, Stack, None}
+import io.github.carlomicieli.fp.dst.{ Good, Just, Stack, None }
 
 // Checking balancing symbols in a string
 object balancingSymbols extends (String => Boolean) {
@@ -42,7 +42,7 @@ object balancingSymbols extends (String => Boolean) {
           loop(stack push c, cs)
         else {
           stack.top match {
-            case None    => false
+            case None => false
             case Just(h) =>
               val Good((s, st)) = stack.pop
               if (matchingSymbols(s) != c)

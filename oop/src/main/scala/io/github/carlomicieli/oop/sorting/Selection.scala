@@ -26,16 +26,14 @@ package io.github.carlomicieli.oop.sorting
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the `selection sort` sorting algorithm.
+/** Implements the `selection sort` sorting algorithm.
   */
 object Selection extends Sorting {
   def name: String = "Selection Sort"
 
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = {
+  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     import Ordered._
-    for(i <- start until end) {
+    for (i <- start until end) {
       var min = i
       for (j <- i + 1 until end) {
         if (array(j) < array(min)) {

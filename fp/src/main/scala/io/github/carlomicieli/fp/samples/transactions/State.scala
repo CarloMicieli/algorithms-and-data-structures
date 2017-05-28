@@ -25,5 +25,5 @@
 package io.github.carlomicieli.fp.samples.transactions
 
 sealed trait State
-case object Open   extends State
+case object Open extends State
 case object Closed extends State

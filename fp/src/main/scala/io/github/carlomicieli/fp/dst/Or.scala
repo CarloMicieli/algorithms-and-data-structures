@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * It represents a value that is one of two possible types, with one type being `Good[G]` and the other `Bad[B]`.
+/** It represents a value that is one of two possible types, with one type being `Good[G]` and the other `Bad[B]`.
   * All the methods are biased on the `Good` type.
   *
   * The only way to extract the value encapsulated by a `Bad` is through pattern matching.
@@ -35,27 +34,23 @@ package io.github.carlomicieli.fp.dst
   */
 sealed trait Or[+G, +B] {
 
-  /**
-    * Returns `true` if `this` is a `Good[_]` value; `false` otherwise.
+  /** Returns `true` if `this` is a `Good[_]` value; `false` otherwise.
     * @return `true` if `this` is a `Good[_]` value; `false` otherwise
     */
   def isBad: Boolean
 
-  /**
-    * Returns `true` if `this` is a `Bad[_]` value; `false` otherwise.
+  /** Returns `true` if `this` is a `Bad[_]` value; `false` otherwise.
     * @return `true` if `this` is a `Bad[_]` value; `false` otherwise
     */
   def isGood: Boolean
 
-  /**
-    * Returns the value contained if `this` is a `Good[_]` value; it
+  /** Returns the value contained if `this` is a `Good[_]` value; it
     * throws a `NoSuchElementException` otherwise.
     * @return the value contained
     */
   def get: G
 
-  /**
-    * Returns the contained value if `this` is a `Good[_]`; it returns
+  /** Returns the contained value if `this` is a `Good[_]`; it returns
     * the provided `default` otherwise.
     *
     * @usecase def getOrElse(default: => G): G
@@ -66,8 +61,7 @@ sealed trait Or[+G, +B] {
     */
   def getOrElse[G1 >: G](default: => G1): G1 = if (isGood) get else default
 
-  /**
-    * Returns `true` if this `Or` is a `Good` and the predicate `p` returns
+  /** Returns `true` if this `Or` is a `Good` and the predicate `p` returns
     * `true` when applied to this `Good`'s value.
     *
     * @param p the predicate to match
@@ -75,8 +69,7 @@ sealed trait Or[+G, +B] {
     */
   def exists(p: G => Boolean): Boolean = if (isGood) p(get) else false
 
-  /**
-    * Applies the given function `f` to the contained value if `this` is a `Good[_]`;
+  /** Applies the given function `f` to the contained value if `this` is a `Good[_]`;
     * does nothing if `this` is a `Bad`.
     *
     * @usecase def foreach(f: G => Unit): Unit
@@ -88,20 +81,18 @@ sealed trait Or[+G, +B] {
     val res = f(get)
   } else ()
 
-  /**
-    * Maps the given function to this `Or`'s value if it is a `Good` or returns this if it is a `Bad`.
+  /** Maps the given function to this `Or`'s value if it is a `Good` or returns this if it is a `Bad`.
     * @param f the function to apply
     * @tparam G1 the resulting value type
     * @return if this is a `Good`, the result of applying the given function to the contained value
-    *         wrapped in a `Good`; a `Bad` otherwise
+    *        wrapped in a `Good`; a `Bad` otherwise
     */
   def map[G1](f: G => G1): Or[G1, B] = this match {
     case Bad(_)  => this.asInstanceOf[Or[G1, B]]
     case Good(v) => Good(f(v))
   }
 
-  /**
-    * Returns the given function applied to the value contained in this `Or` if it is a `Good`,
+  /** Returns the given function applied to the value contained in this `Or` if it is a `Good`,
     * or returns this if it is a `Bad`.
     *
     * @usecase def flatMap[G1](f: G => Or[G1, B]): Or[G1, B]
@@ -110,15 +101,14 @@ sealed trait Or[+G, +B] {
     * @tparam G1 the good type
     * @tparam B1 the bad type
     * @return if this is a `Good`, the result of applying the given function to the contained value
-    *         wrapped in a `Good`; a `Bad` otherwise
+    *        wrapped in a `Good`; a `Bad` otherwise
     */
   def flatMap[G1, B1 >: B](f: G => Or[G1, B1]): Or[G1, B1] = this match {
     case Bad(_)  => this.asInstanceOf[Or[G1, B1]]
     case Good(v) => f(v)
   }
 
-  /**
-    * It accumulate two `Or`s together. If both are `Good`, you'll get a `Good` tuple containing
+  /** It accumulate two `Or`s together. If both are `Good`, you'll get a `Good` tuple containing
     * both original `Good` values. Otherwise, you'll get a `Bad` containing a tuple with the
     * original `Bad` values.
     *
@@ -130,14 +120,13 @@ sealed trait Or[+G, +B] {
   def zip[G1, B1 >: B](that: Or[G1, B1]): (G, G1) Or List[B1] = {
     (this, that) match {
       case (Good(a), Good(b)) => Good((a, b))
-      case (Bad(a), Bad(b)) => Bad(List(a, b))
-      case (Bad(x), _) => Bad(List(x))
-      case (_, Bad(y)) => Bad(List(y))
+      case (Bad(a), Bad(b))   => Bad(List(a, b))
+      case (Bad(x), _)        => Bad(List(x))
+      case (_, Bad(y))        => Bad(List(y))
     }
   }
 
-  /**
-    * Returns `this` value if this is a `Good[_]`; produce a new `Bad` value
+  /** Returns `this` value if this is a `Good[_]`; produce a new `Bad` value
     * using the given value `v` otherwise.
     *
     * @usecase def orElse(v: => B): Or[G, B]
@@ -145,7 +134,7 @@ sealed trait Or[+G, +B] {
     * @param v the value used to produce a new `Bad`
     * @tparam B1 the new `Bad` element type
     * @return if this is a `Good`, the result will be the current `Or` value; a new `Bad`
-    *         containing `v` otherwise
+    *        containing `v` otherwise
     */
   def orElse[B1](v: => B1): Or[G, B1] =
     if (isGood)
@@ -153,17 +142,15 @@ sealed trait Or[+G, +B] {
     else
       Bad(v)
 
-  /**
-    * Returns an `Or` with the `Good` and `Bad` types swapped: `Bad` becomes `Good` and `Good` becomes `Bad`.
+  /** Returns an `Or` with the `Good` and `Bad` types swapped: `Bad` becomes `Good` and `Good` becomes `Bad`.
     * @return a swapped `Or` value
     */
   def swap: Or[B, G] = this match {
     case Good(g) => Bad(g)
-    case Bad(b) => Good(b)
+    case Bad(b)  => Good(b)
   }
 
-  /**
-    * Returns a `Just` value with the element contained in a `Good`;
+  /** Returns a `Just` value with the element contained in a `Good`;
     * it simply return `None` otherwise.
     *
     * @usecase def toMaybe: Maybe[G]
@@ -195,7 +182,7 @@ case class Good[A, B](value: A) extends Or[A, B] {
   def get = value
 }
 
-case class Bad[A, B](value: B)  extends Or[A, B] {
+case class Bad[A, B](value: B) extends Or[A, B] {
   def isBad = true
   def isGood = false
   def get: A = throw new NoSuchElementException("Or.get: is empty")

@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-private[this]
-class FixedCapacityBag[A] private(st: Array[A]) extends Bag[A] {
+private[this] class FixedCapacityBag[A] private (st: Array[A]) extends Bag[A] {
 
   private val storage = st
   private var ind = 0

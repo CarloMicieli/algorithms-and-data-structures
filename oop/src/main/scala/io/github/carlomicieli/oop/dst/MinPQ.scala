@@ -26,7 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-final class MinPQ[A] private(st: Array[A]) {
+final class MinPQ[A] private (st: Array[A]) {
   private val storage: Array[A] = st
   private var heapSize = 0
 

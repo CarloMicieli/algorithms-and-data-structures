@@ -27,8 +27,7 @@ package io.github.carlomicieli.fp.typeclasses
 import scala.annotation.implicitNotFound
 import scala.language.implicitConversions
 
-/**
-  * It represents the type class for fractional numbers, supporting real division.
+/** It represents the type class for fractional numbers, supporting real division.
   */
 @implicitNotFound("The type ${A} was not made an instance of the Fractional type class")
 trait Fractional[A] extends Num[A] {

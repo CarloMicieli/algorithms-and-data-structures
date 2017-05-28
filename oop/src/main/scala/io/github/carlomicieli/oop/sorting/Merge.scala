@@ -24,25 +24,21 @@
 
 package io.github.carlomicieli.oop.sorting
 
-
 import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the `merge sort` sorting algorithm.
+/** Implements the `merge sort` sorting algorithm.
   */
 object Merge extends Sorting with LazyLogging {
   def name: String = "Merge Sort"
 
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = {
+  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     val aux = new Array[A](array.length)
     mSort(array, aux, start, end)(ord)
   }
 
-  private def mSort[A](A: Array[A], aux: Array[A], start: Int, end: Int)
-                      (implicit ord: Ordering[A]): Unit = {
+  private def mSort[A](A: Array[A], aux: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     import Ordered._
 
     logger.debug(s"mSort($start, $end)")
@@ -61,8 +57,7 @@ object Merge extends Sorting with LazyLogging {
     }
   }
 
-  private def merge[A](A: Array[A], aux: Array[A], start: Int, mid: Int, end: Int)
-                      (implicit ord: Ordering[A]): Unit = {
+  private def merge[A](A: Array[A], aux: Array[A], start: Int, mid: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     import Ordered._
 
     for (k <- start until end) {
@@ -75,12 +70,10 @@ object Merge extends Sorting with LazyLogging {
       if (i >= mid) {
         A(k) = aux(j)
         j = j + 1
-      }
-      else if (j >= end) {
+      } else if (j >= end) {
         A(k) = aux(i)
         i = i + 1
-      }
-      else if (aux(i) <= aux(j)) {
+      } else if (aux(i) <= aux(j)) {
         A(k) = aux(i)
         i = i + 1
       } else {

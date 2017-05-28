@@ -27,8 +27,7 @@ package io.github.carlomicieli.fp.typeclasses
 import scala.language.implicitConversions
 import scala.annotation.implicitNotFound
 
-/**
-  * The Ord type class is used for totally ordered data types.
+/** The Ord type class is used for totally ordered data types.
   * @tparam A
   */
 @implicitNotFound("The type ${A} was not made an instance of the Ord type class")
@@ -70,15 +69,14 @@ object Ord {
   implicit val stringOrd: Ord[String] = ordInstance[String]((x, y) => x compare y)
 
   private def ordInstance[A](cmp: (A, A) => Int): Ord[A] = new Ord[A] {
-      override def compare(x: A, y: A) = Ordering(cmp)(x, y)
+    override def compare(x: A, y: A) = Ordering(cmp)(x, y)
   }
 }
 
 /**
-  *
-  *  - If x ≤ y and y ≤ x then x = y (antisymmetry);
-  *  - If x ≤ y and y ≤ z then x ≤ z (transitivity);
-  *  - x ≤ y or y ≤ z (totality).
+  * - If x ≤ y and y ≤ x then x = y (antisymmetry);
+  * - If x ≤ y and y ≤ z then x ≤ z (transitivity);
+  * - x ≤ y or y ≤ z (totality).
   */
 trait OrdLaws {
   import Ord.ops._

@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.searching
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{ Matchers, FlatSpec }
 
 class SequentialSearchSTSpec extends FlatSpec with Matchers with SampleSymbolTables {
   "Empty sequential search st" should "be emtpy and have size 0" in {

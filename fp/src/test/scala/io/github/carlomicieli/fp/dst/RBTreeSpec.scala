@@ -142,7 +142,7 @@ class RBTreeSpec extends AbstractSpec with RBTreesFixture {
       }
 
       it("should throw an exception for the empty RB tree") {
-        the [NoSuchElementException] thrownBy emptyTree.fold(_ + _) should have message "fold: tree is empty"
+        the[NoSuchElementException] thrownBy emptyTree.fold(_ + _) should have message "fold: tree is empty"
       }
     }
 

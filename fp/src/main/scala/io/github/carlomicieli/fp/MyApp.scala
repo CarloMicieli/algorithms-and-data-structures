@@ -35,6 +35,5 @@ object MyApp {
 
     val s = commonWords(100, lines)
 
-
   }
 }

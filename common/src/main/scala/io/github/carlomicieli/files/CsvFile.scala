@@ -25,7 +25,7 @@
 package io.github.carlomicieli.files
 
 import scala.io.Source
-import scala.util.{Success, Try}
+import scala.util.{ Success, Try }
 
 case class CsvFile(filename: String, hasTitle: Boolean) {
   import java.io.InputStream
@@ -50,8 +50,7 @@ case class CsvFile(filename: String, hasTitle: Boolean) {
   private def linesToDrop: Int = if (hasTitle) 1 else 0
 }
 
-private[this]
-object extractTokens extends (String => Vector[String]) {
+private[this] object extractTokens extends (String => Vector[String]) {
   def apply(s: String): Vector[String] =
     if (s.isEmpty) Vector.empty[String]
     else {
@@ -74,7 +73,7 @@ object extractTokens extends (String => Vector[String]) {
         case '"' =>
           val (word, remaining) = s.tail.span(_ != '"')
           (word, remaining.drop(2))
-        case _   =>
+        case _ =>
           val (word, remaining) = s.span(_ != ',')
           (word, remaining.drop(1))
       }

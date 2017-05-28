@@ -27,8 +27,7 @@ package io.github.carlomicieli.fp.typeclasses
 import scala.language.implicitConversions
 import scala.annotation.implicitNotFound
 
-/**
-  * It represents a basic type class for numeric types.
+/** It represents a basic type class for numeric types.
   */
 @implicitNotFound("The type ${A} was not made instance of the Num type class")
 trait Num[A] {
@@ -36,50 +35,44 @@ trait Num[A] {
   val zero: A
   val one: A
 
-  /**
-    * The sum operation
+  /** The sum operation
     * @param x the first operand
     * @param y the second operand
     * @return the sum of `x` and `y`
     */
   def add(x: A, y: A): A
 
-  /**
-    * The subtraction operation
+  /** The subtraction operation
     * @param x the first operand
     * @param y the second operand
     * @return the subtraction of `x` and `y`
     */
   def sub(x: A, y: A): A = add(x, negate(y))
 
-  /**
-    * The multiplication operation
+  /** The multiplication operation
     * @param x the first operand
     * @param y the second operand
     * @return the multiplication of `x` and `y`
     */
   def mul(x: A, y: A): A
 
-  /**
-    * The unary negation
+  /** The unary negation
     * @param x the operand
     * @return x negated
     */
   def negate(x: A): A
 
-  /**
-    * Returns the absolute value
+  /** Returns the absolute value
     * @param x the operand
     * @return the absolute value of `x`
     */
   def abs(x: A): A = mul(x, signum(x))
 
-  /**
-    * Returns the sign of a number.
+  /** Returns the sign of a number.
     *
     * The functions abs and signum should satisfy the law:
     * {{{
-    *   abs x * signum x == x
+    *  abs x * signum x == x
     * }}}
     * For real numbers, the signum is either -1 (negative), 0 (zero) or 1 (positive).
     *

@@ -25,10 +25,9 @@
 package io.github.carlomicieli.fp.dst
 
 import scala.language.implicitConversions
-import io.github.carlomicieli.fp.typeclasses.{Ordering, Ord, Eq, Show}
+import io.github.carlomicieli.fp.typeclasses.{ Ordering, Ord, Eq, Show }
 
-/**
-  * The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]`
+/** The `Maybe` type encapsulates an optional value. A value of type `Maybe[A]`
   * either contains a value of type a (represented as `Just[A]`), or it is
   * empty (represented as `None`).
   *
@@ -37,15 +36,13 @@ import io.github.carlomicieli.fp.typeclasses.{Ordering, Ord, Eq, Show}
 sealed trait Maybe[+A] extends Product with Serializable {
   self =>
 
-  /**
-    * Return the contained value if `this` is a `Just[_]` value,
+  /** Return the contained value if `this` is a `Just[_]` value,
     * otherwise it will throw a `NoSuchElementException`.
     * @return the contained value if this is a `Just[_]`; throws an exception otherwise
     */
   def get: A
 
-  /**
-    * Return the contained value if `this` is a `Just` value,
+  /** Return the contained value if `this` is a `Just` value,
     * otherwise returns the `default` value.
     *
     * @usecase def getOrElse(default: => A): A
@@ -57,8 +54,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
   def getOrElse[A1 >: A](default: => A1): A1 =
     if (isDefined) get else default
 
-  /**
-    * It returns the first `Maybe` if it’s defined; otherwise, it returns
+  /** It returns the first `Maybe` if it’s defined; otherwise, it returns
     * the second `Maybe`.
     *
     * @usecase def orElse(default: => Maybe[A]): Maybe[A]
@@ -70,8 +66,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
   def orElse[A1 >: A](that: => Maybe[A1]): Maybe[A1] =
     if (isDefined) this else that
 
-  /**
-    * Returns the contained value if this is `Just`; throw the provided exception
+  /** Returns the contained value if this is `Just`; throw the provided exception
     * if this is a `None`.
     * @param ex the exception to throw for `None` values
     * @return the element contained in this value; or throw the exception
@@ -79,20 +74,17 @@ sealed trait Maybe[+A] extends Product with Serializable {
   def orElseThrow(ex: => Throwable): A =
     if (isDefined) get else throw ex
 
-  /**
-    * Returns `true` iff its argument is of the form `Just[_]`.
+  /** Returns `true` iff its argument is of the form `Just[_]`.
     * @return `true` if this value is a `Just[_]`; `false` otherwise
     */
   def isDefined: Boolean
 
-  /**
-    * Returns `true` iff its argument is of the form `None`; return `false` otherwise.
+  /** Returns `true` iff its argument is of the form `None`; return `false` otherwise.
     * @return `true` if this value is a `None`; `false` otherwise
     */
   def isEmpty: Boolean = !isDefined
 
-  /**
-    * Apply the function `f` if `this` is a `Just[_]` value, it doesn't
+  /** Apply the function `f` if `this` is a `Just[_]` value, it doesn't
     * do anything otherwise.
     *
     * @usecase def foreach(f: A => Unit): Unit
@@ -105,8 +97,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
       val res = f(get)
     }
 
-  /**
-    * Returns a `Just[_]` containing the result of applying `f` to this
+  /** Returns a `Just[_]` containing the result of applying `f` to this
     * `Maybe`'s value if this is a  `Just[_]`; otherwise it simply returns a `None`.
     *
     * @usecase def map(f: A => A): Maybe[A]
@@ -118,8 +109,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
   def map[A1](f: A => A1): Maybe[A1] =
     if (isDefined) Just(f(get)) else None
 
-  /**
-    * Returns a `Just[_]` containing the result of applying `f` to this
+  /** Returns a `Just[_]` containing the result of applying `f` to this
     * `Maybe`'s value if this is a  `Just[_]`; otherwise it simply returns a `None`.
     *
     * @usecase def flatMap(f: A => Maybe[A]): Maybe[A]
@@ -131,8 +121,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
   def flatMap[A1](f: A => Maybe[A1]): Maybe[A1] =
     if (isDefined) f(get) else None
 
-  /**
-    * It is applying the function `f` the the contained value if this is a `Just`, simply returns
+  /** It is applying the function `f` the the contained value if this is a `Just`, simply returns
     * `orElse` otherwise.
     * @param f the function to apply
     * @param orElse the value returned if this is a `None`
@@ -141,8 +130,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
     */
   def mapOrElse[A1](f: A => A1)(orElse: => Maybe[A1]): Maybe[A1] = map(f).orElse(orElse)
 
-  /**
-    * Returns the value after the function `f` has been applied to the wrapped value if this is a
+  /** Returns the value after the function `f` has been applied to the wrapped value if this is a
     * `Just`, simply returns `orElse` otherwise.
     * @param f the function to apply
     * @param orElse the value returned for `None` values
@@ -151,8 +139,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
     */
   def fold[B](f: A => B)(orElse: => B): B = map(f).getOrElse(orElse)
 
-  /**
-    * Returns this `Maybe` if it is nonempty and applying the predicate `p` to
+  /** Returns this `Maybe` if it is nonempty and applying the predicate `p` to
     * this `Maybe`'s value returns `true`.
     * @param p the predicate to apply
     * @return
@@ -162,8 +149,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
 
   def withFilter(p: A => Boolean): WithFilter = new WithFilter(p)
 
-  /**
-    * Returns a `Good` value with the contained value if this is a `Just[_]`; otherwise
+  /** Returns a `Good` value with the contained value if this is a `Just[_]`; otherwise
     * it will use `bad` to produce a `Bad` value.
     * @param bad the default to produce a `Bad` value
     * @tparam B the `Bad` element type
@@ -171,8 +157,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
     */
   def toGood[B](bad: => B): Or[A, B] = fold[A Or B](Good(_))(Bad(bad))
 
-  /**
-    * Returns an empty list when given `None` or a singleton list when given a `Just[_]`.
+  /** Returns an empty list when given `None` or a singleton list when given a `Just[_]`.
     * @return a list
     */
   def toList: List[A] = fold(List(_))(List.empty[A])
@@ -186,15 +171,13 @@ sealed trait Maybe[+A] extends Product with Serializable {
 }
 
 object Maybe {
-  /**
-    * Creates a new empty value.
+  /** Creates a new empty value.
     * @tparam A
     * @return
     */
   def empty[A]: Maybe[A] = None
 
-  /**
-    * Creates a new `Just` value whether the provided `x` is not `null`; returns a `None` otherwise.
+  /** Creates a new `Just` value whether the provided `x` is not `null`; returns a `None` otherwise.
     * @param x the value
     * @tparam A the value type
     * @return a new `Maybe` value
@@ -202,8 +185,7 @@ object Maybe {
   def apply[A](x: A): Maybe[A] =
     if (x == null) None else Just(x)
 
-  /**
-    * It takes a list of `Maybe`s and returns a list of all the `Just` values.
+  /** It takes a list of `Maybe`s and returns a list of all the `Just` values.
     * @param xs
     * @tparam A
     * @return

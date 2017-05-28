@@ -26,8 +26,7 @@ package io.github.carlomicieli.fp.functions
 
 object FunctionOps {
 
-  /**
-    * `flip f` takes its (first) two arguments in the reverse order of `f`.
+  /** `flip f` takes its (first) two arguments in the reverse order of `f`.
     *
     * @param f
     * @tparam A
@@ -37,23 +36,20 @@ object FunctionOps {
     */
   def flip[A, B, C](f: (A, B) => C): (B, A) => C = (b, a) => f(a, b)
 
-  /**
-    * Returns the constant function.
+  /** Returns the constant function.
     * @param x
     * @tparam A
     * @return the constant function
     */
   def const[A](x: A): () => A = () => x
 
-  /**
-    * Returns the identity function.
+  /** Returns the identity function.
     * @tparam A
     * @return the identity function
     */
   def id[A]: A => A = x => x
 
-  /**
-    * `until p f` yields the result of applying `f` until `p` holds.
+  /** `until p f` yields the result of applying `f` until `p` holds.
     *
     * @param p the termination condition
     * @param f the function to compute the next value
@@ -71,8 +67,7 @@ object FunctionOps {
     loop(z)
   }
 
-  /**
-    * Returns the error function that fails the program.
+  /** Returns the error function that fails the program.
     * @param msg the error message
     * @tparam A
     * @return

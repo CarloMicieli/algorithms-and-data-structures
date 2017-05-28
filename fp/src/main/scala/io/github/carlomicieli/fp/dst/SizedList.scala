@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-private[this]
-case class SizedList[+A](xs: List[A], size: Int) {
+private[this] case class SizedList[+A](xs: List[A], size: Int) {
   def this() = this(List.empty[A], 0)
 
   def isEmpty = size == 0
@@ -54,7 +53,6 @@ case class SizedList[+A](xs: List[A], size: Int) {
   def reverse: SizedList[A] = SizedList(xs.reverse, size)
 }
 
-private[this]
-object SizedList {
+private[this] object SizedList {
   def empty[A]: SizedList[A] = new SizedList[A]
 }

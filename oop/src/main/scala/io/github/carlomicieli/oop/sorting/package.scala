@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.oop
 
-/**
-  * Created by carlo on 31/12/15.
+/** Created by carlo on 31/12/15.
   */
 package object sorting {
   implicit class ArrayOps[A](array: Array[A])(implicit ord: Ordering[A]) {

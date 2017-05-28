@@ -70,5 +70,5 @@ class MembershipProperties extends AbstractPropSpec with MembershipFixture {
 trait MembershipFixture {
   def posNumbers = Membership { (x: Int) => x > 0 }
   def evenNumber = Membership { (x: Int) => x % 2 == 0 }
-  def oddNumber  = Membership { (x: Int) => x % 2 != 0 }
+  def oddNumber = Membership { (x: Int) => x % 2 != 0 }
 }

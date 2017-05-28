@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-private[this]
-case class ListQueue[+A](front: List[A], rear: List[A]) extends Queue[A] {
+private[this] case class ListQueue[+A](front: List[A], rear: List[A]) extends Queue[A] {
 
   def this() = this(List.empty[A], List.empty[A])
 

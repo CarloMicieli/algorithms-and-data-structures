@@ -24,10 +24,9 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.{Success, Failure, Try}
+import scala.util.{ Success, Failure, Try }
 
-private[this]
-class SinglyLinkedList[A] extends LinkedList[A] {
+private[this] class SinglyLinkedList[A] extends LinkedList[A] {
 
   private var headNode: Node = Nil
   private var lastNode: Node = Nil
@@ -81,8 +80,7 @@ class SinglyLinkedList[A] extends LinkedList[A] {
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = {
     if (isEmpty) {
       addFront(key)
-    }
-    else {
+    } else {
       import Ordered._
 
       var prev: Node = headNode
@@ -124,7 +122,7 @@ class SinglyLinkedList[A] extends LinkedList[A] {
   }
 
   override def foldRight[B](z: B)(f: (A, B) => B): B = {
-    val elements = foldLeft(Stack.empty[A])((st, x) => { st push x ; st })
+    val elements = foldLeft(Stack.empty[A])((st, x) => { st push x; st })
     var acc = z
     while (elements.nonEmpty) {
       acc = f(elements.pop(), acc)
@@ -156,7 +154,7 @@ class SinglyLinkedList[A] extends LinkedList[A] {
 
   override def find(p: (A) => Boolean): Option[A] = {
     findNode(p) match {
-      case None => None
+      case None            => None
       case Some((curr, _)) => Some(curr.key)
     }
   }
@@ -222,15 +220,13 @@ class SinglyLinkedList[A] extends LinkedList[A] {
 }
 
 object SinglyLinkedList {
-  /**
-    * Creates an empty singly linked list.
+  /** Creates an empty singly linked list.
     * @tparam A the list element type
     * @return an empty list
     */
   def empty[A]: LinkedList[A] = new SinglyLinkedList[A]
 
-  /**
-    * Creates a singly linked list with the given items.
+  /** Creates a singly linked list with the given items.
     * @param items the list items
     * @tparam A the list element type
     * @return a list

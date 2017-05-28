@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.util.Success
 
-private[this]
-class ListQueue[A] extends Queue[A] {
+private[this] class ListQueue[A] extends Queue[A] {
   private val storage = LinkedList.empty[A]
 
   def enqueue(el: A): Unit = {

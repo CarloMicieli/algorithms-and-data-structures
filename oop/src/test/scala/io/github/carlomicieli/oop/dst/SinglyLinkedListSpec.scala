@@ -32,7 +32,7 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
   describe("A singly linked list") {
     describe("head") {
       it("should throw an exception for the empty list") {
-        the [EmptyLinkedListException] thrownBy {
+        the[EmptyLinkedListException] thrownBy {
           emptyList.head
         } should have message "LinkedList.head: this list is empty"
       }
@@ -54,7 +54,7 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
 
     describe("last") {
       it("should throw an exception for the empty list") {
-        the [EmptyLinkedListException] thrownBy {
+        the[EmptyLinkedListException] thrownBy {
           emptyList.last
         } should have message "LinkedList.last: this list is empty"
       }

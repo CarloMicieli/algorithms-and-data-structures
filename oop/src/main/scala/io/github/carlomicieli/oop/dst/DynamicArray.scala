@@ -26,76 +26,65 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-/**
-  * It represents a resizable array.
+/** It represents a resizable array.
   * @tparam A the element type
   */
 trait DynamicArray[A] extends PartialFunction[Int, A] {
-  /**
-    * Updates the element at index `i` with the given value `v`.
+  /** Updates the element at index `i` with the given value `v`.
     * @param i the element index
     * @param v the new value
     */
   def update(i: Int, v: A): Unit
 
-  /**
-    * Returns the element at index `i` in this array.
+  /** Returns the element at index `i` in this array.
     * @param i the element index
     * @return the element at index `i`
     */
   def apply(i: Int): A
 
-  /**
-    * Returns the max number of elements allowed in `this` array.
+  /** Returns the max number of elements allowed in `this` array.
     * @return the max number of elements
     */
   def size: Int
 
-  /**
-    * Grows this array, according to the default ratio (ie 3/2).
+  /** Grows this array, according to the default ratio (ie 3/2).
     * @return a new array
     */
   def expand: DynamicArray[A]
 
-  /**
-    * Shrinks this array, according to the default ratio (ie 2/3).
+  /** Shrinks this array, according to the default ratio (ie 2/3).
     * @return a new array
     */
   def shrink: DynamicArray[A]
 
-  /**
-    * Shifts the array elements by `step` position, starting at index `start`. Elements that will be out of bounds
+  /** Shifts the array elements by `step` position, starting at index `start`. Elements that will be out of bounds
     * after this operation are discarded from the array
     * @param step the number of shift
     * @param start the starting index
     */
   def shift(step: Int, start: Int): Unit
 
-  /**
-    * Inserts the new element before the first index that doesn't match the predicate, sliding the remaining elements.
+  /** Inserts the new element before the first index that doesn't match the predicate, sliding the remaining elements.
     * @param el the element to be added
     * @param p the predicate to find the insertion point
     * @return `true` if any element has been inserted; `false` otherwise
     */
   def insert(el: A)(p: (A, A) => Boolean): Boolean
 
-  /**
-    * Swap the elements at index `i` and `j`, if those indexes are different.
+  /** Swap the elements at index `i` and `j`, if those indexes are different.
     * @param i the first index
     * @param j the second index
     */
   def swap(i: Int, j: Int): Unit
 
-  /**
-    * Returns an iterator for the array elements.
+  /** Returns an iterator for the array elements.
     * @return an iterator
     */
   def elements: Iterable[A]
 }
 
 object DynamicArray {
-  /**
-    * Creates a new `DynamicArray` with the provided elements.
+  /** Creates a new `DynamicArray` with the provided elements.
     * @param el the first element
     * @param items the rest of the elements
     * @tparam A the element type
@@ -110,8 +99,7 @@ object DynamicArray {
     arr
   }
 
-  /**
-    * Creates a new empty `DynamicArray`.
+  /** Creates a new empty `DynamicArray`.
     * @param size the number of elements
     * @tparam A the element type
     * @return an empty array

@@ -74,7 +74,7 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
 
       it("should throw an exception if the index is greater than the current size") {
         val arr = numbersArray
-        the [IndexOutOfBoundsException] thrownBy {
+        the[IndexOutOfBoundsException] thrownBy {
           arr(7) = 99
         } should have message "7"
       }
@@ -198,22 +198,21 @@ class ArrayListSpec extends AbstractSpec with ArrayListFixture {
 
       it("should throw an exception when the index is out of bounds") {
         val arr = numbersArray
-        the [IndexOutOfBoundsException] thrownBy {
+        the[IndexOutOfBoundsException] thrownBy {
           arr(99)
         } should have message "99"
       }
 
       it("should throw an exception when the index is greater than size") {
         val arr = numbersArray
-        the [IndexOutOfBoundsException] thrownBy {
+        the[IndexOutOfBoundsException] thrownBy {
           arr(numbersArray.size + 1)
         } should have message (numbersArray.size + 1).toString
       }
     }
 
     describe("clear") {
-      it("should reduce the size to 0")
-      {
+      it("should reduce the size to 0") {
         val arr = numbersArray
         arr.clear
         arr.size shouldBe 0

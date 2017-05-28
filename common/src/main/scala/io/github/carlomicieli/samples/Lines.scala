@@ -26,7 +26,7 @@ package io.github.carlomicieli.samples
 
 import sys.process._
 import java.net.URL
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{ Files, Path, Paths }
 
 import scala.language.postfixOps
 import scala.io.Source

@@ -25,33 +25,28 @@
 package io.github.carlomicieli.fp.dst
 
 /**
-  *
   * @tparam K
   * @tparam V
   */
 trait Map[+K, +V] {
-  /**
-    * Checks whether this map is empty.
+  /** Checks whether this map is empty.
     * @return
     */
   def isEmpty: Boolean
 
-  /**
-    * Return the number of elements in this map.
+  /** Return the number of elements in this map.
     * @return
     */
   def size: Int
 
-  /**
-    * Check whether x is a key contained in this map.
+  /** Check whether x is a key contained in this map.
     * @param x
     * @tparam K1
     * @return
     */
   def contains[K1 >: K](x: K1)(implicit ord: Ordering[K1]): Boolean
 
-  /**
-    * Lookup the value at a key in the map.
+  /** Lookup the value at a key in the map.
     *
     * The function will return the corresponding value as (Just value),
     * or None if the key isn't in the map.
@@ -62,8 +57,7 @@ trait Map[+K, +V] {
     */
   def lookup[K1 >: K](x: K1)(implicit ord: Ordering[K1]): Maybe[V]
 
-  /**
-    * The expression (findWithDefault def k map) returns the value at key k or returns
+  /** The expression (findWithDefault def k map) returns the value at key k or returns
     * default value def when the key is not in the map.
     * @param x
     * @param default
@@ -74,8 +68,7 @@ trait Map[+K, +V] {
     */
   def findWithDefault[K1 >: K, V1 >: V](x: K1, default: => V1)(implicit ord: Ordering[K1]): V
 
-  /**
-    * Insert a new key and value in the map. If the key is already present in the map, the
+  /** Insert a new key and value in the map. If the key is already present in the map, the
     * associated value is replaced with the supplied value.
     * @param k
     * @param v
@@ -86,8 +79,7 @@ trait Map[+K, +V] {
     */
   def insert[K1 >: K, V1 >: V](k: K1, v: V1)(implicit ord: Ordering[K1]): Map[K1, V1]
 
-  /**
-    * Insert with a function, combining new value and old value. insertWith f key value mp
+  /** Insert with a function, combining new value and old value. insertWith f key value mp
     * will insert the pair (key, value) into mp if key does not exist in the map. If the key
     * does exist, the function will insert the pair (key, f new_value old_value).
     * @param k
@@ -100,9 +92,8 @@ trait Map[+K, +V] {
     */
   def insertWith[K1 >: K, V1 >: V](k: K1, v: V1)(f: (V1, V1) => V1)(implicit ord: Ordering[K1]): Map[K1, V1]
 
-  /**
-    *  Delete a key and its value from the map. When the key is not a
-    *  member of the map, the original map is returned.
+  /** Delete a key and its value from the map. When the key is not a
+    * member of the map, the original map is returned.
     * @param x
     * @param ord
     * @tparam K1
@@ -110,8 +101,7 @@ trait Map[+K, +V] {
     */
   def delete[K1 >: K](x: K1)(implicit ord: Ordering[K1]): Map[K1, V]
 
-  /**
-    * Update a value at a specific key with the result of the provided function. When the key is
+  /** Update a value at a specific key with the result of the provided function. When the key is
     * not a member of the map, the original map is returned.
     * @param k
     * @param f
@@ -122,36 +112,31 @@ trait Map[+K, +V] {
     */
   def adjust[K1 >: K, V1 >: V](k: K1)(f: V1 => V1)(implicit ord: Ordering[K1]): Map[K1, V1]
 
-  /**
-    * Return all keys of the map.
+  /** Return all keys of the map.
     * @return
     */
   def keys: Iterable[K]
 
-  /**
-    * Return all key/value pairs in the map.
+  /** Return all key/value pairs in the map.
     * @return
     */
   def entrySet: Iterable[(K, V)]
 
-  /**
-    * Map a function over all values in the map.
+  /** Map a function over all values in the map.
     * @param f
     * @tparam A
     * @return
     */
   def map[A](f: V => A): Map[K, A]
 
-  /**
-    * Map values and collect the Just results.
+  /** Map values and collect the Just results.
     * @param f
     * @tparam A
     * @return
     */
   def mapMaybe[A](f: V => Maybe[A]): Map[K, A]
 
-  /**
-    * Map values and collect the Good results.
+  /** Map values and collect the Good results.
     * @param f
     * @tparam A
     * @tparam B
@@ -161,16 +146,14 @@ trait Map[+K, +V] {
 }
 
 object Map {
-  /**
-    * Create the empty map.
+  /** Create the empty map.
     * @tparam K
     * @tparam V
     * @return
     */
   def empty[K, V]: Map[K, V] = ???
 
-  /**
-    * Create a map with a single element.
+  /** Create a map with a single element.
     * @param kv
     * @tparam K
     * @tparam V
@@ -178,8 +161,7 @@ object Map {
     */
   def singleton[K, V](kv: (K, V)): Map[K, V] = ???
 
-  /**
-    * Create a map from key/value pairs.
+  /** Create a map from key/value pairs.
     * @param kvPairs
     * @tparam K
     * @tparam V
@@ -187,8 +169,7 @@ object Map {
     */
   def apply[K, V](kvPairs: (K, V)*): Map[K, V] = ???
 
-  /**
-    * Create a map from a list of key/value pairs.
+  /** Create a map from a list of key/value pairs.
     * @param xs
     * @tparam K
     * @tparam V

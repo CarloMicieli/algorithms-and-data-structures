@@ -48,7 +48,7 @@ class PostfixOpsSpec extends AbstractTestSpec {
   }
 
   it should "throw an exception for invalid expressions" in {
-    the [InvalidPostfixExpressionException] thrownBy {
+    the[InvalidPostfixExpressionException] thrownBy {
       PostfixOps.eval("65*+")
     } should have message "Invalid expression"
   }

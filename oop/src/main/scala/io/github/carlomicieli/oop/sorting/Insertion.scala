@@ -26,14 +26,12 @@ package io.github.carlomicieli.oop.sorting
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the `insertion sort` sorting algorithm.
+/** Implements the `insertion sort` sorting algorithm.
   */
 object Insertion extends Sorting {
   def name: String = "Insertion Sort"
 
-  def sort[A: ClassTag](as: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = {
+  def sort[A: ClassTag](as: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     import Ordered._
     for (i <- as.indices.slice(start + 1, end)) {
       val a = as(i)

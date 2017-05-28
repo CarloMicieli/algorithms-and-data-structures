@@ -25,9 +25,9 @@
 package io.github.carlomicieli.fp.dst
 
 import io.github.carlomicieli.test.AbstractPropSpec
-import org.scalacheck.{Arbitrary, Gen}
+import org.scalacheck.{ Arbitrary, Gen }
 import Gen._
-import org.scalacheck.Prop.{forAll, BooleanOperators}
+import org.scalacheck.Prop.{ forAll, BooleanOperators }
 
 class ListProperties extends AbstractPropSpec {
 
@@ -254,7 +254,7 @@ class ListProperties extends AbstractPropSpec {
 
   property("all and any prop") {
     check(forAll { (xs: List[Int]) =>
-      val p       = (x: Int) => x % 2 == 0
+      val p = (x: Int) => x % 2 == 0
       val negateP = (x: Int) => !p(x)
       xs.all(p) === !xs.any(negateP)
     })

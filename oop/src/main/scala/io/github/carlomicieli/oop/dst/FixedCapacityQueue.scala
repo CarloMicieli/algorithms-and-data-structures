@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-private[this]
-class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
+private[this] class FixedCapacityQueue[A](st: Array[A]) extends Queue[A] {
 
   private val storage = st
   private val N: Int = storage.length

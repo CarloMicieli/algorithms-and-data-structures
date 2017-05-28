@@ -58,7 +58,7 @@ class FunctionOpsSpec extends AbstractSpec {
 
   describe("error") {
     it("should throw an exception") {
-      the [Exception] thrownBy {
+      the[Exception] thrownBy {
         FunctionOps.error("error message")
       } should have message "*** Exception: error message"
     }

@@ -28,19 +28,16 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the `quick sort` sorting algorithm.
+/** Implements the `quick sort` sorting algorithm.
   */
 object Quick extends Sorting with LazyLogging {
   def name: String = "Quick Sort"
 
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = {
+  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     qSort(array, start, end - 1)
   }
 
-  private def qSort[A](A: Array[A], p: Int, r: Int)
-                      (implicit ord: Ordering[A]): Unit = {
+  private def qSort[A](A: Array[A], p: Int, r: Int)(implicit ord: Ordering[A]): Unit = {
     if (p < r) {
       val pivot = partition(A, p, r)
       qSort(A, p, pivot - 1)
@@ -48,8 +45,7 @@ object Quick extends Sorting with LazyLogging {
     }
   }
 
-  private def partition[A](A: Array[A], p: Int, r: Int)
-                          (implicit ord: Ordering[A]): Int = {
+  private def partition[A](A: Array[A], p: Int, r: Int)(implicit ord: Ordering[A]): Int = {
     import Ordered._
 
     randomSelect(A, p, r)
@@ -67,8 +63,7 @@ object Quick extends Sorting with LazyLogging {
     i + 1
   }
 
-  private def randomSelect[A](A: Array[A], p: Int, r: Int)
-                             (implicit ord: Ordering[A]): Unit = {
+  private def randomSelect[A](A: Array[A], p: Int, r: Int)(implicit ord: Ordering[A]): Unit = {
 
     import scala.util._
 

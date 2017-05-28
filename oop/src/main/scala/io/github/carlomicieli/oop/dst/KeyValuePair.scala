@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-/**
-  * A simple class representing a key-value pair.
+/** A simple class representing a key-value pair.
   * @param key the key component
   * @param value the value component
   * @tparam K the key type

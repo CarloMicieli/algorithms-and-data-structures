@@ -24,13 +24,13 @@
 
 package io.github.carlomicieli.oop.dst
 
-import org.scalatest.{Matchers, PropSpec}
+import org.scalatest.{ Matchers, PropSpec }
 import org.scalatest.prop.TableDrivenPropertyChecks
 
 class QueueProperties extends PropSpec
-with TableDrivenPropertyChecks
-with Matchers
-with QueueFixtures {
+    with TableDrivenPropertyChecks
+    with Matchers
+    with QueueFixtures {
 
   val emptyQueues =
     Table(
@@ -84,7 +84,7 @@ with QueueFixtures {
 
   property("dequeue from an empty queue should throw an exception") {
     forAll(emptyQueues) { q =>
-      the [EmptyQueueException] thrownBy {
+      the[EmptyQueueException] thrownBy {
         q.dequeue()
       } should have message "Queue is empty"
     }

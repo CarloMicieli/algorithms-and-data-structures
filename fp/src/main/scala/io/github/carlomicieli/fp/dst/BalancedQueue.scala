@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-private[this]
-class BalancedQueue[+A](front: SizedList[A], rear: SizedList[A]) extends Queue[A] {
+private[this] class BalancedQueue[+A](front: SizedList[A], rear: SizedList[A]) extends Queue[A] {
 
   // O(1) amortized; [O(n) for some operation]
   override def enqueue[A1 >: A](x: A1): Queue[A1] =

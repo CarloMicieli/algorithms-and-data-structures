@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{ Matchers, FlatSpec }
 
 class MinPQSpec extends FlatSpec with Matchers {
   "An empty MinPQ" should "have size 0" in {

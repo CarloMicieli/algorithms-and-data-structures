@@ -28,8 +28,7 @@ import scala.language.implicitConversions
 import scala.annotation.implicitNotFound
 import io.github.carlomicieli.fp.dst.List
 
-/**
-  * It represents the type class for conversion of values to readable Strings.
+/** It represents the type class for conversion of values to readable Strings.
   * @tparam A
   */
 @implicitNotFound("Type ${A} was not made an instance of the Show type class")

@@ -24,75 +24,64 @@
 
 package io.github.carlomicieli.oop.dst
 
-/**
-  * A trait for tree-like data structures.
+/** A trait for tree-like data structures.
   * @tparam K the key type
   * @tparam V the value type
   */
 trait Tree[K, V] {
 
-  /**
-    * `O(n)` It applies the function `f` to all key value pairs in this tree in sorted order.
+  /** `O(n)` It applies the function `f` to all key value pairs in this tree in sorted order.
     * @param f the function to apply
     */
   def inorderWalk(f: KeyValuePair[K, V] => Unit): Unit
 
-  /**
-    * `O(1)` Checks whether `this` tree is empty
+  /** `O(1)` Checks whether `this` tree is empty
     * @return `true` if empty; `false` otherwise
     */
   def isEmpty: Boolean
 
-  /**
-    * `O(1)` Checks whether `this` tree is non empty.
+  /** `O(1)` Checks whether `this` tree is non empty.
     * @return `true` if not empty; `false` otherwise
     */
   def nonEmpty: Boolean = !isEmpty
 
-  /**
-    * `O(n)` Returns the number of elements contained in `this` tree.
+  /** `O(n)` Returns the number of elements contained in `this` tree.
     * @return the number of elements
     */
   def size: Int
 
-  /**
-    * `O(h)` Insert a new value into `this` binary search tree.
+  /** `O(h)` Insert a new value into `this` binary search tree.
     * @param key the `key` for the new element
     * @param value the `value` for the new element
     * @param ord the keys ordering function
     */
   def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit
 
-  /**
-    * `O(h)` Remove the provided key from `this` binary search tree.
+  /** `O(h)` Remove the provided key from `this` binary search tree.
     * @param key the `key` to remove
     * @param ord the keys ordering function
     * @return optionally, the value which correspond to the removed key
     */
   def delete(key: K)(implicit ord: Ordering[K]): Option[V]
 
-  /**
-    * `O(h)` It search for the given key in this binary search tree.
+  /** `O(h)` It search for the given key in this binary search tree.
     * @param key the key to find
     * @param ord the keys ordering
     * @return optionally the corresponding value for `key`, if exists
     */
   def search(key: K)(implicit ord: Ordering[K]): Option[V]
 
-  /**
-    * `O(h)` Returns the minimum element in this tree.
+  /** `O(h)` Returns the minimum element in this tree.
     * @return the minimum element, if any
     */
   def min: K
 
-  /**
-    * `O(h)` Returns the maximum element in this tree.
+  /** `O(h)` Returns the maximum element in this tree.
     * @return the maximum element, if any
     */
   def max: K
 
-  /**
-    * Returns the successor of the key `key` in this tree.
+  /** Returns the successor of the key `key` in this tree.
     *
     * The successor is the node with the smallest key greater than `key`.
     *
@@ -103,8 +92,7 @@ trait Tree[K, V] {
     */
   def successor(key: K)(implicit ord: Ordering[K]): K
 
-  /**
-    * Returns the predecessor of the key `key` in this tree.
+  /** Returns the predecessor of the key `key` in this tree.
     *
     * The predecessor is the node with the greatest key smaller than `key`.
     *

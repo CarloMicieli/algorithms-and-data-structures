@@ -26,13 +26,13 @@ package io.github.carlomicieli.samples.cards
 
 sealed trait Suit {
   def value: Int = this match {
-    case Clubs => 1
+    case Clubs    => 1
     case Diamonds => 2
-    case Hearts => 3
-    case Spades => 4
+    case Hearts   => 3
+    case Spades   => 4
   }
 }
-case object Clubs    extends Suit
+case object Clubs extends Suit
 case object Diamonds extends Suit
-case object Hearts   extends Suit
-case object Spades   extends Suit
+case object Hearts extends Suit
+case object Spades extends Suit

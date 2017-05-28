@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.util.Success
 
-private[this]
-class LinkedListStack[A] extends Stack[A] {
+private[this] class LinkedListStack[A] extends Stack[A] {
   private val st = LinkedList.empty[A]
 
   override def push(el: A): Unit = {
@@ -48,13 +47,11 @@ class LinkedListStack[A] extends Stack[A] {
   }
 }
 
-/**
-  * A `Stack` implementation based on a linked list.
+/** A `Stack` implementation based on a linked list.
   */
 object LinkedListStack {
 
-  /**
-    * Creates an empty stack
+  /** Creates an empty stack
     * @tparam A the element type
     * @return an empty stack
     */

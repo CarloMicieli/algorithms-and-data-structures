@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.samples.strings
 
-/**
-  * "The Caesar cipher" sample from
+/** "The Caesar cipher" sample from
   * Hutton, Graham. Programming in Haskell. Cambridge University Press, 2007.
   */
 object CaesarCipher {
@@ -39,7 +38,8 @@ object CaesarCipher {
     'p' -> 1.9f, 'q' -> 0.1f, 'r' -> 6.0f,
     's' -> 6.3f, 't' -> 9.1f, 'u' -> 2.8f,
     'v' -> 1.0f, 'w' -> 2.4f, 'x' -> 0.2f,
-    'y' -> 2.0f, 'z' -> 0.1f)
+    'y' -> 2.0f, 'z' -> 0.1f
+  )
 
   val table = frequencyTable.toList.sorted.map { case (_, v) => v }
 
@@ -107,7 +107,7 @@ object CaesarCipher {
   }
 
   def solutions(cs: List[Char]): List[(Float, Int)] = {
-    val tablePrime = freqs(cs).map { case(_, fr) => fr }
+    val tablePrime = freqs(cs).map { case (_, fr) => fr }
     val f = (n: Int) => chiSquare(rotate(n, tablePrime), table)
     (0 to 25).toList.map(f).zipWithIndex.sorted.take(1)
   }

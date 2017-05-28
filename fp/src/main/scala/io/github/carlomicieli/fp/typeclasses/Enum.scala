@@ -26,61 +26,53 @@ package io.github.carlomicieli.fp.typeclasses
 
 import scala.annotation.implicitNotFound
 
-/**
-  * The `Enum` type class is used to name the upper and lower limits of a type. It also defines
+/** The `Enum` type class is used to name the upper and lower limits of a type. It also defines
   * operations on sequentially ordered types.
   *
   * For any type that is an instance of type class `Enum`, the following should hold:
-  *  - `fromEnum` and `toEnum` should returns `None` if the result value is not representable in the result type.
-  *  - the calls `next maxBound` and `prev minBound` should result in a `None` value;
+  * - `fromEnum` and `toEnum` should returns `None` if the result value is not representable in the result type.
+  * - the calls `next maxBound` and `prev minBound` should result in a `None` value;
   *
   * @tparam A the element type
   */
 @implicitNotFound("The type ${A} was not made an instance of the Enum type class.")
 trait Enum[A] {
-  /**
-    * Convert from an `Int` to the corresponding `A` value.
+  /** Convert from an `Int` to the corresponding `A` value.
     *
     * @param x the element id
     * @return `Some(el)` if the input is valid, `None` otherwise
     */
   def toEnum(x: Int): Option[A]
 
-  /**
-    * Convert from an `A` value to the corresponding `Int`.
+  /** Convert from an `A` value to the corresponding `Int`.
     * @param x the element to convert
     * @return the corresponding element id
     */
   def fromEnum(x: A): Int
 
-  /**
-    * Returns the successor of a value.
+  /** Returns the successor of a value.
     * @param x the current element
     * @return `Some(el)` if the element has a successor, `None` otherwise.
     */
   def next(x: A): Option[A] = toEnum(fromEnum(x) + 1)
 
-  /**
-    * Returns the predecessor of a value.
+  /** Returns the predecessor of a value.
     * @param x the current element
     * @return `Some(el)` if the element has a predecessor, `None` otherwise.
     */
   def prev(x: A): Option[A] = toEnum(fromEnum(x) - 1)
 
-  /**
-    * Returns the lower limit for the type `A`.
+  /** Returns the lower limit for the type `A`.
     * @return the lower limit
     */
   def minBound: A
 
-  /**
-    * Returns the upper limit for the type `A`.
+  /** Returns the upper limit for the type `A`.
     * @return the upper limit
     */
   def maxBound: A
 
-  /**
-    * The element ids range.
+  /** The element ids range.
     */
   val range: Range = fromEnum(minBound) to fromEnum(maxBound)
 }

@@ -28,8 +28,8 @@ sealed trait Transaction {
   def id: Long
 }
 case class AccountCreated(id: Long, firstName: String, lastName: String) extends Transaction
-case class AccountClosed(id: Long)              extends Transaction
-case class Deposit(id: Long, amount: Double)    extends Transaction
+case class AccountClosed(id: Long) extends Transaction
+case class Deposit(id: Long, amount: Double) extends Transaction
 case class Withdrawal(id: Long, amount: Double) extends Transaction
 
 object Transaction {
@@ -39,7 +39,8 @@ object Transaction {
     AccountCreated(2, "Jane", "Doe"),
     Deposit(1, 25.0),
     Withdrawal(1, 45.0),
-    AccountClosed(1))
+    AccountClosed(1)
+  )
 
   def accountStatus(id: Long): Option[AccountState] = {
     val next = step(id) _

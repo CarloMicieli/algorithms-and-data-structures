@@ -55,7 +55,7 @@ class DynamicArraySpec extends AbstractSpec with DynamicArrayFixture {
       }
 
       it("should throw an exception when the index is out of bounds") {
-        val ex = the [ArrayIndexOutOfBoundsException] thrownBy {
+        val ex = the[ArrayIndexOutOfBoundsException] thrownBy {
           numbersArray(99)
         }
       }
@@ -72,7 +72,7 @@ class DynamicArraySpec extends AbstractSpec with DynamicArrayFixture {
 
       it("should throw an exception when the index is out of bounds") {
         val a = emptyArray
-        val ex = the [ArrayIndexOutOfBoundsException] thrownBy {
+        val ex = the[ArrayIndexOutOfBoundsException] thrownBy {
           a(99) = 100
         }
       }

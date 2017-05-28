@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.samples.cards
 
-class Deck private(c: Array[Card]) {
+class Deck private (c: Array[Card]) {
   private val cards = c
 
   def shuffle(): Unit = {

@@ -33,8 +33,7 @@ trait Sorting {
     sort[A](as, 0, as.length)
   }
 
-  /**
-    * It sorts in place a sub range in an `Array`.
+  /** It sorts in place a sub range in an `Array`.
     *
     * @usecase def sort[A](xs: Array[A], start: Int, end: Int): Unit
     * @inheritdoc

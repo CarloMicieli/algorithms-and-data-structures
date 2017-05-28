@@ -25,7 +25,7 @@
 package io.github.carlomicieli.fp
 
 import org.scalacheck.util.Buildable
-import org.scalacheck.{Gen, Arbitrary}
+import org.scalacheck.{ Gen, Arbitrary }
 import org.scalatest.enablers.Length
 
 import scala.language.implicitConversions

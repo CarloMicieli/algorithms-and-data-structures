@@ -29,8 +29,10 @@ import io.github.carlomicieli.test.AbstractTestSpec
 class StackOpSpec extends AbstractTestSpec with SampleStacks {
   "A sequence of valid ops" should "produce valid stacks" in {
     import StackOp._
-    val res = sequence(emptyStack,
-      List(PushOp(1), PushOp(2), PushOp(3), PopOp, PopOp, PushOp(5)))
+    val res = sequence(
+      emptyStack,
+      List(PushOp(1), PushOp(2), PushOp(3), PopOp, PopOp, PushOp(5))
+    )
 
     val Good(finalStack) = res
     finalStack.isEmpty shouldBe false
@@ -41,8 +43,10 @@ class StackOpSpec extends AbstractTestSpec with SampleStacks {
   "A sequence of invalid operation" should "produce an Bad result" in {
     import StackOp._
 
-    val res = sequence(emptyStack,
-      List(PushOp(1), PushOp(2), PushOp(3), PopOp, PopOp, PopOp, PopOp, PushOp(5)))
+    val res = sequence(
+      emptyStack,
+      List(PushOp(1), PushOp(2), PushOp(3), PopOp, PopOp, PopOp, PopOp, PushOp(5))
+    )
 
     val Bad(invalidOp) = res
     invalidOp.op shouldBe PopOp

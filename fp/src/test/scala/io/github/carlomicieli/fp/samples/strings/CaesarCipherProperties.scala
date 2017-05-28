@@ -95,7 +95,7 @@ class CaesarCipherProperties extends AbstractPropertySpec {
   property("freqs: the sum of all chars sequence must be 100%") {
     forAll(nonEmptyLowerCharsList) { cs: List[Char] =>
       val sum: Float = freqs(cs).map { case (_, v) => v }.sum
-      sum should be (100.0f +- 1.0f)
+      sum should be(100.0f +- 1.0f)
     }
   }
 
@@ -105,7 +105,7 @@ class CaesarCipherProperties extends AbstractPropertySpec {
       val letterFreqs = freqs(cs)
 
       val (_, charFreq) = letterFreqs(index(ch))
-      charFreq should be (100.0f +- 0.1f)
+      charFreq should be(100.0f +- 0.1f)
     }
   }
 

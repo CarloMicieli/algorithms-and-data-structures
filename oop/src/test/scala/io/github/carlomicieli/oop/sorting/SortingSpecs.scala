@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.sorting
 
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 import scala.reflect.ClassTag
 
@@ -48,6 +48,5 @@ class SortingSpecs extends FlatSpec with Matchers {
 object NopSorting extends Sorting {
   def name: String = "Nop"
 
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = ???
+  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = ???
 }

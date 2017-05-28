@@ -26,8 +26,7 @@ package io.github.carlomicieli.fp.dst
 
 import scala.util.control.NoStackTrace
 
-private[this]
-class ListStack[+A](st: List[A]) extends Stack[A] {
+private[this] class ListStack[+A](st: List[A]) extends Stack[A] {
   override def push[B >: A](el: B): Stack[B] = new ListStack[B](el +: st)
 
   override def size: Int = st.length

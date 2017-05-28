@@ -25,7 +25,7 @@
  */
 package io.github.carlomicieli.test
 
-import org.scalatest.{FunSpec, Matchers}
+import org.scalatest.{ FunSpec, Matchers }
 
 class AbstractSpec extends FunSpec with Matchers {
 }

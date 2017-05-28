@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.util.Try
 
-private[this]
-class UnmodifiableLinkedList[A](inner: LinkedList[A]) extends LinkedList[A] {
+private[this] class UnmodifiableLinkedList[A](inner: LinkedList[A]) extends LinkedList[A] {
   require(inner != null)
 
   override def headOption: Option[A] = inner.headOption

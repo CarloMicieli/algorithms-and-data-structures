@@ -32,7 +32,7 @@ case class InvalidStackOperation[A](stack: Stack[A], op: StackOp[A], ex: Excepti
 object StackOp {
   def sequence[A](initial: Stack[A], ops: List[StackOp[A]]): Stack[A] Or InvalidStackOperation[A] = {
     ops match {
-      case Nil => Good(initial)
+      case Nil               => Good(initial)
       case PushOp(k) +: tail => sequence(initial.push(k), tail)
       case PopOp +: tail =>
         initial.pop match {

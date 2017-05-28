@@ -28,10 +28,12 @@ import java.time.LocalDate
 
 import scala.util.Try
 
-case class Game(name: String,
-                developer: String,
-                publisher: String,
-                releaseDate: Option[LocalDate])
+case class Game(
+  name: String,
+  developer: String,
+  publisher: String,
+  releaseDate: Option[LocalDate]
+)
 
 object Game {
 
@@ -41,8 +43,7 @@ object Game {
 
   def fromVector(v: Vector[String]): Try[Game] = {
     Try.apply {
-      v match
-      {
+      v match {
         case Vector(name, developer, publisher, sDate, _*) =>
           val releaseDate = toLocalDate(sDate).toOption
           Game(name, developer, publisher, releaseDate)

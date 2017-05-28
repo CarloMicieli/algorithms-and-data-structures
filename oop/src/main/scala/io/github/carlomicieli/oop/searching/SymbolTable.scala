@@ -24,12 +24,11 @@
 
 package io.github.carlomicieli.oop.searching
 
-/**
-  * A ''symbol table'' is a data structure for key-value pairs that supports two
+/** A ''symbol table'' is a data structure for key-value pairs that supports two
   * operations:
   *
-  *  - `insert` (put) a new pair into the table
-  *  - `search` (get) for the value associated with a given key.
+  * - `insert` (put) a new pair into the table
+  * - `search` (get) for the value associated with a given key.
   *
   * @tparam K the key type
   * @tparam V the value type
@@ -40,8 +39,7 @@ trait SymbolTable[K, V] extends PartialFunction[K, V] {
 
   def isDefinedAt(key: K): Boolean
 
-  /**
-    * Put the entry key-value in this symbol table. If the given `key` is already
+  /** Put the entry key-value in this symbol table. If the given `key` is already
     * present then the corresponding value will be replaced with the new value.
     *
     * @param key the key
@@ -49,34 +47,29 @@ trait SymbolTable[K, V] extends PartialFunction[K, V] {
     */
   def update(key: K, value: V): Unit
 
-  /**
-    * Optionally returns the value associated with the given `key`.
+  /** Optionally returns the value associated with the given `key`.
     * @param key the key to search
     * @return optionally the value if found; a `None` otherwise
     */
   def get(key: K): Option[V]
 
-  /**
-    * Removes the entry with the given `key` from the symbol table.
+  /** Removes the entry with the given `key` from the symbol table.
     * @param key the key to remove
     */
   def delete(key: K): Unit
 
-  /**
-    * Checks whether this symbol table contains the given `key`.
+  /** Checks whether this symbol table contains the given `key`.
     * @param key the key to search
     * @return `true` if the symbol table contains the `key`; `false` otherwise
     */
   def contains(key: K): Boolean
 
-  /**
-    * Checks whether this symbol table is empty.
+  /** Checks whether this symbol table is empty.
     * @return `true` if empty; `false` otherwise.
     */
   def isEmpty: Boolean
 
-  /**
-    * Returns the number of entry contained in this symbol table.
+  /** Returns the number of entry contained in this symbol table.
     * @return the number of entry
     */
   def size: Int

@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-import org.scalacheck.Prop.{forAll, BooleanOperators}
+import org.scalacheck.Prop.{ forAll, BooleanOperators }
 import io.github.carlomicieli.test.AbstractPropSpec
 
 class ListStackProperties extends AbstractPropSpec {

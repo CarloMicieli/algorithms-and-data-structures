@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.fp.samples.stacks
 
-import io.github.carlomicieli.fp.dst.{Good, Stack}
+import io.github.carlomicieli.fp.dst.{ Good, Stack }
 
 sealed trait Symbol {
   val precedence: Int
@@ -33,8 +33,8 @@ sealed trait Symbol {
 
 object Symbol {
   def isOperator(ch: Char): Boolean = operators contains ch
-  def isNumber  (ch: Char): Boolean = ch >= '0' && ch <= '9'
-  def isParen   (ch: Char): Boolean = ch == '(' || ch == ')'
+  def isNumber(ch: Char): Boolean = ch >= '0' && ch <= '9'
+  def isParen(ch: Char): Boolean = ch == '(' || ch == ')'
 
   private val operators = List('+', '-', '*', '/')
 }
@@ -51,7 +51,7 @@ case class Number(n: Int) extends Symbol {
   override val precedence = 1
   override def toChar = ('0'.toInt + n).toChar
 }
-class Operator private(op: Char, prec: Int) extends Symbol {
+class Operator private (op: Char, prec: Int) extends Symbol {
   override val precedence = prec
   override def toChar = op
   def apply(x: Int, y: Int): Int = op match {
@@ -100,10 +100,10 @@ object infix2postfix {
     def step(acc: (Stack[Symbol], Vector[Symbol]), s: Symbol): (Stack[Symbol], Vector[Symbol]) = {
       val (ops, output) = acc
       s match {
-        case OpenParen      => (ops, output)
-        case ClosedParen    => (ops, output)
-        case op@Operator(_) => (ops push op, output)
-        case sym@Number(n)  =>
+        case OpenParen        => (ops, output)
+        case ClosedParen      => (ops, output)
+        case op @ Operator(_) => (ops push op, output)
+        case sym @ Number(n) =>
           (ops, output :+ sym)
       }
     }
@@ -118,16 +118,16 @@ object infix2postfix {
 object PostfixOps {
   def eval(exp: String): Int = {
     extractSymbols(exp) match {
-      case l@(s :: ss) => compute(l)
-      case _           => 0
+      case l @ (s :: ss) => compute(l)
+      case _             => 0
     }
   }
 
   private def compute(as: List[Symbol]): Int = {
     def step(st: Stack[Int], s: Symbol): Stack[Int] = {
       s match {
-        case Number(n)      => st push n
-        case op@Operator(_) =>
+        case Number(n) => st push n
+        case op @ Operator(_) =>
 
           st.pop match {
             case Good((x, st1)) =>
@@ -135,7 +135,7 @@ object PostfixOps {
                 case Good((y, st2)) => st2 push op(x, y)
                 case _              => throw new InvalidPostfixExpressionException()
               }
-            case _              =>
+            case _ =>
               throw new InvalidPostfixExpressionException()
           }
         case OpenParen | ClosedParen => st

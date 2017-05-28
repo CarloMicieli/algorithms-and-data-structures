@@ -25,7 +25,7 @@
 package io.github.carlomicieli.fp.typeclasses
 
 import io.github.carlomicieli.fp.dst.List
-import io.github.carlomicieli.fp.dst.{Maybe, None, Just}
+import io.github.carlomicieli.fp.dst.{ Maybe, None, Just }
 import io.github.carlomicieli.test.AbstractSpec
 import Show.ops._
 

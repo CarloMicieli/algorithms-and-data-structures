@@ -24,13 +24,11 @@
 
 package io.github.carlomicieli.oop.searching
 
-/**
-  * Implements fundamental functions for searching.
+/** Implements fundamental functions for searching.
   */
 object Search {
 
-  /**
-    * `O(lg n)` Search for an element in a sorted `Array`.
+  /** `O(lg n)` Search for an element in a sorted `Array`.
     *
     * @param xs a sorted `Array`
     * @param x the element to find
@@ -42,8 +40,7 @@ object Search {
     binarySearch(xs, x, 0, xs.length)(ord)
   }
 
-  /**
-    * `O(lg n)` Search for an element in a part of a sorted `Array`.
+  /** `O(lg n)` Search for an element in a part of a sorted `Array`.
     *
     * @param xs a sorted `Array`
     * @param x the element to find
@@ -58,7 +55,7 @@ object Search {
     if (lo < hi) {
       val mid: Int = lo + (hi - lo) / 2
       x compare xs(mid) match {
-        case 0 => Some(mid)
+        case 0          => Some(mid)
         case n if n < 0 => binarySearch(xs, x, lo, mid)
         case n if n > 0 => binarySearch(xs, x, mid + 1, hi)
       }

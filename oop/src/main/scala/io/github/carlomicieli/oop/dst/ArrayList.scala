@@ -28,8 +28,7 @@ import io.github.carlomicieli.util.Default
 
 import scala.reflect.ClassTag
 
-/**
-  * It represents a resizable array implementation of the `RandomAccess` trait.
+/** It represents a resizable array implementation of the `RandomAccess` trait.
   *
   * This class provides constant time implementation for `size`, `capacity`, `apply`, `update`,
   * `isEmpty` operations.
@@ -40,34 +39,34 @@ import scala.reflect.ClassTag
   * Other operations (like `contains`, `foldLeft` and `foldRight`) are running in linear time.
   *
   * {{{
-  *   scala> val al = ArrayList.empty[Int]
-  *   al: io.github.carlomicieli.oop.dst.ArrayList[Int] = []
+  *  scala> val al = ArrayList.empty[Int]
+  *  al: io.github.carlomicieli.oop.dst.ArrayList[Int] = []
   *
-  *   scala> al.add(1)
-  *   scala> al.add(42)
-  *   scala> al.add(15)
-  *   scala> al.add(99)
+  *  scala> al.add(1)
+  *  scala> al.add(42)
+  *  scala> al.add(15)
+  *  scala> al.add(99)
   *
-  *   scala> al
-  *   res4: io.github.carlomicieli.oop.dst.ArrayList[Int] = [1, 42, 15, 99]
+  *  scala> al
+  *  res4: io.github.carlomicieli.oop.dst.ArrayList[Int] = [1, 42, 15, 99]
   *
-  *   scala> al.size
-  *   res5: Int = 4
+  *  scala> al.size
+  *  res5: Int = 4
   *
-  *   scala> al.contains(-1)
-  *   res6: Boolean = false
+  *  scala> al.contains(-1)
+  *  res6: Boolean = false
   *
-  *   scala> al.contains(42)
-  *   res7: Boolean = true
+  *  scala> al.contains(42)
+  *  res7: Boolean = true
   *
-  *   scala> al.foldLeft(0)(_ + _)
-  *   res8: Int = 157
+  *  scala> al.foldLeft(0)(_ + _)
+  *  res8: Int = 157
   * }}}
   *
   * @param st the underlying array
   * @tparam A the element type
   */
-class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
+class ArrayList[A: ClassTag] private (st: Array[A]) extends RandomAccess[A] {
 
   require(st != null)
   require(st.length != 0)
@@ -202,8 +201,7 @@ class ArrayList[A: ClassTag] private(st: Array[A]) extends RandomAccess[A] {
     import ArrayList._
     storage = if (loadFactor > 0.75f) {
       resize(ResizeRatio)(storage)
-    }
-    else {
+    } else {
       storage
     }
   }
@@ -217,8 +215,7 @@ object ArrayList {
   val InitialCapacity: Int = 16
   val ResizeRatio: Double = 3.0 / 2
 
-  /**
-    * Creates a new empty `ArrayList`.
+  /** Creates a new empty `ArrayList`.
     * @tparam A the array list element type
     * @return a new empty array
     */
@@ -226,8 +223,7 @@ object ArrayList {
     new ArrayList[A](newArray(InitialCapacity))
   }
 
-  /**
-    * Creates a new `ArrayList` with the given items.
+  /** Creates a new `ArrayList` with the given items.
     * @param items the items for the array
     * @tparam A the element type
     * @return the array

@@ -28,8 +28,7 @@ import io.github.carlomicieli.oop.dst.MaxPQ
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the heapsort sorting algorithm.
+/** Implements the heapsort sorting algorithm.
   */
 object Heap extends Sorting {
   def name: String = "Heap Sort"

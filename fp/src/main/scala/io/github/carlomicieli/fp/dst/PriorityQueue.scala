@@ -24,15 +24,13 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * It represents a priority queue, a data structure made of prioritized elements that allows
+/** It represents a priority queue, a data structure made of prioritized elements that allows
   * arbitrary element insertion, and allows the removal of the element that has first priority.
   * @tparam K the key type
   * @tparam V the value type
   */
 trait PriorityQueue[+K, +V] {
-  /**
-    * Creates a new `PriorityQueue` with a new entry with key `key` and
+  /** Creates a new `PriorityQueue` with a new entry with key `key` and
     * value `value` in the priority queue.
     * @param key the key
     * @param value the value which corresponds to the key
@@ -42,34 +40,29 @@ trait PriorityQueue[+K, +V] {
     */
   def insert[K1 >: K, V1 >: V](key: K1, value: V1): PriorityQueue[K1, V1]
 
-  /**
-    * Returns (but does not remove) a priority queue entry `(k, v)`
+  /** Returns (but does not remove) a priority queue entry `(k, v)`
     * having minimal key; returns `None` if the priority queue is empty.
     * @return optionally the pair `(key, value)` for the element with the minimal key
     */
   def min: Maybe[(K, V)]
 
-  /**
-    * Returns a pair with the remove entry `(k, v)` having the minimal key and a new
+  /** Returns a pair with the remove entry `(k, v)` having the minimal key and a new
     * priority queue without this entry. Return a `Bad` value whether this is empty.
     * @return a `Good` pair with the removed entry and the new priority queue; a `Bad` if this is empty
     */
   def removeMin: ((K, V), PriorityQueue[K, V]) Or EmptyPriorityQueueException
 
-  /**
-    * Returns the number of entries in this priority queue.
+  /** Returns the number of entries in this priority queue.
     * @return the number of entries
     */
   def size: Int
 
-  /**
-    * Returns a `true` whether the priority queue is empty; `false` otherwise.
+  /** Returns a `true` whether the priority queue is empty; `false` otherwise.
     * @return `true` if this is empty; `false` otherwise
     */
   def isEmpty: Boolean
 
-  /**
-    * Returns a `true` whether the priority queue is not empty; `false` otherwise.
+  /** Returns a `true` whether the priority queue is not empty; `false` otherwise.
     * @return `true` if this is not empty; `false` otherwise
     */
   def nonEmpty: Boolean

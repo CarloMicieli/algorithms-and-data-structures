@@ -25,30 +25,25 @@
 package io.github.carlomicieli.oop.dst
 
 /**
-  *
   * @tparam A the item type
   */
 trait Bag[A] {
-  /**
-    * Add an item to this bag
+  /** Add an item to this bag
     * @param x the element to add
     */
   def add(x: A): Unit
 
-  /**
-    * Checks whether this bag is empty
+  /** Checks whether this bag is empty
     * @return `true` if it's empty; `false` otherwise
     */
   def isEmpty: Boolean
 
-  /**
-    * Returns the number of items contained in this bag.
+  /** Returns the number of items contained in this bag.
     * @return the number of items
     */
   def size: Int
 
-  /**
-    * Checks whether this bag contains the given item
+  /** Checks whether this bag contains the given item
     * @param x the item to search
     * @return `true` if the bag contains the item; `false` otherwise
     */

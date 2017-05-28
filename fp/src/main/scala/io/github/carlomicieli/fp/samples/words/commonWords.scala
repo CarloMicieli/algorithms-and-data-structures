@@ -27,8 +27,7 @@ package io.github.carlomicieli.fp.samples.words
 import com.typesafe.scalalogging.LazyLogging
 import io.github.carlomicieli.fp.dst.List
 
-/**
-  * The function commonWords n takes a list of lines and returns a list of the
+/** The function commonWords n takes a list of lines and returns a list of the
   * n most common words in the list as a string.
   */
 object commonWords extends ((Int, Stream[String]) => String) with LazyLogging {
@@ -41,7 +40,6 @@ object commonWords extends ((Int, Stream[String]) => String) with LazyLogging {
 
     val xs = lines.take(1).flatMap(words)
     logger.info(xs.toString)
-
 
     ""
   }

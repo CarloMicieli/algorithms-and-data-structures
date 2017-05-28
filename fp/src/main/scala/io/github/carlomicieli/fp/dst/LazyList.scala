@@ -24,15 +24,14 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * It represents a "lazy" list where `head` and `tail` are not evaluated eagerly.
+/** It represents a "lazy" list where `head` and `tail` are not evaluated eagerly.
   * @tparam A the element type
   */
 sealed trait LazyList[+A] {
   def head: A
 
   def headOption: Maybe[A] = this match {
-    case Empty => None
+    case Empty          => None
     case LazyCons(h, _) => Just(h())
   }
 
@@ -41,7 +40,7 @@ sealed trait LazyList[+A] {
   def isEmpty: Boolean
 
   def size: Int = this match {
-    case Empty => 0
+    case Empty          => 0
     case LazyCons(_, t) => 1 + t().size
   }
 
@@ -54,14 +53,14 @@ sealed trait LazyList[+A] {
   def flatMap[B](f: A => LazyList[B]): LazyList[B] = ???
 
   def take(n: Int): LazyList[A] = (this, n) match {
-    case (Empty, _) => Empty
-    case (_, 0) => Empty
+    case (Empty, _)          => Empty
+    case (_, 0)              => Empty
     case (LazyCons(h, t), i) => LazyCons(h, () => t().take(n - 1))
   }
 
   def drop(n: Int): LazyList[A] = (this, n) match {
-    case (Empty, _) => Empty
-    case (st, 0) => st
+    case (Empty, _)          => Empty
+    case (st, 0)             => st
     case (LazyCons(_, t), i) => t().drop(n - 1)
   }
 
@@ -88,7 +87,7 @@ sealed trait LazyList[+A] {
   def foldRight[B](z: B)(f: (A, B) => B): B = {
     this match {
       case LazyCons(h, t) => f(h(), t().foldRight(z)(f))
-      case Empty => z
+      case Empty          => z
     }
   }
 

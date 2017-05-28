@@ -26,13 +26,11 @@ package io.github.carlomicieli.fp.random
 
 import scala.annotation.implicitNotFound
 
-/**
-  * The class [[RandomGen]] provides a common interface to random number generators.
+/** The class [[RandomGen]] provides a common interface to random number generators.
   */
 @implicitNotFound("No pseudo-random generator is available.")
 trait RandomGen {
-  /**
-    * The next operation returns an Int that is uniformly distributed in the range
+  /** The next operation returns an Int that is uniformly distributed in the range
     * (including both end points), and a new [[RandomGen]].
     * @return a pair, with an Int and a new [[RandomGen]].
     */
@@ -43,8 +41,7 @@ object RandomGen {
   private val initSeed = System.nanoTime & Int.MaxValue
   implicit val stdGen: RandomGen = RandomGen.getStdGen(initSeed.toInt)
 
-  /**
-    * Returns a linear congruential generator, initialized with the provided `seed`.
+  /** Returns a linear congruential generator, initialized with the provided `seed`.
     * @param seed the generator `seed`
     * @return a generator
     */

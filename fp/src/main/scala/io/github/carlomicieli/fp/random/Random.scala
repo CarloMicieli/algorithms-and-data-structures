@@ -27,16 +27,14 @@ package io.github.carlomicieli.fp.random
 import io.github.carlomicieli.fp.typeclasses.Enum
 import scala.annotation.implicitNotFound
 
-/**
-  * With a source of random number supply in hand, the [[Random]] class allows the programmer to
+/** With a source of random number supply in hand, the [[Random]] class allows the programmer to
   * extract pseudo-random values of a variety of types.
   *
   * @tparam A the type from which extract the random values
   */
 @implicitNotFound("Pseudo-random generator not found for ${A}.")
 trait Random[A] {
-  /**
-    * Takes a range `(lo, hi)` and a random number generator, and returns a random
+  /** Takes a range `(lo, hi)` and a random number generator, and returns a random
     * value uniformly distributed in the closed interval `[lo,hi]`, together with a new generator.
     *
     * @usecase def randomR(lo: A, hi: A): (A, RandomGen)
@@ -48,7 +46,6 @@ trait Random[A] {
   def randomR(lo: A, hi: A)(implicit rGen: RandomGen): (A, RandomGen)
 
   /**
-    *
     * @usecase def random: (A, RandomGen)
     * @param rGen a generator
     * @param enum the `Enum` instance for the type `A`
@@ -57,7 +54,6 @@ trait Random[A] {
   def random(implicit rGen: RandomGen, enum: Enum[A]): (A, RandomGen)
 
   /**
-    *
     * @usecase def randomStream: Stream[A]
     * @param rGen a generator
     * @param enum the `Enum` instance for the type `A`

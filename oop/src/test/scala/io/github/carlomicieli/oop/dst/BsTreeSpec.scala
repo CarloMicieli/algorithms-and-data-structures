@@ -97,7 +97,7 @@ class BsTreeSpec extends AbstractSpec with BsTreesFixture {
 
     describe("min") {
       it("should throw an exception for the empty tree") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyTree.min
         } should have message "min: tree is empty"
       }
@@ -109,7 +109,7 @@ class BsTreeSpec extends AbstractSpec with BsTreesFixture {
 
     describe("max") {
       it("should throw an exception for the empty tree") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyTree.max
         } should have message "max: tree is empty"
       }
@@ -125,13 +125,13 @@ class BsTreeSpec extends AbstractSpec with BsTreesFixture {
       }
 
       it("should throw an exception if no successor is found") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           tree.successor(20)
         } should have message "Successor not found for '20'"
       }
 
       it("should throw an exception for the empty tree") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyTree.successor(20)
         } should have message "Successor not found for '20'"
       }
@@ -143,13 +143,13 @@ class BsTreeSpec extends AbstractSpec with BsTreesFixture {
       }
 
       it("should throw an exception if no predecessor is found") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           tree.predecessor(2)
         } should have message "Predecessor not found for '2'"
       }
 
       it("should throw an exception for the empty tree") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           emptyTree.predecessor(20)
         } should have message "Predecessor not found for '20'"
       }
@@ -188,16 +188,16 @@ trait BsTreesFixture {
   def tree: Tree[Int, String] = {
     val t = newTree
     t.insert(15, "(15)")
-    t.insert(6 , "( 6)")
+    t.insert(6, "( 6)")
     t.insert(18, "(18)")
-    t.insert(3 , "( 3)")
-    t.insert(7 , "( 7)")
+    t.insert(3, "( 3)")
+    t.insert(7, "( 7)")
     t.insert(17, "(17)")
     t.insert(20, "(20)")
-    t.insert(2 , "( 2)")
-    t.insert(4 , "( 4)")
+    t.insert(2, "( 2)")
+    t.insert(4, "( 4)")
     t.insert(13, "(13)")
-    t.insert(9 , "( 9)")
+    t.insert(9, "( 9)")
     t
   }
 }

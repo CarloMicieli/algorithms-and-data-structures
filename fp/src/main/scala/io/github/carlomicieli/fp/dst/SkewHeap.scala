@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * A "skew heap" (a representation of priority queues) based upon Chris Okasaki's implementation.
+/** A "skew heap" (a representation of priority queues) based upon Chris Okasaki's implementation.
   * Insert operation based upon the John Hughes's implementation.
   *
   * @tparam A
@@ -36,8 +35,8 @@ sealed trait SkewHeap[+A] {
   def isEmpty: Boolean
 
   def credits: Int = this match {
-    case EmptyHeap       => 0
-    case h@Fork(_, l, r) =>
+    case EmptyHeap => 0
+    case h @ Fork(_, l, r) =>
       l.credits + r.credits + (if (h.isGood) 0 else 1)
   }
 
@@ -60,9 +59,9 @@ sealed trait SkewHeap[+A] {
 
   def merge[A1 >: A](that: SkewHeap[A1])(implicit ord: Ordering[A1]): SkewHeap[A1] = {
     (this, that) match {
-      case (l  , EmptyHeap) => l
-      case (EmptyHeap, r  ) => r
-      case (l  , r  )       =>
+      case (l, EmptyHeap) => l
+      case (EmptyHeap, r) => r
+      case (l, r) =>
         if (ord.lteq(l.min.get, r.min.get))
           l join r
         else
@@ -78,14 +77,14 @@ sealed trait SkewHeap[+A] {
   }
 
   def insert[A1 >: A](x: A1)(implicit ord: Ordering[A1]): SkewHeap[A1] = this match {
-    case EmptyHeap     => Fork(x, SkewHeap.empty[A1], SkewHeap.empty[A1])
+    case EmptyHeap => Fork(x, SkewHeap.empty[A1], SkewHeap.empty[A1])
     case Fork(y, l, r) =>
       val (min, max) = minMax(x, y)
       Fork(min, r, l.insert(max))
   }
 
   def balanced: Boolean = this match {
-    case EmptyHeap     => true
+    case EmptyHeap => true
     case Fork(_, l, r) =>
       val d = r.weight - l.weight
       (d == 0 || d == 1) && l.balanced && r.balanced
@@ -111,7 +110,7 @@ sealed trait SkewHeap[+A] {
 
   def smaller[A1 >: A](x: A1, t: SkewHeap[A1])(implicit ord: Ordering[A1]): Boolean = {
     t match {
-      case EmptyHeap     => true
+      case EmptyHeap => true
       case Fork(y, l, r) =>
         import Ordered._
         x <= y && t.invariant
@@ -124,8 +123,7 @@ sealed trait SkewHeap[+A] {
   }
 }
 
-private[this]
-object SkewHeap {
+private[this] object SkewHeap {
   def empty[A]: SkewHeap[A] = EmptyHeap
 
   def fromList[A](xs: List[A])(implicit ev: Ordering[A]): SkewHeap[A] = {
@@ -133,13 +131,11 @@ object SkewHeap {
   }
 }
 
-private[this]
-case class Fork[A](get: A, left: SkewHeap[A], right: SkewHeap[A]) extends SkewHeap[A] {
+private[this] case class Fork[A](get: A, left: SkewHeap[A], right: SkewHeap[A]) extends SkewHeap[A] {
   def isEmpty = false
 }
 
-private[this]
-case object EmptyHeap extends SkewHeap[Nothing] {
+private[this] case object EmptyHeap extends SkewHeap[Nothing] {
   def isEmpty = true
   def get = throw new NoSuchElementException("SkewHeap.get: tree is empty")
 }

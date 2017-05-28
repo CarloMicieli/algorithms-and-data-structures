@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-import org.scalatest.{Matchers, FlatSpec}
+import org.scalatest.{ Matchers, FlatSpec }
 
 class MaxPQSpec extends FlatSpec with Matchers {
 

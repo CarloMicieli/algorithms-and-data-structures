@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-private[this]
-class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
+private[this] class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
   private val storage = st
   private var topIndex = 0
 
@@ -59,8 +58,7 @@ class FixedCapacityStack[A](st: Array[A]) extends Stack[A] {
   private def isFull = storage.length == topIndex
 }
 
-/**
-  * A Stack implementation based on an Array.
+/** A Stack implementation based on an Array.
   */
 object FixedCapacityStack {
   def empty[A: ClassTag]: Stack[A] = FixedCapacityStack.apply[A](16)

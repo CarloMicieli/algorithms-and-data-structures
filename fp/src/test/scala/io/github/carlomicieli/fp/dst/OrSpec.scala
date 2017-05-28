@@ -35,7 +35,7 @@ class OrSpec extends AbstractSpec with OrValuesFixture {
       }
 
       it("should throw an exception for 'Bad' values") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           bad.get
         } should have message "Or.get: is empty"
       }
@@ -89,7 +89,7 @@ class OrSpec extends AbstractSpec with OrValuesFixture {
       it("should return the same Bad instance, when f is applied to Bad values") {
         val result = bad.map(_.toUpperCase)
         result shouldBe bad
-        result shouldBe theSameInstanceAs (bad)
+        result shouldBe theSameInstanceAs(bad)
       }
     }
 

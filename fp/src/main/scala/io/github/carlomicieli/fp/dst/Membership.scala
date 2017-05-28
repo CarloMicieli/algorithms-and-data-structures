@@ -24,30 +24,29 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * It represents an ''intensional'' set, where objects belongs through some sort of membership function.
+/** It represents an ''intensional'' set, where objects belongs through some sort of membership function.
   *
   * {{{
-  *    scala> val oddNumbers = Membership[Int] { _ % 2 != 0 }
-  *    oddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *   scala> val oddNumbers = Membership[Int] { _ % 2 != 0 }
+  *   oddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *    scala> oddNumbers contains 42
-  *    res0: Boolean = false
+  *   scala> oddNumbers contains 42
+  *   res0: Boolean = false
   *
-  *    scala> oddNumbers contains 21
-  *    res1: Boolean = true
+  *   scala> oddNumbers contains 21
+  *   res1: Boolean = true
   *
-  *    scala> val positiveNumbers = Membership[Int] { _ > 0 }
-  *    positiveNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *   scala> val positiveNumbers = Membership[Int] { _ > 0 }
+  *   positiveNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *    scala> val positiveAndOddNumbers = positiveNumbers intersection oddNumbers
-  *    positiveAndOddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *   scala> val positiveAndOddNumbers = positiveNumbers intersection oddNumbers
+  *   positiveAndOddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *    scala> positiveAndOddNumbers contains 41
-  *    res2: Boolean = true
+  *   scala> positiveAndOddNumbers contains 41
+  *   res2: Boolean = true
   *
-  *    scala> positiveAndOddNumbers contains -41
-  *    res3: Boolean = false
+  *   scala> positiveAndOddNumbers contains -41
+  *   res3: Boolean = false
   * }}}
   *
   * @param fun the membership function
@@ -55,16 +54,14 @@ package io.github.carlomicieli.fp.dst
   */
 class Membership[-A] private (fun: A => Boolean) {
 
-  /**
-    * Returns the negation for this set.
+  /** Returns the negation for this set.
     * @return the negated set
     */
   def negate: Membership[A] = {
     Membership { (x: A) => !this(x) }
   }
 
-  /**
-    * Returns the ''complement'' of `that` in `this`,  is the set of all elements that are members
+  /** Returns the ''complement'' of `that` in `this`,  is the set of all elements that are members
     * of `this` but not members of `that`.
     *
     * @usecase def complement(that: Membership[A]): Membership[A]
@@ -77,8 +74,7 @@ class Membership[-A] private (fun: A => Boolean) {
     Membership { (x: B) => this(x) && !that(x) }
   }
 
-  /**
-    * Returns the ''intersection'' of `this` and `that`. A new set can also be constructed by determining which
+  /** Returns the ''intersection'' of `this` and `that`. A new set can also be constructed by determining which
     * members two sets have ''in common''.
     *
     * @param that the second set
@@ -89,8 +85,7 @@ class Membership[-A] private (fun: A => Boolean) {
     Membership { (x: B) => this(x) && that(x) }
   }
 
-  /**
-    * Returns the ''union'' of `this` and `that`, is the set of all things that are
+  /** Returns the ''union'' of `this` and `that`, is the set of all things that are
     * members of either `this` or `that`.
     *
     * @usecase def union(that: Membership[A]): Membership[A]
@@ -103,15 +98,13 @@ class Membership[-A] private (fun: A => Boolean) {
     Membership { (x: B) => this(x) || that(x) }
   }
 
-  /**
-    * Checks whether this Set contains the given element `x`
+  /** Checks whether this Set contains the given element `x`
     * @param x the element to check
     * @return `true` if `x` belongs to this Set; `false` otherwise
     */
   def contains(x: A): Boolean = fun(x)
 
-  /**
-    * Returns `true` if the element `x` belongs to this set.
+  /** Returns `true` if the element `x` belongs to this set.
     * @param x the element to check
     * @return `true` if `x` belongs to this Set; `false` otherwise
     */
@@ -122,8 +115,7 @@ class Membership[-A] private (fun: A => Boolean) {
 
 object Membership {
 
-  /**
-    * Creates a new ''intensional'' set, with the given membership function.
+  /** Creates a new ''intensional'' set, with the given membership function.
     * @param f the membership function
     * @tparam A the element type
     * @return a new ''intensional'' set

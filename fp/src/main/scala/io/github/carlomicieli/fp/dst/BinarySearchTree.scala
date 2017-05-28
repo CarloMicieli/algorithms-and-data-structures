@@ -24,13 +24,12 @@
 
 package io.github.carlomicieli.fp.dst
 
-private[this]
-sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
+private[this] sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   def get: (K, V)
 
   def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[V] = {
     this match {
-      case EmptyTree => None
+      case EmptyTree                    => None
       case Node(k, v, _, _) if k == key => Just(v)
       case Node(k, _, left, right) =>
         import Ordered._
@@ -43,7 +42,7 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
 
   def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
     this match {
-      case EmptyTree => new Node(key, value)
+      case EmptyTree                           => new Node(key, value)
       case node @ Node(k, _, _, _) if k == key => node.copy(value = value)
       case node @ Node(k, _, left, right) =>
         import Ordered._
@@ -55,24 +54,24 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   }
 
   def min: Maybe[K] = this match {
-    case EmptyTree => None
+    case EmptyTree                => None
     case Node(k, _, EmptyTree, _) => Just(k)
-    case Node(_, _, left, _) => left.min
+    case Node(_, _, left, _)      => left.min
   }
 
   def max: Maybe[K] = this match {
-    case EmptyTree => None
+    case EmptyTree                => None
     case Node(k, _, _, EmptyTree) => Just(k)
-    case Node(_, _, _, right) => right.max
+    case Node(_, _, _, right)     => right.max
   }
 
   def size: Int = this match {
-    case EmptyTree => 0
+    case EmptyTree               => 0
     case Node(_, _, left, right) => 1 + left.size + right.size
   }
 
   def toList: List[(K, V)] = this match {
-    case EmptyTree => List.empty[(K, V)]
+    case EmptyTree               => List.empty[(K, V)]
     case Node(k, v, left, right) => left.toList ++ List((k, v)) ++ right.toList
   }
 
@@ -88,7 +87,7 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
           val (rem, tree2) = right.delete(key)
           (rem, node.copy(right = tree2))
         }
-      case Node(k, v, left, EmptyTree) if k == key => (Just(v), left)
+      case Node(k, v, left, EmptyTree) if k == key  => (Just(v), left)
       case Node(k, v, EmptyTree, right) if k == key => (Just(v), right)
       case node @ Node(k, v, left, right) =>
         val minKey = right.min.get
@@ -100,13 +99,13 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
   def isEmpty: Boolean
 
   def depth: Int = this match {
-    case EmptyTree => 0
+    case EmptyTree               => 0
     case Node(_, _, left, right) => 1 + math.max(left.depth, right.depth)
   }
 
   def upsert[K1 >: K, V1 >: V](key: K1, value: V1)(f: (V1) => V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
     this match {
-      case EmptyTree => new Node(key, value)
+      case EmptyTree                           => new Node(key, value)
       case node @ Node(k, v, _, _) if k == key => node.copy(value = f(v))
       case node @ Node(k, _, left, right) =>
         import Ordered._
@@ -127,17 +126,17 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
 
   def fold[V1 >: V](f: (V1, V1) => V1): V1 = {
     this match {
-      case EmptyTree => throw new NoSuchElementException("fold: tree is empty")
+      case EmptyTree                        => throw new NoSuchElementException("fold: tree is empty")
       case Node(_, v, EmptyTree, EmptyTree) => v
-      case Node(_, v, left, EmptyTree) => f(left.fold(f), v)
-      case Node(_, v, EmptyTree, right) => f(v, right.fold(f))
-      case Node(_, v, left, right) => f(v, f(left.fold(f), right.fold(f)))
+      case Node(_, v, left, EmptyTree)      => f(left.fold(f), v)
+      case Node(_, v, EmptyTree, right)     => f(v, right.fold(f))
+      case Node(_, v, left, right)          => f(v, f(left.fold(f), right.fold(f)))
     }
   }
 
   def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean = {
     this match {
-      case EmptyTree => false
+      case EmptyTree                    => false
       case Node(k, _, _, _) if k == key => true
       case Node(k, _, left, right) =>
         import Ordered._
@@ -159,16 +158,14 @@ sealed trait BinarySearchTree[+K, +V] extends Tree[K, V] {
 
 object BinarySearchTree {
 
-  /**
-    * It creates a new empty, binary search tree.
+  /** It creates a new empty, binary search tree.
     * @tparam K the key type
     * @tparam V the value type
     * @return an empty `Tree`
     */
   def empty[K, V]: Tree[K, V] = EmptyTree
 
-  /**
-    * It creates a binary search tree from the list elements.
+  /** It creates a binary search tree from the list elements.
     *
     * @param xs the list of elements to insert
     * @param ord the ordering
@@ -181,14 +178,12 @@ object BinarySearchTree {
   }
 }
 
-private[this]
-case object EmptyTree extends BinarySearchTree[Nothing, Nothing] {
+private[this] case object EmptyTree extends BinarySearchTree[Nothing, Nothing] {
   def isEmpty = true
   def get = throw new NoSuchElementException("Tree.get: this tree is empty")
 }
 
-private[this]
-case class Node[K, V](key: K, value: V, left: Tree[K, V], right: Tree[K, V]) extends BinarySearchTree[K, V] {
+private[this] case class Node[K, V](key: K, value: V, left: Tree[K, V], right: Tree[K, V]) extends BinarySearchTree[K, V] {
 
   def this(key: K, value: V) = {
     this(key, value, EmptyTree, EmptyTree)

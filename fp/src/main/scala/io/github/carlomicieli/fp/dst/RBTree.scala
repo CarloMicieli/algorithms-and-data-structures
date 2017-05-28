@@ -24,11 +24,10 @@
 
 package io.github.carlomicieli.fp.dst
 
-private[this]
-sealed trait RBTree[+K, +V] extends Tree[K, V] {
+private[this] sealed trait RBTree[+K, +V] extends Tree[K, V] {
   override def lookup[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Maybe[V] = {
     this match {
-      case EmptyRBTree => None
+      case EmptyRBTree                              => None
       case RBNode(_, left, k, v, right) if k == key => Just(v)
       case RBNode(_, left, k, _, right) =>
         import Ordered._
@@ -42,7 +41,7 @@ sealed trait RBTree[+K, +V] extends Tree[K, V] {
   override def insert[K1 >: K, V1 >: V](key: K1, value: V1)(implicit ord: Ordering[K1]): Tree[K1, V1] = {
     def makeBlack(t: RBTree[K1, V1]): RBTree[K1, V1] = t match {
       case RBNode(_, l, k, v, r) => RBNode(Black, l, k, v, r)
-      case _ => throw new Exception("invalid value " + t)
+      case _                     => throw new Exception("invalid value " + t)
     }
 
     def ins(t: RBTree[K1, V1]): RBTree[K1, V1] = {
@@ -77,22 +76,22 @@ sealed trait RBTree[+K, +V] extends Tree[K, V] {
   }
 
   override def size: Int = this match {
-    case EmptyRBTree => 0
+    case EmptyRBTree                  => 0
     case RBNode(_, left, _, _, right) => 1 + left.size + right.size
   }
 
   override def toList: List[(K, V)] = this match {
-    case EmptyRBTree => List.empty[(K, V)]
+    case EmptyRBTree                  => List.empty[(K, V)]
     case RBNode(_, left, k, v, right) => left.toList ++ List((k, v)) ++ right.toList
   }
 
   override def fold[V1 >: V](f: (V1, V1) => V1): V1 = {
     this match {
-      case EmptyRBTree => throw new NoSuchElementException("fold: tree is empty")
+      case EmptyRBTree                               => throw new NoSuchElementException("fold: tree is empty")
       case RBNode(_, EmptyRBTree, _, v, EmptyRBTree) => v
-      case RBNode(_, left, _, v, EmptyRBTree) => f(left.fold(f), v)
-      case RBNode(_, EmptyRBTree, _, v, right) => f(v, right.fold(f))
-      case RBNode(_, left, _, v, right) => f(v, f(left.fold(f), right.fold(f)))
+      case RBNode(_, left, _, v, EmptyRBTree)        => f(left.fold(f), v)
+      case RBNode(_, EmptyRBTree, _, v, right)       => f(v, right.fold(f))
+      case RBNode(_, left, _, v, right)              => f(v, f(left.fold(f), right.fold(f)))
     }
   }
 
@@ -100,9 +99,9 @@ sealed trait RBTree[+K, +V] extends Tree[K, V] {
 
   override def contains[K1 >: K](key: K1)(implicit ord: Ordering[K1]): Boolean = {
     this match {
-      case EmptyRBTree => false
+      case EmptyRBTree                       => false
       case RBNode(_, _, k, _, _) if k == key => true
-      case RBNode(_, left, k, _, right)      =>
+      case RBNode(_, left, k, _, right) =>
         import Ordered._
         if (key < k)
           left.contains(key)
@@ -132,14 +131,12 @@ sealed trait RBTree[+K, +V] extends Tree[K, V] {
   }
 }
 
-private[this]
-case object EmptyRBTree extends RBTree[Nothing, Nothing] {
+private[this] case object EmptyRBTree extends RBTree[Nothing, Nothing] {
   override def get = throw new NoSuchElementException("Tree.get: tree is empty")
   override def isEmpty: Boolean = true
 }
 
-private[this]
-case class RBNode[K, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K, V]) extends RBTree[K, V] {
+private[this] case class RBNode[K, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K, V]) extends RBTree[K, V] {
 
   def this(key: K, value: V) = this(Red, EmptyRBTree, key, value, EmptyRBTree)
 
@@ -147,31 +144,27 @@ case class RBNode[K, V](color: Color, left: RBTree[K, V], key: K, value: V, righ
   override def get: (K, V) = (key, value)
 }
 
-
-/**
-  * Red-black tree is a type of self-balancing binary search tree. By using color
+/** Red-black tree is a type of self-balancing binary search tree. By using color
   * changing and rotation, red-black tree provides a very simple and straightforward
   * way to keep the tree balanced.
   *
   * A binary search tree red-black tree satisfies the following 5 properties:
-  *  - Every node is either red or black.
-  *  - The root is black.
-  *  - Every leaf (`NIL`) is black.
-  *  - If a node is red, then both its children are black.
-  *  - For each node, all paths from the node to descendant leaves contain the same number of black nodes.
+  * - Every node is either red or black.
+  * - The root is black.
+  * - Every leaf (`NIL`) is black.
+  * - If a node is red, then both its children are black.
+  * - For each node, all paths from the node to descendant leaves contain the same number of black nodes.
   */
 object RBTree {
 
-  /**
-    * It creates a new empty red-black tree.
+  /** It creates a new empty red-black tree.
     * @tparam K the key type
     * @tparam V the value type
     * @return an empty tree
     */
   def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = EmptyRBTree
 
-  /**
-    * It creates a new red-black tree, initialized with the provided list elements.
+  /** It creates a new red-black tree, initialized with the provided list elements.
     * @param xs the initial elements of the tree
     * @tparam K the key type
     * @tparam V the value type
@@ -181,7 +174,7 @@ object RBTree {
     xs.foldLeft(RBTree.empty[K, V])((tree, x) => tree insert x)
   }
 
-  private def balance[K, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K,V])(implicit ord: Ordering[K]): RBTree[K, V] = {
+  private def balance[K, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K, V])(implicit ord: Ordering[K]): RBTree[K, V] = {
     (color, left, key, value, right) match {
       case (Black, RBNode(Red, RBNode(Red, a, kx, vx, b), ky, vy, c), kz, vz, d) =>
         RBNode(Red, RBNode(Black, a, kx, vx, b), ky, vy, RBNode(Black, c, kz, vz, d))

@@ -28,14 +28,12 @@ import com.typesafe.scalalogging.LazyLogging
 
 import scala.reflect.ClassTag
 
-/**
-  * Implements the `shell sort` sorting algorithm.
+/** Implements the `shell sort` sorting algorithm.
   */
 object Shell extends Sorting with LazyLogging {
   def name: String = "Shell sort"
 
-  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)
-                       (implicit ord: Ordering[A]): Unit = {
+  def sort[A: ClassTag](array: Array[A], start: Int, end: Int)(implicit ord: Ordering[A]): Unit = {
     import Ordered._
 
     val N: Int = end - start

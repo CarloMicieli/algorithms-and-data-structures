@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-import io.github.carlomicieli.fp.typeclasses.{Ord, Eq, Show, Ordering}
+import io.github.carlomicieli.fp.typeclasses.{ Ord, Eq, Show, Ordering }
 import io.github.carlomicieli.test.AbstractSpec
 
 class MaybeSpec extends AbstractSpec with MaybeFixture {
@@ -63,7 +63,7 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
       }
 
       it("should throw an exception for None values") {
-        the [NoSuchElementException] thrownBy {
+        the[NoSuchElementException] thrownBy {
           none.get
         } should have message "Maybe.get: a value doesn't exist"
       }
@@ -96,7 +96,7 @@ class MaybeSpec extends AbstractSpec with MaybeFixture {
       }
 
       it("should throw the provided exception for None values") {
-        the [Exception] thrownBy {
+        the[Exception] thrownBy {
           none.orElseThrow(new Exception("my exception"))
         } should have message "my exception"
       }
