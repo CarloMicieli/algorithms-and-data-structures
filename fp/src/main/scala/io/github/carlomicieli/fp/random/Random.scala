@@ -45,16 +45,14 @@ trait Random[A] {
     */
   def randomR(lo: A, hi: A)(implicit rGen: RandomGen): (A, RandomGen)
 
-  /**
-    * @usecase def random: (A, RandomGen)
+  /** @usecase def random: (A, RandomGen)
     * @param rGen a generator
     * @param enum the `Enum` instance for the type `A`
     * @return
     */
   def random(implicit rGen: RandomGen, enum: Enum[A]): (A, RandomGen)
 
-  /**
-    * @usecase def randomStream: Stream[A]
+  /** @usecase def randomStream: Stream[A]
     * @param rGen a generator
     * @param enum the `Enum` instance for the type `A`
     * @return

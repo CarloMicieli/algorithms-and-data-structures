@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * @tparam K
+/** @tparam K
   * @tparam V
   */
 trait Map[+K, +V] {

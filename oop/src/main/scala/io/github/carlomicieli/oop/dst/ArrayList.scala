@@ -39,28 +39,28 @@ import scala.reflect.ClassTag
   * Other operations (like `contains`, `foldLeft` and `foldRight`) are running in linear time.
   *
   * {{{
-  *  scala> val al = ArrayList.empty[Int]
-  *  al: io.github.carlomicieli.oop.dst.ArrayList[Int] = []
+  * scala> val al = ArrayList.empty[Int]
+  * al: io.github.carlomicieli.oop.dst.ArrayList[Int] = []
   *
-  *  scala> al.add(1)
-  *  scala> al.add(42)
-  *  scala> al.add(15)
-  *  scala> al.add(99)
+  * scala> al.add(1)
+  * scala> al.add(42)
+  * scala> al.add(15)
+  * scala> al.add(99)
   *
-  *  scala> al
-  *  res4: io.github.carlomicieli.oop.dst.ArrayList[Int] = [1, 42, 15, 99]
+  * scala> al
+  * res4: io.github.carlomicieli.oop.dst.ArrayList[Int] = [1, 42, 15, 99]
   *
-  *  scala> al.size
-  *  res5: Int = 4
+  * scala> al.size
+  * res5: Int = 4
   *
-  *  scala> al.contains(-1)
-  *  res6: Boolean = false
+  * scala> al.contains(-1)
+  * res6: Boolean = false
   *
-  *  scala> al.contains(42)
-  *  res7: Boolean = true
+  * scala> al.contains(42)
+  * res7: Boolean = true
   *
-  *  scala> al.foldLeft(0)(_ + _)
-  *  res8: Int = 157
+  * scala> al.foldLeft(0)(_ + _)
+  * res8: Int = 157
   * }}}
   *
   * @param st the underlying array

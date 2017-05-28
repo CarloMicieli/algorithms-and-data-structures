@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-/**
-  * @tparam A the item type
+/** @tparam A the item type
   */
 trait Bag[A] {
   /** Add an item to this bag

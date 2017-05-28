@@ -24,8 +24,7 @@
 
 package io.github.carlomicieli.fp.dst
 
-/**
-  * @tparam A
+/** @tparam A
   */
 trait Set[+A] {
   /** Returns the union of sets this and that.

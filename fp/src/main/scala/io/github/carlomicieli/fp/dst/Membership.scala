@@ -27,26 +27,26 @@ package io.github.carlomicieli.fp.dst
 /** It represents an ''intensional'' set, where objects belongs through some sort of membership function.
   *
   * {{{
-  *   scala> val oddNumbers = Membership[Int] { _ % 2 != 0 }
-  *   oddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *  scala> val oddNumbers = Membership[Int] { _ % 2 != 0 }
+  *  oddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *   scala> oddNumbers contains 42
-  *   res0: Boolean = false
+  *  scala> oddNumbers contains 42
+  *  res0: Boolean = false
   *
-  *   scala> oddNumbers contains 21
-  *   res1: Boolean = true
+  *  scala> oddNumbers contains 21
+  *  res1: Boolean = true
   *
-  *   scala> val positiveNumbers = Membership[Int] { _ > 0 }
-  *   positiveNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *  scala> val positiveNumbers = Membership[Int] { _ > 0 }
+  *  positiveNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *   scala> val positiveAndOddNumbers = positiveNumbers intersection oddNumbers
-  *   positiveAndOddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
+  *  scala> val positiveAndOddNumbers = positiveNumbers intersection oddNumbers
+  *  positiveAndOddNumbers: io.github.carlomicieli.fp.dst.Membership[Int] = <membership>
   *
-  *   scala> positiveAndOddNumbers contains 41
-  *   res2: Boolean = true
+  *  scala> positiveAndOddNumbers contains 41
+  *  res2: Boolean = true
   *
-  *   scala> positiveAndOddNumbers contains -41
-  *   res3: Boolean = false
+  *  scala> positiveAndOddNumbers contains -41
+  *  res3: Boolean = false
   * }}}
   *
   * @param fun the membership function

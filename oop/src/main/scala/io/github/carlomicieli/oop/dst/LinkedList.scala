@@ -115,8 +115,7 @@ trait LinkedList[A] {
     */
   def insert(key: A)(implicit ord: Ordering[A]): Unit
 
-  /**
-    * @usecase def foreach(f: A => Unit): Unit
+  /** @usecase def foreach(f: A => Unit): Unit
     * @param f
     * @tparam U
     */

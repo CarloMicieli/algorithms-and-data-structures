@@ -73,8 +73,7 @@ object Ord {
   }
 }
 
-/**
-  * - If x ≤ y and y ≤ x then x = y (antisymmetry);
+/** - If x ≤ y and y ≤ x then x = y (antisymmetry);
   * - If x ≤ y and y ≤ z then x ≤ z (transitivity);
   * - x ≤ y or y ≤ z (totality).
   */
