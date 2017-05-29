@@ -34,9 +34,11 @@ trait LinkedList[A] {
   /** `O(1)` Returns the first element (if any) from this list
     * @return the list head
     */
-  def head: A = headOption match {
-    case Some(v) => v
-    case None    => throw new EmptyLinkedListException("head")
+  def head: A = {
+    headOption match {
+      case Some(v) => v
+      case None    => throw new EmptyLinkedListException("head")
+    }
   }
 
   /** `O(1)` Optionally returns the first element (if any) from this list
@@ -49,9 +51,11 @@ trait LinkedList[A] {
     * This method is assuming the linked list implementation will store a pointer to the last element.
     * @return the list tail
     */
-  def last: A = lastOption match {
-    case Some(l) => l
-    case None    => throw new EmptyLinkedListException("last")
+  def last: A = {
+    lastOption match {
+      case Some(l) => l
+      case None    => throw new EmptyLinkedListException("last")
+    }
   }
 
   /** `O(1)` Optionally returns the last element (if any) from this list.
@@ -204,7 +208,18 @@ trait LinkedList[A] {
 }
 
 object LinkedList {
+  /** Create an empty, singly linked list.
+    * @tparam A the element type
+    * @return an empty list
+    */
   def empty[A]: LinkedList[A] = new SinglyLinkedList[A]
+
+  /** Create a singly linked list with the provided values
+    *
+    * @param items the initial elements for the list
+    * @tparam A the element type
+    * @return a list containing the elements
+    */
   def apply[A](items: A*): LinkedList[A] = {
     val l = LinkedList.empty[A]
     for { el <- items } l.addBack(el)
