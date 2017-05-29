@@ -92,7 +92,7 @@ lazy val benchmarks = Project("benchmarks", file("benchmarks"))
   .dependsOn(oop)
   .settings(
     scalaVersion := Version.Scala,
-    libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.7",
+    libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.8.2",
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     logBuffered := false,
     parallelExecution in Test := false
