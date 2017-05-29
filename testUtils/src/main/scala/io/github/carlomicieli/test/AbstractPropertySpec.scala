@@ -25,10 +25,10 @@ package io.github.carlomicieli.test
 
 import org.scalacheck.Gen
 import org.scalacheck.Gen.Choose
-import org.scalatest.{ ShouldMatchers, PropSpec }
+import org.scalatest.{ Matchers, PropSpec }
 import org.scalatest.prop.PropertyChecks
 
-abstract class AbstractPropertySpec extends PropSpec with PropertyChecks with ShouldMatchers {
+abstract class AbstractPropertySpec extends PropSpec with PropertyChecks with Matchers {
 
   val nonEmptyLowerCharsList: Gen[List[Char]] = Gen.nonEmptyListOf[Char](Gen.alphaLowerChar)
 
