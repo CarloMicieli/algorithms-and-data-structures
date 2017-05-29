@@ -9,7 +9,7 @@ val headerSettings = Seq(
        |  / ___/ ___/ __ `/ / __ `/_____/ __ `/ / __ `/ __ \
        | (__  ) /__/ /_/ / / /_/ /_____/ /_/ / / /_/ / /_/ /
        |/____/\___/\__,_/_/\__,_/      \__,_/_/\__, /\____/
-       |                  /____/
+       |                                      /____/
        |Copyright (c) 2017 the original author or authors.
        |See the LICENCE.txt file distributed with this work for additional
        |information regarding copyright ownership.
@@ -30,7 +30,6 @@ val headerSettings = Seq(
 )
 
 val commonSettings = Seq(
-  version := "1.0-SNAPSHOT",
   scalaVersion := Version.Scala,
   organization := "io.github.carlomicieli",
   organizationName := "CarloMicieli",

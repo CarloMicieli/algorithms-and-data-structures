@@ -4,7 +4,7 @@
  *   / ___/ ___/ __ `/ / __ `/_____/ __ `/ / __ `/ __ \
  *  (__  ) /__/ /_/ / / /_/ /_____/ /_/ / / /_/ / /_/ /
  * /____/\___/\__,_/_/\__,_/      \__,_/_/\__, /\____/
- *                   /____/
+ *                                       /____/
  * Copyright (c) 2017 the original author or authors.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
@@ -46,7 +46,7 @@ trait Stack[+A] {
   /** `O(1)` If this `Stack` is not empty, it returns a pair with the top element and a new `Stack` without this element;
     * else it returns an `EmptyStackException` wrapped in a `Bad` value.
     * @return if not empty, a pair with the top element and a new `Stack`;
-    *       an `EmptyStackException` wrapped in a `Bad` value otherwise
+    *     an `EmptyStackException` wrapped in a `Bad` value otherwise
     */
   def pop: (A, Stack[A]) Or EmptyStackException
 

@@ -4,7 +4,7 @@
  *   / ___/ ___/ __ `/ / __ `/_____/ __ `/ / __ `/ __ \
  *  (__  ) /__/ /_/ / / /_/ /_____/ /_/ / / /_/ / /_/ /
  * /____/\___/\__,_/_/\__,_/      \__,_/_/\__, /\____/
- *                   /____/
+ *                                       /____/
  * Copyright (c) 2017 the original author or authors.
  * See the LICENCE.txt file distributed with this work for additional
  * information regarding copyright ownership.
@@ -87,7 +87,7 @@ sealed trait Or[+G, +B] {
     * @param f the function to apply
     * @tparam G1 the resulting value type
     * @return if this is a `Good`, the result of applying the given function to the contained value
-    *      wrapped in a `Good`; a `Bad` otherwise
+    *    wrapped in a `Good`; a `Bad` otherwise
     */
   def map[G1](f: G => G1): Or[G1, B] = this match {
     case Bad(_)  => this.asInstanceOf[Or[G1, B]]
@@ -103,7 +103,7 @@ sealed trait Or[+G, +B] {
     * @tparam G1 the good type
     * @tparam B1 the bad type
     * @return if this is a `Good`, the result of applying the given function to the contained value
-    *      wrapped in a `Good`; a `Bad` otherwise
+    *    wrapped in a `Good`; a `Bad` otherwise
     */
   def flatMap[G1, B1 >: B](f: G => Or[G1, B1]): Or[G1, B1] = this match {
     case Bad(_)  => this.asInstanceOf[Or[G1, B1]]
@@ -136,7 +136,7 @@ sealed trait Or[+G, +B] {
     * @param v the value used to produce a new `Bad`
     * @tparam B1 the new `Bad` element type
     * @return if this is a `Good`, the result will be the current `Or` value; a new `Bad`
-    *      containing `v` otherwise
+    *    containing `v` otherwise
     */
   def orElse[B1](v: => B1): Or[G, B1] =
     if (isGood)
