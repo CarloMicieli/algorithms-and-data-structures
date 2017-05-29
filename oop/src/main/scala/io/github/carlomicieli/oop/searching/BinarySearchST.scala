@@ -30,7 +30,7 @@ import scala.reflect.ClassTag
 
 class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePair[K, V]]) extends SymbolTable[K, V] {
 
-  private var s = 0
+  private val s = 0
 
   def update(key: K, value: V): Unit = ???
 
@@ -50,11 +50,11 @@ class BinarySearchST[K: Ordering, V] private (st: DynamicArray[KeyValuePair[K, V
 
   def isEmpty: Boolean = s == 0
 
-  override def toString = st.toString
+  override def toString: String = st.toString
 
-  private def isFull = false
+  //private def isFull = false
 
-  private def binarySearch(k: K): Option[Int] = ???
+  //private def binarySearch(k: K): Option[Int] = ???
 }
 
 object BinarySearchST {

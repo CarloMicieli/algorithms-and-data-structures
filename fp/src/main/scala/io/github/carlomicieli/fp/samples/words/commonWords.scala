@@ -53,6 +53,6 @@ object commonWords extends ((Int, Stream[String]) => String) with LazyLogging {
     pattern.findAllIn(line).foldRight(List.empty[Word])((s, ss) => s +: ss)
   }
 
-  private def sortWords(ws: List[Word]): List[Word] = ???
+  //private def sortWords(ws: List[Word]): List[Word] = ???
 
 }

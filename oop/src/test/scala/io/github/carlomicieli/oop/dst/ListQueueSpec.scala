@@ -51,7 +51,7 @@ class ListQueueSpec extends AbstractTestSpec with SampleQueues {
   }
 
   "dequeue operation" should "throw an exception when the queue is empty" in {
-    val res = intercept[EmptyQueueException] {
+    val _ = intercept[EmptyQueueException] {
       emptyQueue.dequeue()
     }
   }
@@ -63,7 +63,7 @@ class ListQueueSpec extends AbstractTestSpec with SampleQueues {
 }
 
 trait SampleQueues {
-  def emptyQueue = Queue.empty[Int]
+  def emptyQueue: Queue[Int] = Queue.empty[Int]
 
   def queue: Queue[Int] = {
     val queue = emptyQueue

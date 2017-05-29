@@ -162,7 +162,7 @@ object RBTree {
     * @tparam V the value type
     * @return an empty tree
     */
-  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = EmptyRBTree
+  def empty[K: Ordering, V]: Tree[K, V] = EmptyRBTree
 
   /** It creates a new red-black tree, initialized with the provided list elements.
     * @param xs the initial elements of the tree
@@ -174,7 +174,7 @@ object RBTree {
     xs.foldLeft(RBTree.empty[K, V])((tree, x) => tree insert x)
   }
 
-  private def balance[K, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K, V])(implicit ord: Ordering[K]): RBTree[K, V] = {
+  private def balance[K: Ordering, V](color: Color, left: RBTree[K, V], key: K, value: V, right: RBTree[K, V]): RBTree[K, V] = {
     (color, left, key, value, right) match {
       case (Black, RBNode(Red, RBNode(Red, a, kx, vx, b), ky, vy, c), kz, vz, d) =>
         RBNode(Red, RBNode(Black, a, kx, vx, b), ky, vy, RBNode(Black, c, kz, vz, d))

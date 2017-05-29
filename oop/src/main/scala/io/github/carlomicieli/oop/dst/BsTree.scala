@@ -255,12 +255,11 @@ private[this] class BsTree[K, V] extends Tree[K, V] {
 object BsTree {
 
   /** Creates a new empty Binary Search tree.
-    * @param ord the keys ordering
     * @tparam K the key type
     * @tparam V the value type
     * @return an empty tree
     */
-  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = new BsTree[K, V]
+  def empty[K: Ordering, V]: Tree[K, V] = new BsTree[K, V]
 
   /** Creates a new tree with list elements
     * @param items the elements list

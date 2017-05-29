@@ -50,7 +50,7 @@ class FixedCapacityStackSpec extends AbstractTestSpec with SampleFixedCapacitySt
     st.push(1)
     st.push(2)
 
-    val res = intercept[FullStackException] {
+    val _ = intercept[FullStackException] {
       st.push(-1)
     }
   }
@@ -58,7 +58,7 @@ class FixedCapacityStackSpec extends AbstractTestSpec with SampleFixedCapacitySt
   "Pop an element out of a fixed capacity stack" should "throw an exception if empty" in {
     val st = stack(2)
 
-    val res = intercept[EmptyStackException] {
+    val _ = intercept[EmptyStackException] {
       st.pop()
     }
   }

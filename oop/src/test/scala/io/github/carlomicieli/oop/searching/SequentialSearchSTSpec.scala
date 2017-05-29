@@ -50,7 +50,7 @@ class SequentialSearchSTSpec extends FlatSpec with Matchers with SampleSymbolTab
 
   "Searching a key not in the ST" should "fail" in {
     val st = emptySeqST
-    val r = intercept[NoSuchElementException] {
+    val _ = intercept[NoSuchElementException] {
       st("not_found")
     }
   }
@@ -88,8 +88,8 @@ class SequentialSearchSTSpec extends FlatSpec with Matchers with SampleSymbolTab
 }
 
 trait SampleSymbolTables {
-  def emptySeqST = SequentialSearchST.empty[String, Int]
-  def numbersSeqST = {
+  def emptySeqST: SymbolTable[String, Int] = SequentialSearchST.empty[String, Int]
+  def numbersSeqST: SymbolTable[String, Int] = {
     val st = emptySeqST
     st("one") = 1
     st("two") = 2

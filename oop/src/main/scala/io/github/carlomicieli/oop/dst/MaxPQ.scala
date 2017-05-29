@@ -79,13 +79,13 @@ final class MaxPQ[A] private (storage: Array[A], size: Int) {
     array(ij) = tmp
   }
 
-  private def parent(i: Int): Int = i >> 1
+  //private def parent(i: Int): Int = i >> 1
   private def left(i: Int): Int = i << 1
   private def right(i: Int): Int = 1 + (i << 1)
 
   private def a(i: Int): A = storage(i - 1)
 
-  override def toString = {
+  override def toString: String = {
     val s = storage.toList.take(heapSize).mkString(", ")
     s"MaxPQ($s)"
   }
@@ -93,7 +93,7 @@ final class MaxPQ[A] private (storage: Array[A], size: Int) {
 
 object MaxPQ {
   implicit class IntOps(val i: Int) extends AnyVal {
-    def downTo(n: Int) = n.to(i).reverse
+    def downTo(n: Int): Range = n.to(i).reverse
   }
 
   def apply[A: scala.reflect.ClassTag](capacity: Int): MaxPQ[A] = {

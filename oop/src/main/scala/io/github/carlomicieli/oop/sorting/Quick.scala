@@ -63,7 +63,7 @@ object Quick extends Sorting with LazyLogging {
     i + 1
   }
 
-  private def randomSelect[A](A: Array[A], p: Int, r: Int)(implicit ord: Ordering[A]): Unit = {
+  private def randomSelect[A: Ordering](A: Array[A], p: Int, r: Int): Unit = {
 
     import scala.util._
 

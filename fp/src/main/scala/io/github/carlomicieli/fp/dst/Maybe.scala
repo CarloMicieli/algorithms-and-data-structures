@@ -94,7 +94,7 @@ sealed trait Maybe[+A] extends Product with Serializable {
     */
   def foreach[U](f: A => U): Unit =
     if (isDefined) {
-      val res = f(get)
+      val _ = f(get)
     }
 
   /** Returns a `Just[_]` containing the result of applying `f` to this

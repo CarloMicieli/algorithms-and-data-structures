@@ -33,7 +33,7 @@ object MyApp {
     val url = "https://github.com/iamciera/infiniteJest/blob/master/data/bookText/David-Foster-Wallace-Infinite-Jest-v2.0.chptags.txt?raw=true"
     val lines = Lines.fromUrl("Infinite-Jest.txt", url)
 
-    val s = commonWords(100, lines)
+    commonWords(100, lines) foreach { println }
 
   }
 }

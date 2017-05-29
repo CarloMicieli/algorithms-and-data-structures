@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.fp.random
 
-import org.scalatest.FunSuite
-
 import io.github.carlomicieli.test.AbstractTestSpec
 
 class RandomGenSpec extends AbstractTestSpec {

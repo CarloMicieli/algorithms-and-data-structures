@@ -170,12 +170,11 @@ trait Tree[+K, +V] {
 object Tree {
   /** It creates an empty binary search tree.
     *
-    * @param ord the ordering
     * @tparam K the key type
     * @tparam V the value type
     * @return an empty tree
     */
-  def empty[K, V](implicit ord: Ordering[K]): Tree[K, V] = EmptyTree
+  def empty[K: Ordering, V]: Tree[K, V] = EmptyTree
 
   /** It creates a new binary search tree with the provided `elements`.
     *

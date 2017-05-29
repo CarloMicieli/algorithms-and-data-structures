@@ -25,7 +25,6 @@
 package io.github.carlomicieli.fp.dst
 
 import io.github.carlomicieli.fp.typeclasses.Show
-import scala.language.implicitConversions
 
 /** A list is either empty, or a constructed list with a `head` and a `tail`.
   *
