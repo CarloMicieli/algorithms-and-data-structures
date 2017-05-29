@@ -27,8 +27,8 @@ package io.github.carlomicieli.oop.dst
 final class MaxPQ[A] private (storage: Array[A], size: Int) {
   private var hSize = size
 
-  def heapSize = hSize
-  def length = storage.length
+  def heapSize: Int = hSize
+  def length: Int = storage.length
 
   def max: A = storage(0)
 
