@@ -29,8 +29,8 @@ val headerSettings = Seq(
   ))
 )
 
-val commonSettings = Seq(
-  scalaVersion := Version.Scala,
+lazy val commonSettings = Seq(
+  scalaVersion := scalac.`2.12.1`,
   organization := "io.github.carlomicieli",
   organizationName := "CarloMicieli",
   organizationHomepage := Some(url("http://carlomicieli.github.io")),
@@ -38,35 +38,17 @@ val commonSettings = Seq(
   autoAPIMappings := true
 )
 
-def ScalaProject(name: String): Project = {
-  Project(name, file(name))
-    .settings(commonSettings: _*)
-    .settings(
-      libraryDependencies ++= Seq(
-        Library.Logback,
-        Library.ScalaLogging,
-        Library.ScalaTest  % "test",
-        Library.ScalaCheck % "test"
-      ))
-    .settings(
-      scalacOptions ++= ScalacOptions.Default,
-      scalacOptions in (Compile, console) ~= ScalacOptions.ConsoleDefault,
-      scalacOptions in Test ~= ScalacOptions.TestDefault)
-    .settings(
-      SbtScalariform.scalariformSettings,
-      ScalariformKeys.preferences := ScalariformKeys.preferences.value
-        .setPreference(AlignSingleLineCaseStatements, true)
-        .setPreference(DoubleIndentClassDeclaration, true)
-        .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
-        .setPreference(MultilineScaladocCommentsStartOnFirstLine, true)
-        .setPreference(DanglingCloseParenthesis, Preserve))
-    .settings(headerSettings)
-    .enablePlugins(AutomateHeaderPlugin)
-    .enablePlugins(SbtScalariform)
-}
+lazy val scalariformPluginSettings = Seq(
+  ScalariformKeys.preferences := ScalariformKeys.preferences.value
+    .setPreference(AlignSingleLineCaseStatements, true)
+    .setPreference(DoubleIndentClassDeclaration, true)
+    .setPreference(PlaceScaladocAsterisksBeneathSecondAsterisk, true)
+    .setPreference(MultilineScaladocCommentsStartOnFirstLine, true)
+    .setPreference(DanglingCloseParenthesis, Preserve)
+)
 
-lazy val testUtils = Project("testUtils", file("testUtils"))
-  .settings(commonSettings: _*)
+lazy val testUtils = (project in file("testUtils"))
+  .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(
       Library.ScalaTest,
@@ -74,14 +56,58 @@ lazy val testUtils = Project("testUtils", file("testUtils"))
     )
   )
 
-lazy val common = ScalaProject("common")
+lazy val common = (project in file("common"))
+  .settings(commonSettings)
+  .settings(
+    scalacOptions ++= ScalacOptions.Default,
+    scalacOptions in (Compile, console) ~= ScalacOptions.ConsoleDefault,
+    scalacOptions in Test ~= ScalacOptions.TestDefault)
+  .settings(SbtScalariform.scalariformSettings)
+  .settings(scalariformPluginSettings)
+  .settings(headerSettings)
+  .enablePlugins(AutomateHeaderPlugin)
+  .enablePlugins(SbtScalariform)
   .dependsOn(testUtils % "test->compile")
 
-lazy val fp = ScalaProject("fp")
+lazy val fp = (project in file("fp"))
+  .settings(commonSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      Library.Logback,
+      Library.ScalaLogging,
+      Library.ScalaTest  % "test",
+      Library.ScalaCheck % "test"
+    ))
+  .settings(
+    scalacOptions ++= ScalacOptions.Default,
+    scalacOptions in (Compile, console) ~= ScalacOptions.ConsoleDefault,
+    scalacOptions in Test ~= ScalacOptions.TestDefault)
+  .settings(SbtScalariform.scalariformSettings)
+  .settings(scalariformPluginSettings)
+  .settings(headerSettings)
+  .enablePlugins(AutomateHeaderPlugin)
+  .enablePlugins(SbtScalariform)
   .dependsOn(common)
   .dependsOn(testUtils % "test->compile")
 
-lazy val oop = ScalaProject("oop")
+lazy val oop = (project in file("oop"))
+  .settings(commonSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      Library.Logback,
+      Library.ScalaLogging,
+      Library.ScalaTest  % "test",
+      Library.ScalaCheck % "test"
+    ))
+  .settings(
+    scalacOptions ++= ScalacOptions.Default,
+    scalacOptions in (Compile, console) ~= ScalacOptions.ConsoleDefault,
+    scalacOptions in Test ~= ScalacOptions.TestDefault)
+  .settings(SbtScalariform.scalariformSettings)
+  .settings(scalariformPluginSettings)
+  .settings(headerSettings)
+  .enablePlugins(AutomateHeaderPlugin)
+  .enablePlugins(SbtScalariform)
   .dependsOn(common)
   .dependsOn(testUtils % "test->compile")
 
@@ -90,7 +116,7 @@ lazy val benchmarks = Project("benchmarks", file("benchmarks"))
   .dependsOn(fp)
   .dependsOn(oop)
   .settings(
-    scalaVersion := Version.Scala,
+    scalaVersion := scalac.`2.12.1`,
     libraryDependencies += "com.storm-enroute" %% "scalameter" % "0.8.2",
     testFrameworks += new TestFramework("org.scalameter.ScalaMeterFramework"),
     logBuffered := false,
