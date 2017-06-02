@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.searching
 
 import io.github.carlomicieli.test.AbstractTestSpec
 
-class SearchSpec extends AbstractTestSpec with BinarySearchFixture {
-  import Search._
+class binarySearchSpec extends AbstractTestSpec with BinarySearchFixture {
 
   "binary search" should "find an element in a sorted array" in {
     binarySearch(charsArray, charsArray(12)) shouldBe Some(12)

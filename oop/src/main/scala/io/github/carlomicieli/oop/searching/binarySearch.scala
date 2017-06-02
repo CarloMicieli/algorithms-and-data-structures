@@ -26,41 +26,47 @@ package io.github.carlomicieli.oop.searching
 
 /** Implements fundamental functions for searching.
   */
-object Search {
+object binarySearch {
 
   /** `O(lg n)` Search for an element in a sorted `Array`.
     *
     * @param xs a sorted `Array`
     * @param x the element to find
-    * @param ord the element ordering
     * @tparam A the element type
     * @return optionally the index for the found element
     */
-  def binarySearch[A](xs: Array[A], x: A)(implicit ord: Ordering[A]): Option[Int] = {
-    binarySearch(xs, x, 0, xs.length)(ord)
+  def apply[A: Ordering](xs: Array[A], x: A): Option[Int] = {
+    apply(xs, x, 0, xs.length)
   }
 
   /** `O(lg n)` Search for an element in a part of a sorted `Array`.
     *
     * @param xs a sorted `Array`
     * @param x the element to find
-    * @param lo the low index
-    * @param hi the high index
-    * @param ord the element ordering
+    * @param low the low index
+    * @param high the high index
     * @tparam A the element type
     * @return optionally the index for the found element
     */
-  def binarySearch[A](xs: Array[A], x: A, lo: Int, hi: Int)(implicit ord: Ordering[A]): Option[Int] = {
+  def apply[A: Ordering](xs: Array[A], x: A, low: Int, high: Int): Option[Int] = {
     import Ordered._
-    if (lo < hi) {
-      val mid: Int = lo + (hi - lo) / 2
-      x compare xs(mid) match {
-        case 0          => Some(mid)
-        case n if n < 0 => binarySearch(xs, x, lo, mid)
-        case n if n > 0 => binarySearch(xs, x, mid + 1, hi)
+
+    @annotation.tailrec
+    def find(l: Int, h: Int): Option[Int] = {
+      if (l >= h) {
+        None
+      } else {
+        val mid = (l + h) / 2
+        val v = xs(mid)
+        if (v == x)
+          Some(mid)
+        else if (v < x)
+          find(mid + 1, h)
+        else
+          find(l, mid)
       }
-    } else {
-      None
     }
+
+    find(low, high)
   }
 }
