@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.{ Failure, Success, Try }
-
 /** It represents a mutable linked list.
   * @tparam A the list element type
   */
@@ -60,15 +58,16 @@ trait LinkedList[A] {
   def lastOption: Option[A]
 
   /** `O(1)` Remove the front element from the list
-    * @return optionally the original value
+    * @param orElse the alternative value when the list is empty
+    * @return the removed element, or `orElse` value when the list is empty
     */
-  def removeHead(): Try[A] = {
+  def removeHead(orElse: => A): A = {
     if (isEmpty) {
-      Failure(new EmptyLinkedListException("removeHead"))
+      orElse
     } else {
       val h = this.head
       remove(h)
-      Success(h)
+      h
     }
   }
 
@@ -109,8 +108,9 @@ trait LinkedList[A] {
     */
   def append(el: A): Unit
 
-  /** @usecase def foreach(f: A => Unit): Unit
-    * @param f
+  /** `O(n)` Applies the function `f` to all elements of this list.
+    * @usecase def foreach(f: A => Unit): Unit
+    * @param f the function to apply
     * @tparam U
     */
   def foreach[U](f: A => U): Unit = {
