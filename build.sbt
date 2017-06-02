@@ -1,6 +1,7 @@
 import scalariform.formatter.preferences._
 import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
+import scoverage.ScoverageKeys
 
 val headerSettings = Seq(
   headerLicense := Some(HeaderLicense.Custom(
@@ -27,6 +28,12 @@ val headerSettings = Seq(
        |limitations under the License.
        |""".stripMargin
   ))
+)
+
+lazy val scoverageSettings = Seq(
+  ScoverageKeys.coverageMinimum       := 60,
+  ScoverageKeys.coverageFailOnMinimum := false,
+  ScoverageKeys.coverageHighlighting  := true
 )
 
 lazy val commonSettings = Seq(
@@ -65,6 +72,7 @@ lazy val common = (project in file("common"))
   .settings(SbtScalariform.scalariformSettings)
   .settings(scalariformPluginSettings)
   .settings(headerSettings)
+  .settings(scoverageSettings: _*)
   .enablePlugins(AutomateHeaderPlugin)
   .enablePlugins(SbtScalariform)
   .dependsOn(testUtils % "test->compile")
@@ -85,6 +93,7 @@ lazy val fp = (project in file("fp"))
   .settings(SbtScalariform.scalariformSettings)
   .settings(scalariformPluginSettings)
   .settings(headerSettings)
+  .settings(scoverageSettings: _*)
   .enablePlugins(AutomateHeaderPlugin)
   .enablePlugins(SbtScalariform)
   .dependsOn(common)
@@ -106,6 +115,7 @@ lazy val oop = (project in file("oop"))
   .settings(SbtScalariform.scalariformSettings)
   .settings(scalariformPluginSettings)
   .settings(headerSettings)
+  .settings(scoverageSettings: _*)
   .enablePlugins(AutomateHeaderPlugin)
   .enablePlugins(SbtScalariform)
   .dependsOn(common)
