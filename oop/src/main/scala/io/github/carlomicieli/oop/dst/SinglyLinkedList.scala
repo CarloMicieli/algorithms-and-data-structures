@@ -40,6 +40,10 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
     def nonEmpty: Boolean = !isEmpty
 
     def nextOrElse(n: => Node): Node = if (isEmpty) n else next
+    def keyOption: Option[A] = this match {
+      case ListNode(k, _) => Some(k)
+      case Nil            => None
+    }
   }
 
   case class ListNode(var key: A, var next: Node) extends Node {
@@ -55,10 +59,9 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
   }
 
   override def isEmpty: Boolean = headNode.isEmpty
-  override def nonEmpty: Boolean = headNode.nonEmpty
 
-  override def headOption: Option[A] = if (headNode.nonEmpty) Some(headNode.key) else None
-  override def lastOption: Option[A] = if (lastNode.nonEmpty) Some(lastNode.key) else None
+  override def headOption: Option[A] = headNode.keyOption
+  override def lastOption: Option[A] = lastNode.keyOption
 
   override def prepend(el: A): Unit = {
     headNode = ListNode(el, headNode)
@@ -103,18 +106,6 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
         k
       }
     }
-  }
-
-  override def foreach[U](f: (A) => U): Unit = {
-    var curr = headNode
-    while (curr.nonEmpty) {
-      f(curr.key)
-      curr = curr.next
-    }
-  }
-
-  override def length: Int = {
-    foldLeft(0)((len, _) => len + 1)
   }
 
   override def foldLeft[B](z: B)(f: (B, A) => B): B = {

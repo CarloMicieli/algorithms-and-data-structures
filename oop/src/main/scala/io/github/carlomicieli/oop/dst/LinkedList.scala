@@ -89,7 +89,7 @@ trait LinkedList[A] {
   /** `O(1)` Checks whether this list is not empty.
     * @return `true` if the list does contain elements, `false` otherwise.
     */
-  def nonEmpty: Boolean
+  @inline def nonEmpty: Boolean = !isEmpty
 
   /** `O(1)` Insert a new element in the front of the list.
     * @param el the new element
@@ -116,12 +116,16 @@ trait LinkedList[A] {
     * @param f
     * @tparam U
     */
-  def foreach[U](f: A => U): Unit
+  def foreach[U](f: A => U): Unit = {
+    foldLeft(())((_, x) => { val _ = f(x) })
+  }
 
   /** `O(n)` Returns the number of elements in the list
     * @return the number of elements.
     */
-  def length: Int
+  def length: Int = {
+    foldLeft(0)((len, _) => len + 1)
+  }
 
   /** `O(n)` Applies a binary operator `f` to a start value and all elements of this list, going left to right.
     * @param z the start value
