@@ -283,13 +283,13 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     describe("removeHead") {
       it("should remove the head from a list") {
         val l = numbersList
-        val Success(h) = l.removeHead()
+        val h = l.removeHead(-1)
         h should be(1)
         l.elements.toList.length shouldBe 5
       }
 
       it("should return a Bad value for the empty list") {
-        emptyList.removeHead().isFailure shouldBe true
+        emptyList.removeHead(-1) shouldBe -1
       }
     }
 

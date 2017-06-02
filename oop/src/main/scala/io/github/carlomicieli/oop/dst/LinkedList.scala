@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Try
-
 /** It represents a mutable linked list.
   * @tparam A the list element type
   */
@@ -60,9 +58,18 @@ trait LinkedList[A] {
   def lastOption: Option[A]
 
   /** `O(1)` Remove the front element from the list
-    * @return optionally the original value
+    * @param orElse the alternative value when the list is empty
+    * @return the removed element, or `orElse` value when the list is empty
     */
-  def removeHead(): Try[A]
+  def removeHead(orElse: => A): A = {
+    if (isEmpty) {
+      orElse
+    } else {
+      val h = this.head
+      remove(h)
+      h
+    }
+  }
 
   /** `O(1)` Insert a new element in the front of the list.
     * @param key the element to be inserted
@@ -89,7 +96,7 @@ trait LinkedList[A] {
   /** `O(1)` Checks whether this list is not empty.
     * @return `true` if the list does contain elements, `false` otherwise.
     */
-  def nonEmpty: Boolean
+  @inline def nonEmpty: Boolean = !isEmpty
 
   /** `O(1)` Insert a new element in the front of the list.
     * @param el the new element
@@ -101,27 +108,21 @@ trait LinkedList[A] {
     */
   def append(el: A): Unit
 
-  /** `O(n)` Inserts the element into the list at the first position where it
-    * is less than or equal to the next element.
-    *
-    * @usecase def insert(key: A): Unit
-    * @inheritdoc
-    * @param key the element to insert
-    * @param ord
-    * @return
-    */
-  def insert(key: A)(implicit ord: Ordering[A]): Unit
-
-  /** @usecase def foreach(f: A => Unit): Unit
-    * @param f
+  /** `O(n)` Applies the function `f` to all elements of this list.
+    * @usecase def foreach(f: A => Unit): Unit
+    * @param f the function to apply
     * @tparam U
     */
-  def foreach[U](f: A => U): Unit
+  def foreach[U](f: A => U): Unit = {
+    foldLeft(())((_, x) => { val _ = f(x) })
+  }
 
   /** `O(n)` Returns the number of elements in the list
     * @return the number of elements.
     */
-  def length: Int
+  def length: Int = {
+    foldLeft(0)((len, _) => len + 1)
+  }
 
   /** `O(n)` Applies a binary operator `f` to a start value and all elements of this list, going left to right.
     * @param z the start value
@@ -156,7 +157,9 @@ trait LinkedList[A] {
     * @param key the key to find
     * @return `true` if the list contains `key`; `false` otherwise.
     */
-  def contains(key: A): Boolean
+  @inline def contains(key: A): Boolean = {
+    find(_ == key).isDefined
+  }
 
   /** `O(n)` Finds the first element of this list satisfying a predicate, if any.
     * @param p the predicate used to test elements
@@ -190,6 +193,17 @@ trait LinkedList[A] {
   def zip[B](that: LinkedList[B]): Iterable[(A, B)] = {
     this.elements.zip(that.elements)
   }
+
+  /** `O(n)` Inserts the element into the list at the first position where it
+    * is less than or equal to the next element.
+    *
+    * @usecase def insert(key: A): Unit
+    * @inheritdoc
+    * @param key the element to insert
+    * @param ord
+    * @return
+    */
+  def insert(key: A)(implicit ord: Ordering[A]): Unit
 
   override def toString: String = mkString(", ", "[", "]")
 }

@@ -145,4 +145,7 @@ val root = (project in file("."))
     site.addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), "latest/api"),
     git.gitRemoteRepo := "git@github.com:CarloMicieli/algorithms-and-data-structures.git"
   )
+  .dependsOn(fp, oop)
   .aggregate(common, fp, oop)
+  .settings(initialCommands := """|import io.github.carlomicieli.oop._
+                                  |""".stripMargin)
