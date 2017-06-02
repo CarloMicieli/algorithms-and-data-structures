@@ -26,8 +26,7 @@ package io.github.carlomicieli.oop.searching
 
 import io.github.carlomicieli.test.AbstractTestSpec
 
-class SearchSpec extends AbstractTestSpec with BinarySearchFixture {
-  import Search._
+class binarySearchSpec extends AbstractTestSpec with BinarySearchFixture {
 
   "binary search" should "find an element in a sorted array" in {
     binarySearch(charsArray, charsArray(12)) shouldBe Some(12)
@@ -37,6 +36,11 @@ class SearchSpec extends AbstractTestSpec with BinarySearchFixture {
   "binary search" should "find an element in a range in a sorted array" in {
     binarySearch(numbersArray, 150, 100, 200) shouldBe Some(150)
     binarySearch(numbersArray, 50, 100, 200) shouldBe None
+  }
+
+  "binary search" should "find all elements in the array" in {
+    val a = (0 to 10).toArray
+    a.map(binarySearch(a, _)) shouldBe (0 to 10).map(Some(_))
   }
 }
 
