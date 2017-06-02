@@ -37,6 +37,11 @@ class binarySearchSpec extends AbstractTestSpec with BinarySearchFixture {
     binarySearch(numbersArray, 150, 100, 200) shouldBe Some(150)
     binarySearch(numbersArray, 50, 100, 200) shouldBe None
   }
+
+  "binary search" should "find all elements in the array" in {
+    val a = (0 to 10).toArray
+    a.map(binarySearch(a, _)) shouldBe (0 to 10).map(Some(_))
+  }
 }
 
 trait BinarySearchFixture {
