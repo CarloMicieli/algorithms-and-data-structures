@@ -26,7 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import scala.util.Try
 
-/** It represents a mutable singly linked list.
+/** It represents a mutable linked list.
   * @tparam A the list element type
   */
 trait LinkedList[A] {
@@ -35,10 +35,7 @@ trait LinkedList[A] {
     * @return the list head
     */
   def head: A = {
-    headOption match {
-      case Some(v) => v
-      case None    => throw new EmptyLinkedListException("head")
-    }
+    headOption.getOrElse(throw new EmptyLinkedListException("head"))
   }
 
   /** `O(1)` Optionally returns the first element (if any) from this list
@@ -52,10 +49,7 @@ trait LinkedList[A] {
     * @return the list tail
     */
   def last: A = {
-    lastOption match {
-      case Some(l) => l
-      case None    => throw new EmptyLinkedListException("last")
-    }
+    lastOption.getOrElse(throw new EmptyLinkedListException("last"))
   }
 
   /** `O(1)` Optionally returns the last element (if any) from this list.
@@ -73,20 +67,19 @@ trait LinkedList[A] {
   /** `O(1)` Insert a new element in the front of the list.
     * @param key the element to be inserted
     */
-  def +=(key: A): Unit = addBack(key)
+  @inline def +=(key: A): Unit = append(key)
 
   /** Append the given elements to the list back
-    * @param keys the elements to add
+    * @param elements the elements to add
     */
-  def ++=(keys: A*): Unit = {
-    for (k <- keys)
-      addBack(k)
+  def ++=(elements: A*): Unit = {
+    elements foreach append
   }
 
   /** `O(n)` Remove the element with the given `key` from the list, if exists.
     * @param key the key to be removed
     */
-  def -=(key: A): Boolean = remove(key)
+  @inline def -=(key: A): Boolean = remove(key)
 
   /** `O(1)` Checks whether this list is empty.
     * @return `true` if the list does not contain any element, `false` otherwise.
@@ -101,12 +94,12 @@ trait LinkedList[A] {
   /** `O(1)` Insert a new element in the front of the list.
     * @param el the new element
     */
-  def addFront(el: A): Unit
+  def prepend(el: A): Unit
 
   /** `O(1)` Insert a new element to the back of the list.
     * @param el the new element
     */
-  def addBack(el: A): Unit
+  def append(el: A): Unit
 
   /** `O(n)` Inserts the element into the list at the first position where it
     * is less than or equal to the next element.
@@ -145,12 +138,6 @@ trait LinkedList[A] {
     * @return the result of inserting `op` between consecutive elements
     */
   def foldRight[B](z: B)(f: (A, B) => B): B
-
-  /** Displays all elements of this list in a string.
-    * @param sep the string separator
-    * @return the string with the list elements
-    */
-  def mkString(sep: String): String = mkString(sep, "", "")
 
   /** Displays all elements of this list in a string.
     * @param sep the string separator
@@ -196,7 +183,7 @@ trait LinkedList[A] {
     */
   def update[B, C](key: A)(implicit ev: A => (B, C)): Boolean
 
-  /** Remove all the elements from this list.
+  /** Remove all elements from this list.
     */
   def clear(): Unit
 
@@ -221,14 +208,17 @@ object LinkedList {
     * @return a list containing the elements
     */
   def apply[A](items: A*): LinkedList[A] = {
-    val l = LinkedList.empty[A]
-    for { el <- items } l.addBack(el)
-    l
+    val newList = LinkedList.empty[A]
+    for (el <- items) {
+      newList.append(el)
+    }
+    newList
   }
 
   def unapplySeq[A](list: LinkedList[A]): Option[Seq[A]] = {
-    if (list.isEmpty) None
-    else {
+    if (list.isEmpty) {
+      None
+    } else {
       val seq = list.foldRight(Seq.empty[A])((x, xs) => x +: xs)
       Some(seq)
     }

@@ -59,13 +59,13 @@ private[this] class UnmodifiableLinkedList[A](inner: LinkedList[A]) extends Link
 
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = invalidOp
 
-  override def addFront(el: A): Unit = invalidOp
+  override def prepend(el: A): Unit = invalidOp
 
   override def clear(): Unit = invalidOp
 
   override def removeHead(): Try[A] = invalidOp
 
-  override def addBack(el: A): Unit = invalidOp
+  override def append(el: A): Unit = invalidOp
 
   override def remove(key: A): Boolean = invalidOp
 

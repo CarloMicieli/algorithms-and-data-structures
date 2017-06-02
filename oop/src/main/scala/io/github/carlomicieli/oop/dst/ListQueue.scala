@@ -30,7 +30,7 @@ private[this] class ListQueue[A] extends Queue[A] {
   private val storage = LinkedList.empty[A]
 
   def enqueue(el: A): Unit = {
-    storage.addBack(el)
+    storage.append(el)
   }
 
   def dequeue(): A = {

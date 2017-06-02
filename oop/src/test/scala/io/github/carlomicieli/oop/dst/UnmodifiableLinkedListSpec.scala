@@ -49,11 +49,11 @@ class UnmodifiableLinkedListSpec extends AbstractSpec with UnmodifiableLinkedLis
         val l = unmodifiableList(numbersList)
 
         the[UnsupportedOperationException] thrownBy {
-          l.addBack(42)
+          l.append(42)
         } should have message expectedMsg
 
         the[UnsupportedOperationException] thrownBy {
-          l.addFront(42)
+          l.prepend(42)
         } should have message expectedMsg
 
         the[UnsupportedOperationException] thrownBy {

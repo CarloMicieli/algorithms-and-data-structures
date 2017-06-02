@@ -40,7 +40,7 @@ private[this] class LinkedListQueue[A] extends Queue[A] {
 
   override def size: Int = st.length
 
-  override def enqueue(x: A): Unit = st.addBack(x)
+  override def enqueue(x: A): Unit = st.append(x)
 
   override def isEmpty: Boolean = st.isEmpty
 }

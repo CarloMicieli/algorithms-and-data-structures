@@ -107,14 +107,14 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     describe("addFront") {
       it("should increase the list length by 1") {
         val l = emptyList
-        l.addFront(1)
+        l.prepend(1)
         l.length shouldBe 1
       }
 
       it("should change the list head") {
         val l = emptyList
-        l.addFront(1)
-        l.addFront(42)
+        l.prepend(1)
+        l.prepend(42)
         l.head shouldBe 42
       }
     }
@@ -122,14 +122,14 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     describe("addBack") {
       it("should increase the list length by 1") {
         val l = emptyList
-        l.addBack(1)
+        l.append(1)
         l.length shouldBe 1
       }
 
       it("should change the last element in the list") {
         val l = numbersList
-        l.addBack(1)
-        l.addBack(42)
+        l.append(1)
+        l.append(42)
         l.last shouldBe 42
       }
 
@@ -153,11 +153,11 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     describe("addFront and addBack") {
       it("should add element the list when they are intermixed") {
         val l = SinglyLinkedList.empty[Int]
-        l.addFront(3)
-        l.addBack(4)
-        l.addFront(2)
-        l.addBack(5)
-        l.addFront(1)
+        l.prepend(3)
+        l.append(4)
+        l.prepend(2)
+        l.append(5)
+        l.prepend(1)
 
         l.length shouldBe 5
         l.head shouldBe 1

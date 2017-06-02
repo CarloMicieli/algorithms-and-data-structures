@@ -48,9 +48,9 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
 
   case object Nil extends Node {
     def key = throw new NoSuchElementException("Sentinel node has no key")
-    def key_=(x: A) = {}
+    def key_=(x: A): Unit = {}
     def next = throw new NoSuchElementException("Sentinel node has no next")
-    def next_=(n: Node) = {}
+    def next_=(n: Node): Unit = {}
     def isEmpty = true
   }
 
@@ -60,13 +60,13 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
   override def headOption: Option[A] = if (headNode.nonEmpty) Some(headNode.key) else None
   override def lastOption: Option[A] = if (lastNode.nonEmpty) Some(lastNode.key) else None
 
-  override def addFront(el: A): Unit = {
+  override def prepend(el: A): Unit = {
     headNode = ListNode(el, headNode)
     if (lastNode.isEmpty)
       lastNode = headNode
   }
 
-  override def addBack(el: A): Unit = {
+  override def append(el: A): Unit = {
     val newNode = ListNode(el, Nil)
     if (lastNode.nonEmpty)
       lastNode.next = newNode
@@ -79,7 +79,7 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
 
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = {
     if (isEmpty) {
-      addFront(key)
+      prepend(key)
     } else {
       import Ordered._
 
@@ -96,7 +96,7 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
   override def elements: Iterable[A] = new Iterable[A] {
     override def iterator: Iterator[A] = new Iterator[A] {
       var curr: Node = SinglyLinkedList.this.headNode
-      override def hasNext = curr.nonEmpty
+      override def hasNext: Boolean = curr.nonEmpty
       override def next(): A = {
         val k = curr.key
         curr = curr.next
@@ -114,7 +114,7 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
   }
 
   override def length: Int = {
-    foldLeft(0)((len, x) => len + 1)
+    foldLeft(0)((len, _) => len + 1)
   }
 
   override def foldLeft[B](z: B)(f: (B, A) => B): B = {
@@ -153,15 +153,13 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
   }
 
   override def find(p: (A) => Boolean): Option[A] = {
-    findNode(p) match {
-      case None            => None
-      case Some((curr, _)) => Some(curr.key)
-    }
+    findNode(p) map { case (curr, _) => curr.key }
   }
 
   private def findNode(p: (A) => Boolean): Option[(Node, Node)] = {
-    if (isEmpty) None
-    else {
+    if (isEmpty) {
+      None
+    } else {
       var found: Option[(Node, Node)] = None
       var curr: Node = headNode
       var prev: Node = Nil
@@ -181,17 +179,16 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
         headNode = curr.nextOrElse(Nil)
         lastNode = if (headNode.isEmpty) Nil else lastNode
         true
-      case Some((curr, prev)) => {
+      case Some((curr, prev)) =>
         prev.next = curr.nextOrElse(Nil)
         true
-      }
     }
   }
 
   def update[B, C](newKey: A)(implicit ev: (A) => (B, C)): Boolean = {
     findNode(_._1 == newKey._1) match {
       case None =>
-        addBack(newKey)
+        append(newKey)
         true
       case Some((curr, _)) =>
         curr.key = newKey
@@ -232,8 +229,10 @@ object SinglyLinkedList {
     * @return a list
     */
   def apply[A](items: A*): LinkedList[A] = {
-    val l = SinglyLinkedList.empty[A]
-    for { el <- items } l.addBack(el)
-    l
+    val newList = SinglyLinkedList.empty[A]
+    for (el <- items) {
+      newList.append(el)
+    }
+    newList
   }
 }

@@ -30,7 +30,7 @@ private[this] class LinkedListStack[A] extends Stack[A] {
   private val st = LinkedList.empty[A]
 
   override def push(el: A): Unit = {
-    st.addFront(el)
+    st.prepend(el)
   }
 
   override def size: Int = st.length

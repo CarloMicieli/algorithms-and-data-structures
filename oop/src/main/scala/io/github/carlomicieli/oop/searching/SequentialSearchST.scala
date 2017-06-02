@@ -34,7 +34,7 @@ final class SequentialSearchST[K, V] extends SymbolTable[K, V] {
     containsKey(key) foreach {
       n => storage.remove(n)
     }
-    storage.addFront((key, value))
+    storage.prepend((key, value))
   }
 
   def get(key: K): Option[V] =
