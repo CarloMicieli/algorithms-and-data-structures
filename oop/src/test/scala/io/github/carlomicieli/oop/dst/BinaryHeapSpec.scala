@@ -30,12 +30,12 @@ class BinaryHeapSpec extends FunSpec with Matchers {
   describe("A BinaryHeap") {
     describe("when empty") {
       it("should have size == 0") {
-        val heap = BinaryHeap(16)
+        val heap = BinaryHeap[Int, String](16)
         heap.size shouldBe 0
       }
 
       it("should return true for isEmpty") {
-        val heap = BinaryHeap(16)
+        val heap = BinaryHeap[Int, String](16)
         heap.isEmpty shouldBe true
       }
     }

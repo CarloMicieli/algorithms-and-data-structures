@@ -24,6 +24,8 @@
 
 package io.github.carlomicieli.oop.dst
 
+import scala.reflect.ClassTag
+
 /** This is a collection of prioritized elements that allows arbitrary element insertion,
   * and allows the removal of the element that has first priority.
   *
@@ -36,7 +38,6 @@ package io.github.carlomicieli.oop.dst
   *
   * @tparam K the Key type
   * @tparam V the Value type
-  *
   * @author Carlo Micieli
   * @since 1.0.0
   */
@@ -46,7 +47,7 @@ trait PriorityQueue[K, V] {
     * @param value the value
     * @param ord the keys natural ordering
     */
-  def insert(key: K, value: V)(implicit ord: Ordered[K]): Unit
+  def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit
 
   /** Returns (but does not remove) a priority queue entry (k,v)
     * having minimal key; returns null if the priority queue is empty.
@@ -69,4 +70,16 @@ trait PriorityQueue[K, V] {
     * @return
     */
   def isEmpty: Boolean
+}
+
+object PriorityQueue {
+  /** Creates a new binary heap with the provided capacity.
+    * @param s the heap capacity
+    * @tparam K the Key type
+    * @tparam V the Value type
+    * @return a new Priority queue
+    */
+  def binaryHeap[K: Ordering: ClassTag, V: ClassTag](s: Int): PriorityQueue[K, V] = {
+    BinaryHeap(s)
+  }
 }
