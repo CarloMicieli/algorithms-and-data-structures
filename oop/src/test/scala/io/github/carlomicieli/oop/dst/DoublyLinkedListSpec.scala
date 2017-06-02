@@ -26,7 +26,7 @@ package io.github.carlomicieli.oop.dst
 
 import io.github.carlomicieli.test.AbstractSpec
 
-class DoublyLinkedListSpec extends AbstractSpec {
+class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
   describe("A Doubly Linked List") {
     describe("headOption") {
       it("should return a None for the empty list") {
@@ -41,5 +41,38 @@ class DoublyLinkedListSpec extends AbstractSpec {
         l.lastOption shouldBe Option.empty[Int]
       }
     }
+
+    ignore("append") {
+      it("should add a new element to a empty list") {
+        val l = newEmptyList
+        l.append(42)
+        l.length shouldBe 1
+      }
+    }
+
+    describe("isEmpty") {
+      it("should return true for the empty list") {
+        val l = DoublyLinkedList.empty[Int]
+        l.isEmpty shouldBe true
+      }
+    }
+
+    describe("length") {
+      it("should return 0 for the empty list") {
+        val l = DoublyLinkedList.empty[Int]
+        l.length shouldBe 0
+      }
+    }
+
+    describe("foldLeft") {
+      it("should return the initial value for empty lists") {
+        val l = DoublyLinkedList.empty[Int]
+        l.foldLeft(42)(_ + _) shouldBe 42
+      }
+    }
   }
+}
+
+trait DoublyLinkedLists {
+  def newEmptyList: LinkedList[Int] = DoublyLinkedList.empty[Int]
 }

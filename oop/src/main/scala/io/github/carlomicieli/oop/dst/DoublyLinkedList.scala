@@ -66,21 +66,47 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
 
   override def isEmpty: Boolean = h.isEmpty
 
-  override def nonEmpty: Boolean = ???
-
   override def prepend(el: A): Unit = ???
 
-  override def append(x: A): Unit = ???
+  override def append(x: A): Unit = {
+    val newCell = new ValueCell(x)
+    if (isEmpty) {
+      h.next = newCell
+      l.prev = newCell
+
+      newCell.prev = h
+      newCell.next = l
+    } else {
+      val oldLast = l.prev
+      l.prev = newCell
+
+      newCell.prev = oldLast
+      newCell.next = l
+      oldLast.next = newCell
+    }
+  }
 
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = ???
 
-  override def foreach[U](f: (A) => U): Unit = ???
+  override def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    var acc: B = z
+    var node = h
+    while (!node.isEmpty) {
+      acc = f(acc, node.value)
+      node = node.next
+    }
+    acc
+  }
 
-  override def length: Int = ???
-
-  override def foldLeft[B](z: B)(f: (B, A) => B): B = ???
-
-  override def foldRight[B](z: B)(f: (A, B) => B): B = ???
+  override def foldRight[B](z: B)(f: (A, B) => B): B = {
+    var acc: B = z
+    var node = l
+    while (!node.isEmpty) {
+      acc = f(node.value, acc)
+      node = node.prev
+    }
+    acc
+  }
 
   override def mkString(sep: String, start: String, end: String): String = ???
 
