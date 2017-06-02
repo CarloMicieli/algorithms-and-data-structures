@@ -16,7 +16,7 @@ To generate the `Scaladoc` documentation:
 
     $ sbt unidoc
 
-The documentation is generated under the `./target/scala-2.11/unidoc` directory. (`sbt doc` will generate a different doc folder for each subproject).
+The documentation is generated under the `./target/scala-2.12/unidoc` directory. (`sbt doc` will generate a different doc folder for each subproject).
 The project documentation is published [here](http://carlomicieli.github.io/algorithms-and-data-structures/latest/api/)
 
 The project includes the following subprojects:
@@ -36,17 +36,10 @@ Sorting Algorithms
 | SelectionSort     |    no     |   yes     |   Θ(n²)   |    O(n²)  |
 | ShellSort [2]     |    no     |   yes     |   Θ(n<sup>3/2</sup>) |    O(n²)  |
 
-Machine used for the benchmark
-* Intel® Core™ i5-3570K CPU @ 3.40GHz × 4
-* 16 Gb RAM
-* SSD hard disk
-* Ubuntu 14.04.3
-* Java SE 1.8u66 / Scala 2.11.7
-
 Data Structures
 ---------------
 
-* List
+* Linked lists (`SinglyLinkedList` and `DoublyLinkedList`)
 * Binary search tree (normal and Red-Black)
 * Queue
 * Stack
@@ -63,11 +56,12 @@ References
 * Jean Niklas L'orange. __Understanding Clojure's Persistent Vectors__. Blog post ([link](http://hypirion.com/musings/understanding-persistent-vector-pt-1))
 * Bill Venners. 2015. __Simplifying Scala Collections__. ScalaWorld Conference. (Retrieved from [https://www.youtube.com/watch?v=UBjzbkhvYTU](https://www.youtube.com/watch?v=UBjzbkhvYTU))
 * Chris Allen. 2015. __Modeling Data in Haskell for Beginners__. LambdaConf 2015. (Retrieved from [https://www.youtube.com/watch?v=p-NBJm0kIYU](https://www.youtube.com/watch?v=p-NBJm0kIYU))
+* Rod Stephens. 2013. __Essential Algorithms__. John Wiley & Sons, Inc.
 
 License
 -------
 
-    Copyright 2016 Carlo Micieli
+    Copyright 2017 Carlo Micieli
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
