@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Success
-
 private[this] class ListQueue[A] extends Queue[A] {
   private val storage = LinkedList.empty[A]
 
@@ -34,11 +32,7 @@ private[this] class ListQueue[A] extends Queue[A] {
   }
 
   def dequeue(): A = {
-    if (isEmpty)
-      throw new EmptyQueueException
-
-    val Success(head) = storage.removeHead()
-    head
+    storage.removeHead(throw new EmptyQueueException)
   }
 
   def peek: Option[A] = storage.headOption

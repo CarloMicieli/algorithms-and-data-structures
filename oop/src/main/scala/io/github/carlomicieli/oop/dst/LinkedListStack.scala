@@ -24,11 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Success
-
-private[this] class LinkedListStack[A] extends Stack[A] {
-  private val st = LinkedList.empty[A]
-
+private[this] class LinkedListStack[A](val st: LinkedList[A]) extends Stack[A] {
   override def push(el: A): Unit = {
     st.prepend(el)
   }
@@ -42,8 +38,7 @@ private[this] class LinkedListStack[A] extends Stack[A] {
   override def nonEmpty: Boolean = st.nonEmpty
 
   override def pop(): A = {
-    val Success(head) = st.removeHead()
-    head
+    st.removeHead(throw new EmptyStackException)
   }
 }
 
@@ -51,9 +46,11 @@ private[this] class LinkedListStack[A] extends Stack[A] {
   */
 object LinkedListStack {
 
-  /** Creates an empty stack
+  /** Creates an empty `Stack`.
     * @tparam A the element type
     * @return an empty stack
     */
-  def empty[A]: Stack[A] = new LinkedListStack[A]
+  def empty[A]: Stack[A] = {
+    new LinkedListStack[A](LinkedList.empty)
+  }
 }

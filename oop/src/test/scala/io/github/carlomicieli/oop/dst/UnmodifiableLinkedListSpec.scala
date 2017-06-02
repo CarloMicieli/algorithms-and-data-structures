@@ -69,7 +69,7 @@ class UnmodifiableLinkedListSpec extends AbstractSpec with UnmodifiableLinkedLis
         } should have message expectedMsg
 
         the[UnsupportedOperationException] thrownBy {
-          l.removeHead()
+          l.removeHead(-1)
         } should have message expectedMsg
       }
     }

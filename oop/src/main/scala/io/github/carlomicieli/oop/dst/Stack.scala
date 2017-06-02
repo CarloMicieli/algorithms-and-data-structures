@@ -65,7 +65,7 @@ trait Stack[A] {
 }
 
 object Stack {
-  def empty[A]: Stack[A] = new LinkedListStack[A]
+  def empty[A]: Stack[A] = new LinkedListStack[A](LinkedList.empty)
 }
 
 class FullStackException extends Exception("Stack is full")

@@ -22,31 +22,25 @@
  * limitations under the License.
  */
 
-package io.github.carlomicieli.oop.dst
+package io.github.carlomicieli.oop
+package dst
 
-private[this] class LinkedListQueue[A](val st: LinkedList[A]) extends Queue[A] {
-  override def peek: Option[A] = st.headOption
+import org.scalacheck.util.Buildable
 
-  override def dequeue(): A = {
-    st.removeHead(throw new EmptyQueueException)
-  }
+import scala.collection.mutable
 
-  override def size: Int = st.length
+object SinglyLinkedListGenerator {
+  implicit def buildableSinglyLinkedList[A] = new Buildable[A, LinkedList[A]] {
+    override def builder = new mutable.Builder[A, LinkedList[A]] {
+      val ll = new SinglyLinkedList[A]
+      override def +=(elem: A): this.type = {
+        ll.append(elem)
+        this
+      }
 
-  override def enqueue(x: A): Unit = st.append(x)
+      override def clear(): Unit = ll.clear()
 
-  override def isEmpty: Boolean = st.isEmpty
-}
-
-/** A `Queue` implementation based on linked list.
-  */
-object LinkedListQueue {
-
-  /** Creates a new empty `Queue`.
-    * @tparam A the element type
-    * @return an empty queue
-    */
-  def empty[A]: Queue[A] = {
-    new LinkedListQueue[A](LinkedList.empty)
+      override def result(): LinkedList[A] = ll
+    }
   }
 }

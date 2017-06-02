@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Try
-
 private[this] class UnmodifiableLinkedList[A](inner: LinkedList[A]) extends LinkedList[A] {
   require(inner != null)
 
@@ -63,7 +61,7 @@ private[this] class UnmodifiableLinkedList[A](inner: LinkedList[A]) extends Link
 
   override def clear(): Unit = invalidOp
 
-  override def removeHead(): Try[A] = invalidOp
+  override def removeHead(orElse: => A): A = invalidOp
 
   override def append(el: A): Unit = invalidOp
 
