@@ -1,7 +1,6 @@
 import sbt._
 
 object Version {
-  final val Scala          = "2.12.1"
   final val ScalaTest      = "3.0.1"
   final val ScalaCheck     = "1.13.4"
   final val ScalaLogging   = "3.5.0"
@@ -16,4 +15,8 @@ object Library {
   val ScalaTest   : ModuleID = "org.scalatest"     %% "scalatest"  % Version.ScalaTest
   val ScalaCheck  : ModuleID = "org.scalacheck"    %% "scalacheck" % Version.ScalaCheck
   val ScalaMeter  : ModuleID = "com.storm-enroute" %% "scalameter" % Version.ScalaMeter
+}
+
+object scalac {
+  final val `2.12.1` = "2.12.1"
 }
