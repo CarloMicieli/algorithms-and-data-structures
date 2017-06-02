@@ -26,14 +26,12 @@ package io.github.carlomicieli.oop.dst
 
 import scala.reflect.ClassTag
 
-/** Created by carlo on 29/05/17.
-  */
 private[this] class BinaryHeap[K, V] private (a: Array[(K, V)]) extends PriorityQueue[K, V] {
 
   //private val array: Array[(K, V)] = a
   private val heapSize: Int = 0
 
-  override def insert(key: K, value: V)(implicit ord: Ordered[K]): Unit = ???
+  override def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit = ???
 
   override def min: (K, V) = ???
 
@@ -45,7 +43,7 @@ private[this] class BinaryHeap[K, V] private (a: Array[(K, V)]) extends Priority
 }
 
 private[this] object BinaryHeap {
-  def apply[K <: Ordered[K] with ClassTag[K], V: ClassTag](s: Int): BinaryHeap[K, V] = {
+  def apply[K: Ordering: ClassTag, V: ClassTag](s: Int): PriorityQueue[K, V] = {
     val a = new Array[(K, V)](s)
     new BinaryHeap(a)
   }
