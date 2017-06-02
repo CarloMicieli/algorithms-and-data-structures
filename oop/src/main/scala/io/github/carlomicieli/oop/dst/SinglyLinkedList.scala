@@ -24,8 +24,6 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.{ Success, Failure, Try }
-
 private[this] class SinglyLinkedList[A] extends LinkedList[A] {
 
   private var headNode: Node = Nil
@@ -139,10 +137,6 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
     acc
   }
 
-  override def contains(key: A): Boolean = {
-    find(_ == key).isDefined
-  }
-
   override def find(p: (A) => Boolean): Option[A] = {
     findNode(p) map { case (curr, _) => curr.key }
   }
@@ -184,20 +178,6 @@ private[this] class SinglyLinkedList[A] extends LinkedList[A] {
       case Some((curr, _)) =>
         curr.key = newKey
         false
-    }
-  }
-
-  def removeHead(): Try[A] = {
-    (headNode, lastNode) match {
-      case (Nil, Nil) =>
-        Failure(new EmptyLinkedListException("removeHead"))
-      case (h, l) if h == l =>
-        headNode = Nil
-        lastNode = Nil
-        Success(h.key)
-      case (ListNode(k, next), _) =>
-        headNode = next
-        Success(k)
     }
   }
 

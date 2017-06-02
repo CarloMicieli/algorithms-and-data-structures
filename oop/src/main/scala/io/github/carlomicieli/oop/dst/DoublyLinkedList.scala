@@ -24,105 +24,239 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Try
-
 private[this] class DoublyLinkedList[A] extends LinkedList[A] {
 
-  private sealed trait Cell {
-    var prev: Cell
-    var next: Cell
-    def value: A
+  private sealed trait Node {
+    var prev: Node
+    var next: Node
+
+    var key: A
+
+    def isSentinel: Boolean
     def isEmpty: Boolean
 
     def valueOption: Option[A] = {
       if (isEmpty)
         None
       else
-        Some(value)
+        Some(key)
     }
+
+    def toOption: Option[Node] = if (isEmpty) None else Some(this)
   }
 
-  private class ValueCell(val value: A) extends Cell {
-    override var prev: Cell = _
-    override var next: Cell = _
+  private class ValueNode(var key: A) extends Node {
+    def this(v: A, p: Node, n: Node) {
+      this(v)
+      prev = p
+      next = n
+    }
+
+    override var prev: Node = Nil
+    override var next: Node = Nil
+
+    override def isSentinel: Boolean = false
     override def isEmpty: Boolean = false
   }
 
-  private class Nil extends Cell {
-    override var prev: Cell = _
-    override var next: Cell = _
+  private class Sentinel extends Node {
+    override var prev: Node = Nil
+    override var next: Node = Nil
+
+    override def isSentinel: Boolean = true
     override def isEmpty: Boolean = true
-    override def value: A = throw new NoSuchElementException("Nil cell: no value found")
+
+    override def key: A = throw new NoSuchElementException("Sentinel cell: no value found")
+    override def key_=(x: A): Unit = {}
   }
 
-  private var h: Cell = new Nil
-  private var l: Cell = new Nil
+  private object Nil extends Node {
+    def next = throw new NoSuchElementException("Nil node has no next")
 
-  override def headOption: Option[A] = h.valueOption
+    def next_=(n: Node): Unit = {}
 
-  override def lastOption: Option[A] = l.valueOption
+    def prev = throw new NoSuchElementException("Nil node has no next")
 
-  override def removeHead(): Try[A] = ???
+    def prev_=(n: Node): Unit = {}
 
-  override def isEmpty: Boolean = h.isEmpty
+    override def isSentinel: Boolean = false
+    override def isEmpty: Boolean = true
 
-  override def prepend(el: A): Unit = ???
+    override def key: A = throw new NoSuchElementException("Nil cell: no value found")
+    override def key_=(x: A): Unit = {}
+  }
+
+  private val firstNode: Node = new Sentinel
+  private val lastNode: Node = new Sentinel
+
+  override def headOption: Option[A] = firstNode.next.valueOption
+
+  override def lastOption: Option[A] = lastNode.prev.valueOption
+
+  override def isEmpty: Boolean = firstNode.next.isEmpty
+
+  override def prepend(x: A): Unit = {
+    val newCell = new ValueNode(x)
+    if (isEmpty) {
+      initList(newCell)
+    } else {
+      val oldNext = firstNode.next
+      firstNode.next = newCell
+
+      newCell.prev = firstNode
+      newCell.next = oldNext
+      oldNext.prev = newCell
+    }
+  }
 
   override def append(x: A): Unit = {
-    val newCell = new ValueCell(x)
+    val newCell = new ValueNode(x)
     if (isEmpty) {
-      h.next = newCell
-      l.prev = newCell
-
-      newCell.prev = h
-      newCell.next = l
+      initList(newCell)
     } else {
-      val oldLast = l.prev
-      l.prev = newCell
+      val oldPrev = lastNode.prev
+      lastNode.prev = newCell
 
-      newCell.prev = oldLast
-      newCell.next = l
-      oldLast.next = newCell
+      newCell.prev = oldPrev
+      newCell.next = lastNode
+      oldPrev.next = newCell
+    }
+  }
+
+  override def foldLeft[B](z: B)(f: (B, A) => B): B = {
+    if (isEmpty) {
+      z
+    } else {
+      loop(firstNode)(z)(f)
+    }
+  }
+
+  override def foldRight[B](z: B)(f: (A, B) => B): B = {
+    if (isEmpty) {
+      z
+    } else {
+      var acc: B = z
+      var node = lastNode.prev
+      while (!node.isEmpty) {
+        acc = f(node.key, acc)
+        node = node.prev
+      }
+      acc
     }
   }
 
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = ???
 
-  override def foldLeft[B](z: B)(f: (B, A) => B): B = {
-    var acc: B = z
-    var node = h
-    while (!node.isEmpty) {
-      acc = f(acc, node.value)
-      node = node.next
+  override def mkString(sep: String, start: String, end: String): String = {
+    val elements = if (isEmpty) {
+      ""
+    } else {
+      loop(firstNode.next)(firstNode.next.key.toString)((str, x) => s"$str$sep$x")
     }
-    acc
+
+    s"$start$elements$end"
   }
 
-  override def foldRight[B](z: B)(f: (A, B) => B): B = {
-    var acc: B = z
-    var node = l
-    while (!node.isEmpty) {
-      acc = f(node.value, acc)
-      node = node.prev
+  override def elements: Iterable[A] = new Iterable[A] {
+    override def iterator: Iterator[A] = new Iterator[A] {
+      var curr: Node = DoublyLinkedList.this.firstNode
+      override def hasNext: Boolean = !curr.isEmpty
+      override def next(): A = {
+        val k = curr.key
+        curr = curr.next
+        k
+      }
     }
-    acc
   }
 
-  override def mkString(sep: String, start: String, end: String): String = ???
+  override def find(p: (A) => Boolean): Option[A] = {
+    findNode(p).map(_.key)
+  }
 
-  override def elements: Iterable[A] = ???
+  override def remove(key: A): Boolean = {
+    findNode(_ == key) match {
+      case None =>
+        false
+      case Some(n) =>
+        if (n.prev.isSentinel)
+          firstNode.next = n.next
+        if (n.next.isSentinel)
+          lastNode.prev = n.prev
+        true
+    }
+  }
 
-  override def contains(key: A): Boolean = ???
+  override def update[B, C](newKey: A)(implicit ev: (A) => (B, C)): Boolean = {
+    findNode(_._1 == newKey._1) match {
+      case None =>
+        append(newKey)
+        true
+      case Some(curr) =>
+        curr.key = newKey
+        false
+    }
+  }
 
-  override def find(p: (A) => Boolean): Option[A] = ???
+  override def clear(): Unit = {
+    firstNode.next = Nil
+    lastNode.prev = Nil
+  }
 
-  override def remove(key: A): Boolean = ???
+  private def loop[B](startingNode: Node)(z: B)(f: (B, A) => B): B = {
+    startingNode match {
+      case Nil => z
+      case _ =>
+        var acc: B = z
+        var node = startingNode.next
+        while (!node.isEmpty) {
+          acc = f(acc, node.key)
+          node = node.next
+        }
+        acc
+    }
+  }
 
-  override def update[B, C](key: A)(implicit ev: (A) => (B, C)): Boolean = ???
+  private def findNode(p: (A) => Boolean): Option[Node] = {
+    if (isEmpty) {
+      None
+    } else {
+      val nodeMatches: Node => Boolean = n => n.valueOption.exists(p)
 
-  override def clear(): Unit = ???
+      var node = firstNode.next
+      while (!node.isEmpty && !nodeMatches(node)) {
+        node = node.next
+      }
+
+      node.toOption
+    }
+  }
+
+  private def initList(newCell: Node): Unit = {
+    firstNode.next = newCell
+    lastNode.prev = newCell
+
+    newCell.prev = firstNode
+    newCell.next = lastNode
+  }
 }
 
 object DoublyLinkedList {
+  /** Creates an empty doubly linked list.
+    * @tparam A the list element type
+    * @return an empty list
+    */
   def empty[A]: LinkedList[A] = new DoublyLinkedList[A]
+
+  /** Creates a doubly linked list with the given items.
+    * @param items the list items
+    * @tparam A the list element type
+    * @return a list
+    */
+  def apply[A](items: A*): LinkedList[A] = {
+    val newList = DoublyLinkedList.empty[A]
+    for (el <- items) {
+      newList += el
+    }
+    newList
+  }
 }

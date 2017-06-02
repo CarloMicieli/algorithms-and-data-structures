@@ -24,7 +24,7 @@
 
 package io.github.carlomicieli.oop.dst
 
-import scala.util.Try
+import scala.util.{ Failure, Success, Try }
 
 /** It represents a mutable linked list.
   * @tparam A the list element type
@@ -62,7 +62,15 @@ trait LinkedList[A] {
   /** `O(1)` Remove the front element from the list
     * @return optionally the original value
     */
-  def removeHead(): Try[A]
+  def removeHead(): Try[A] = {
+    if (isEmpty) {
+      Failure(new EmptyLinkedListException("removeHead"))
+    } else {
+      val h = this.head
+      remove(h)
+      Success(h)
+    }
+  }
 
   /** `O(1)` Insert a new element in the front of the list.
     * @param key the element to be inserted
@@ -100,17 +108,6 @@ trait LinkedList[A] {
     * @param el the new element
     */
   def append(el: A): Unit
-
-  /** `O(n)` Inserts the element into the list at the first position where it
-    * is less than or equal to the next element.
-    *
-    * @usecase def insert(key: A): Unit
-    * @inheritdoc
-    * @param key the element to insert
-    * @param ord
-    * @return
-    */
-  def insert(key: A)(implicit ord: Ordering[A]): Unit
 
   /** @usecase def foreach(f: A => Unit): Unit
     * @param f
@@ -160,7 +157,9 @@ trait LinkedList[A] {
     * @param key the key to find
     * @return `true` if the list contains `key`; `false` otherwise.
     */
-  def contains(key: A): Boolean
+  @inline def contains(key: A): Boolean = {
+    find(_ == key).isDefined
+  }
 
   /** `O(n)` Finds the first element of this list satisfying a predicate, if any.
     * @param p the predicate used to test elements
@@ -194,6 +193,17 @@ trait LinkedList[A] {
   def zip[B](that: LinkedList[B]): Iterable[(A, B)] = {
     this.elements.zip(that.elements)
   }
+
+  /** `O(n)` Inserts the element into the list at the first position where it
+    * is less than or equal to the next element.
+    *
+    * @usecase def insert(key: A): Unit
+    * @inheritdoc
+    * @param key the element to insert
+    * @param ord
+    * @return
+    */
+  def insert(key: A)(implicit ord: Ordering[A]): Unit
 
   override def toString: String = mkString(", ", "[", "]")
 }
