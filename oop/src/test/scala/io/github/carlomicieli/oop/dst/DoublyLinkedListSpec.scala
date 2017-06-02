@@ -33,12 +33,28 @@ class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
         val l = DoublyLinkedList.empty[Int]
         l.headOption shouldBe Option.empty[Int]
       }
+
+      it("should return a Some with the head value for non empty lists") {
+        val l = list(1, 2, 33)
+        l.headOption shouldBe Some(1)
+
+        val l2 = singletonList(42)
+        l2.headOption shouldBe Some(42)
+      }
     }
 
     describe("lastOption") {
       it("should return a None for the empty list") {
         val l = DoublyLinkedList.empty[Int]
         l.lastOption shouldBe Option.empty[Int]
+      }
+
+      it("should return a Some with the last element for non empty lists") {
+        val l = list(1, 2, 33)
+        l.lastOption shouldBe Some(33)
+
+        val l2 = singletonList(42)
+        l2.lastOption shouldBe Some(42)
       }
     }
 
@@ -47,6 +63,12 @@ class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
         val l = newEmptyList
         l.append(42)
         l.length shouldBe 1
+      }
+
+      it("should add a new element to a non empty list") {
+        val l = list(1, 2)
+        l.append(42)
+        l.length shouldBe 3
       }
     }
 
@@ -101,6 +123,23 @@ class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
         val l = DoublyLinkedList.empty[Int]
         l.foldLeft(42)(_ + _) shouldBe 42
       }
+
+      it("should apply a function to list elements from left") {
+        val l = list(1, 2, 3, 4, 5)
+        l.foldLeft(0)(_ + _) shouldBe 15
+      }
+    }
+
+    describe("foldRight") {
+      it("should return the initial value for empty lists") {
+        val l = DoublyLinkedList.empty[Int]
+        l.foldRight(42)(_ + _) shouldBe 42
+      }
+
+      it("should apply a function to list elements from right") {
+        val l = list(1, 2, 3, 4, 5)
+        l.foldRight(0)(_ + _) shouldBe 15
+      }
     }
 
     describe("mkString") {
@@ -154,6 +193,15 @@ class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
         val l = list(42, 4, 556, 7)
         l.remove(42)
         l.length shouldBe 3
+      }
+    }
+
+    describe("clear") {
+      it("should make a list empty") {
+        val l = list(42, 4, 556, 7)
+        l.clear()
+        l.isEmpty shouldBe true
+        l.length shouldBe 0
       }
     }
   }

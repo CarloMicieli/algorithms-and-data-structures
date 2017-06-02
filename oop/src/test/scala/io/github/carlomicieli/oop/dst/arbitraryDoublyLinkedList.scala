@@ -22,17 +22,28 @@
  * limitations under the License.
  */
 
-package io.github.carlomicieli.oop
-package dst
+package io.github.carlomicieli.oop.dst
 
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.util.Buildable
 
+import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable
+import scala.language.implicitConversions
 
-object SinglyLinkedListBuilder {
-  implicit def buildableSinglyLinkedList[A] = new Buildable[A, LinkedList[A]] {
+object arbitraryDoublyLinkedList {
+  implicit def linkedListToTraversable[T](list: LinkedList[T]): Traversable[T] = new Traversable[T] {
+    override def foreach[U](f: (T) => U): Unit = list foreach f
+  }
+
+  implicit def buildableCanBuildFrom[T, F, C](implicit c: CanBuildFrom[F, T, C]) =
+    new Buildable[T, C] {
+      def builder: mutable.Builder[T, C] = c.apply
+    }
+
+  implicit def buildableDoublyLinkedList[A] = new Buildable[A, LinkedList[A]] {
     override def builder = new mutable.Builder[A, LinkedList[A]] {
-      val ll = new SinglyLinkedList[A]
+      val ll = new DoublyLinkedList[A]
       override def +=(elem: A): this.type = {
         ll.append(elem)
         this
@@ -42,5 +53,10 @@ object SinglyLinkedListBuilder {
 
       override def result(): LinkedList[A] = ll
     }
+  }
+
+  implicit def arbitraryList[T](implicit a: Arbitrary[T]): Arbitrary[LinkedList[T]] = Arbitrary {
+    import Gen._
+    containerOf[LinkedList, T](a.arbitrary)
   }
 }
