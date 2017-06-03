@@ -57,9 +57,10 @@ trait PriorityQueue[K, V] {
 
   /** Removes and returns an entry (k,v) having minimal key from
     * the priority queue; returns null if the priority queue is empty.
+    * @param ord the keys natural ordering
     * @return
     */
-  def removeMin(): (K, V)
+  def removeMin(implicit ord: Ordering[K]): (K, V)
 
   /** Returns the number of entries in the priority queue.
     * @return

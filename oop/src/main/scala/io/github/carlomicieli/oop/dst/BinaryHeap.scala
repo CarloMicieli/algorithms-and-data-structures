@@ -22,24 +22,79 @@
  * limitations under the License.
  */
 
-package io.github.carlomicieli.oop.dst
+package io.github.carlomicieli
+package oop
+package dst
 
+import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
 private[this] class BinaryHeap[K, V] private (a: Array[(K, V)]) extends PriorityQueue[K, V] {
 
-  //private val array: Array[(K, V)] = a
-  private val heapSize: Int = 0
+  private val array: Array[(K, V)] = a
+  private var heapSize: Int = 0
 
-  override def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit = ???
+  override def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit = {
+    array(heapSize) = key -> value
+    heapSize += 1
+  }
 
-  override def min: (K, V) = ???
+  override def min: (K, V) = {
+    if (isEmpty)
+      throw new Exception("Priority queue is empty")
 
-  override def removeMin(): (K, V) = ???
+    array(0)
+  }
+
+  override def removeMin(implicit ord: Ordering[K]): (K, V) = ???
 
   override def size: Int = heapSize
 
   override def isEmpty: Boolean = heapSize == 0
+
+  private def parent(i: Int): Int = math.floor(i / 2).toInt
+  private def left(i: Int): Int = i << 1
+  private def right(i: Int): Int = (i << 1) + 1
+
+  private def buildMinHeap(implicit ord: Ordering[K]): Unit = {
+    val start = math.floor((heapSize - 1) / 2).toInt
+    for (i <- start downTo 1) {
+      minHeapify(i)
+    }
+  }
+
+  @tailrec private def minHeapify(i: Int)(implicit ord: Ordering[K]): Unit = {
+    val l = left(i)
+    val r = right(i)
+
+    var smallest =
+      if (l <= heapSize && less(l, i))
+        l
+      else
+        i
+    if (r <= heapSize && less(r, smallest))
+      smallest = r
+
+    if (smallest != i) {
+      swap(i, smallest)
+      minHeapify(smallest)
+    }
+  }
+
+  private def swap(i: Int, j: Int): Unit = {
+    val tmp = array(i)
+    array(i) = array(j)
+    array(j) = tmp
+  }
+
+  private def less(i: Int, j: Int)(implicit ord: Ordering[K]): Boolean = {
+    import Ordered._
+    array(i)._1 <= array(j)._1
+  }
+
+  private def minHeapProperty(i: Int)(implicit ord: Ordering[K]): Boolean = {
+    less(parent(i), i)
+  }
 }
 
 private[this] object BinaryHeap {
