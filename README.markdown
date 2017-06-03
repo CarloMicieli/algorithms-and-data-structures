@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Build Status](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures.png?branch=master)](https://travis-ci.org/CarloMicieli/algorithms-and-data-structures)
-[![Coverage Status](https://coveralls.io/repos/CarloMicieli/algorithms-and-data-structures/badge.svg?branch=master&service=github)](https://coveralls.io/github/CarloMicieli/algorithms-and-data-structures?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/CarloMicieli/algorithms-and-data-structures/badge.svg?branch=master)](https://coveralls.io/github/CarloMicieli/algorithms-and-data-structures?branch=master)
 
 Data structures and algorithms implementations with the Scala programming language.
 
