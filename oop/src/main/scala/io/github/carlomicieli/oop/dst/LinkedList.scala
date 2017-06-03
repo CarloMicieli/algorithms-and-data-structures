@@ -29,7 +29,7 @@ package io.github.carlomicieli.oop.dst
   */
 trait LinkedList[A] {
 
-  /** `O(1)` Returns the first element (if any) from this list
+  /** `O(1)` Returns (but does not remove) the first element (if any) from this list
     * @return the list head
     */
   def head: A = {
@@ -41,7 +41,7 @@ trait LinkedList[A] {
     */
   def headOption: Option[A]
 
-  /** `O(1)` Returns the last element (if any) from this list
+  /** `O(1)` Returns (but does not remove) the last element (if any) from this list
     *
     * This method is assuming the linked list implementation will store a pointer to the last element.
     * @return the list tail
@@ -98,12 +98,12 @@ trait LinkedList[A] {
     */
   @inline def nonEmpty: Boolean = !isEmpty
 
-  /** `O(1)` Insert a new element in the front of the list.
+  /** `O(1)` Adds a new element to the front of the list.
     * @param el the new element
     */
   def prepend(el: A): Unit
 
-  /** `O(1)` Insert a new element to the back of the list.
+  /** `O(1)` Adds a new element to the end of the list.
     * @param el the new element
     */
   def append(el: A): Unit
@@ -117,7 +117,7 @@ trait LinkedList[A] {
     foldLeft(())((_, x) => { val _ = f(x) })
   }
 
-  /** `O(n)` Returns the number of elements in the list
+  /** `O(n)` Returns the number of elements in the list.
     * @return the number of elements.
     */
   def length: Int = {

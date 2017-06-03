@@ -32,17 +32,27 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
 
     var key: A
 
-    def isSentinel: Boolean
-    def isEmpty: Boolean
+    def isNil: Boolean
 
-    def valueOption: Option[A] = {
-      if (isEmpty)
+    def matches(p: A => Boolean): Boolean = keyOption.exists(p)
+
+    def keyOption: Option[A] = {
+      if (isNil)
         None
       else
         Some(key)
     }
 
-    def toOption: Option[Node] = if (isEmpty) None else Some(this)
+    def toOption: Option[Node] = {
+      if (isNil)
+        None
+      else
+        Some(this)
+    }
+
+    override def toString: String = {
+      keyOption.map(_.toString).getOrElse("<nil>")
+    }
   }
 
   private class ValueNode(var key: A) extends Node {
@@ -55,19 +65,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
     override var prev: Node = Nil
     override var next: Node = Nil
 
-    override def isSentinel: Boolean = false
-    override def isEmpty: Boolean = false
-  }
-
-  private class Sentinel extends Node {
-    override var prev: Node = Nil
-    override var next: Node = Nil
-
-    override def isSentinel: Boolean = true
-    override def isEmpty: Boolean = true
-
-    override def key: A = throw new NoSuchElementException("Sentinel cell: no value found")
-    override def key_=(x: A): Unit = {}
+    override def isNil: Boolean = false
   }
 
   private object Nil extends Node {
@@ -79,21 +77,32 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
 
     def prev_=(n: Node): Unit = {}
 
-    override def isSentinel: Boolean = false
-    override def isEmpty: Boolean = true
+    override def isNil: Boolean = true
 
     override def key: A = throw new NoSuchElementException("Nil cell: no value found")
     override def key_=(x: A): Unit = {}
   }
 
+  private class Sentinel extends Node {
+    override var prev: Node = Nil
+    override var next: Node = Nil
+
+    override def isNil: Boolean = true
+
+    override def key: A = throw new NoSuchElementException("Sentinel cell: no value found")
+    override def key_=(x: A): Unit = {}
+  }
+
   private val firstNode: Node = new Sentinel
   private val lastNode: Node = new Sentinel
+  firstNode.next = lastNode
+  lastNode.prev = firstNode
 
-  override def headOption: Option[A] = firstNode.next.valueOption
+  override def headOption: Option[A] = firstNode.next.keyOption
 
-  override def lastOption: Option[A] = lastNode.prev.valueOption
+  override def lastOption: Option[A] = lastNode.prev.keyOption
 
-  override def isEmpty: Boolean = firstNode.next.isEmpty
+  override def isEmpty: Boolean = firstNode.next.isNil && lastNode.prev.isNil
 
   override def prepend(x: A): Unit = {
     val newCell = new ValueNode(x)
@@ -127,7 +136,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
     if (isEmpty) {
       z
     } else {
-      loop(firstNode)(z)(f)
+      loop(firstNode.next)(z)(f)
     }
   }
 
@@ -137,7 +146,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
     } else {
       var acc: B = z
       var node = lastNode.prev
-      while (!node.isEmpty) {
+      while (!node.isNil) {
         acc = f(node.key, acc)
         node = node.prev
       }
@@ -148,11 +157,13 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
   override def insert(key: A)(implicit ord: Ordering[A]): Unit = ???
 
   override def mkString(sep: String, start: String, end: String): String = {
-    val elements = if (isEmpty) {
-      ""
-    } else {
-      loop(firstNode.next)(firstNode.next.key.toString)((str, x) => s"$str$sep$x")
-    }
+    val elements =
+      if (isEmpty) {
+        ""
+      } else {
+        val initNode: Node = firstNode.next
+        loop(initNode.next)(initNode.toString)((str, x) => s"$str$sep$x")
+      }
 
     s"$start$elements$end"
   }
@@ -160,7 +171,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
   override def elements: Iterable[A] = new Iterable[A] {
     override def iterator: Iterator[A] = new Iterator[A] {
       var curr: Node = DoublyLinkedList.this.firstNode
-      override def hasNext: Boolean = !curr.isEmpty
+      override def hasNext: Boolean = !curr.isNil
       override def next(): A = {
         val k = curr.key
         curr = curr.next
@@ -178,10 +189,8 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
       case None =>
         false
       case Some(n) =>
-        if (n.prev.isSentinel)
-          firstNode.next = n.next
-        if (n.next.isSentinel)
-          lastNode.prev = n.prev
+        firstNode.next = n.next
+        lastNode.prev = n.prev
         true
     }
   }
@@ -198,32 +207,26 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
   }
 
   override def clear(): Unit = {
-    firstNode.next = Nil
-    lastNode.prev = Nil
+    firstNode.next = lastNode
+    lastNode.prev = firstNode
   }
 
   private def loop[B](startingNode: Node)(z: B)(f: (B, A) => B): B = {
-    startingNode match {
-      case Nil => z
-      case _ =>
-        var acc: B = z
-        var node = startingNode.next
-        while (!node.isEmpty) {
-          acc = f(acc, node.key)
-          node = node.next
-        }
-        acc
+    var acc: B = z
+    var node = startingNode
+    while (!node.isNil) {
+      acc = f(acc, node.key)
+      node = node.next
     }
+    acc
   }
 
   private def findNode(p: (A) => Boolean): Option[Node] = {
     if (isEmpty) {
       None
     } else {
-      val nodeMatches: Node => Boolean = n => n.valueOption.exists(p)
-
       var node = firstNode.next
-      while (!node.isEmpty && !nodeMatches(node)) {
+      while (!node.isNil && !node.matches(p)) {
         node = node.next
       }
 
@@ -240,6 +243,12 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
   }
 }
 
+/** Define a linked list in which each node keeps an explicit reference to the node before it and a
+  * reference to the node after it.
+  *
+  * @author Carlo Micieli
+  * @since 1.0
+  */
 object DoublyLinkedList {
   /** Creates an empty doubly linked list.
     * @tparam A the list element type
