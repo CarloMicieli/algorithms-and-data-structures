@@ -56,12 +56,6 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
   }
 
   private class ValueNode(var key: A) extends Node {
-    def this(v: A, p: Node, n: Node) {
-      this(v)
-      prev = p
-      next = n
-    }
-
     override var prev: Node = Nil
     override var next: Node = Nil
 
@@ -136,7 +130,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
     if (isEmpty) {
       z
     } else {
-      loop(firstNode.next)(z)(f)
+      loop(firstNode.next)(z)((acc, node) => f(acc, node.key))
     }
   }
 
@@ -170,7 +164,7 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
 
   override def elements: Iterable[A] = new Iterable[A] {
     override def iterator: Iterator[A] = new Iterator[A] {
-      var curr: Node = DoublyLinkedList.this.firstNode
+      var curr: Node = DoublyLinkedList.this.firstNode.next
       override def hasNext: Boolean = !curr.isNil
       override def next(): A = {
         val k = curr.key
@@ -206,16 +200,23 @@ private[this] class DoublyLinkedList[A] extends LinkedList[A] {
     }
   }
 
+  override def equals(o: scala.Any): Boolean = {
+    o match {
+      case that: DoublyLinkedList[A] => DoublyLinkedList.areEquals(this, that)
+      case _                         => false
+    }
+  }
+
   override def clear(): Unit = {
     firstNode.next = lastNode
     lastNode.prev = firstNode
   }
 
-  private def loop[B](startingNode: Node)(z: B)(f: (B, A) => B): B = {
+  private def loop[B](startingNode: Node)(z: B)(f: (B, Node) => B): B = {
     var acc: B = z
     var node = startingNode
     while (!node.isNil) {
-      acc = f(acc, node.key)
+      acc = f(acc, node)
       node = node.next
     }
     acc
@@ -267,5 +268,19 @@ object DoublyLinkedList {
       newList += el
     }
     newList
+  }
+
+  private def areEquals[A](xs: DoublyLinkedList[A], ys: DoublyLinkedList[A]): Boolean = {
+    if (xs.isEmpty && !ys.isEmpty)
+      false
+    else if (!xs.isEmpty && ys.isEmpty)
+      false
+    else if (xs.isEmpty && ys.isEmpty)
+      true
+    else {
+      val xit = xs.elements
+      val yit = ys.elements
+      false
+    }
   }
 }

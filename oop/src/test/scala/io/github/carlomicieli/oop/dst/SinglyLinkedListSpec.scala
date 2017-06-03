@@ -244,6 +244,12 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
     }
 
     describe("remove") {
+      it("should return false and leave the list unchanged when the element is not found") {
+        val l = numbersList
+        l.remove(42) shouldBe false
+        l.length shouldBe 6
+      }
+
       it("should remove an element at the middle") {
         val l = numbersList
         val res = l.remove(4)
@@ -318,6 +324,12 @@ class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
         val l = SinglyLinkedList(1 -> "one", 2 -> "two", 3 -> "III", 4 -> "four")
         l.update(3 -> "three")
         l.contains(3 -> "three") shouldBe true
+      }
+
+      it("should add the element if not found") {
+        val l = SinglyLinkedList(1 -> "one", 2 -> "two", 3 -> "III", 4 -> "four")
+        l.update(42 -> "answer")
+        l.contains(42 -> "answer") shouldBe true
       }
     }
 

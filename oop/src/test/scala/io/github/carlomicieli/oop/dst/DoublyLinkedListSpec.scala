@@ -204,6 +204,67 @@ class DoublyLinkedListSpec extends AbstractSpec with DoublyLinkedLists {
         l.length shouldBe 0
       }
     }
+
+    describe("elements") {
+      it("should produce an empty Iterable for the empty list") {
+        val it = newEmptyList.elements
+        it.isEmpty shouldBe true
+      }
+
+      it("should produce at Iterable for lists") {
+        val it = list(1, 2, 3, 4, 5, 6).elements
+        it.isEmpty shouldBe false
+        it.toArray shouldBe Array(1, 2, 3, 4, 5, 6)
+      }
+    }
+
+    describe("update") {
+      it("should add the element to the empty list") {
+        val l = DoublyLinkedList.empty[(Int, String)]
+        l.update(42 -> "answer")
+        l.isEmpty shouldBe false
+        l.head shouldBe (42 -> "answer")
+      }
+
+      it("should update the element if found") {
+        val l = DoublyLinkedList[(Int, String)](42 -> "question?")
+        l.update(42 -> "answer")
+        l.head shouldBe (42 -> "answer")
+      }
+
+      it("should leave unchanged the key for the element if found") {
+        val l = DoublyLinkedList[(Int, String)](41 -> "answer")
+        l.update(42 -> "answer")
+        l.head shouldBe (41 -> "answer")
+        l.length shouldBe 2
+      }
+    }
+
+    describe("equals") {
+      it("should return true comparing two empty lists") {
+        val l1 = newEmptyList
+        val l2 = newEmptyList
+        l1.equals(l2) shouldBe true
+      }
+
+      it("should always return false comparing the empty list with a non empty list") {
+        val l1 = newEmptyList
+        val l2 = list(1, 2, 3)
+        l1.equals(l2) shouldBe false
+      }
+
+      it("should always return false comparing a non empty list with the empty list") {
+        val l1 = list(1, 2, 3)
+        val l2 = newEmptyList
+        l1.equals(l2) shouldBe false
+      }
+
+      it("should return false when two non empty lists are different") {
+        val l1 = list(1, 2, 3)
+        val l2 = list(1, 2)
+        l1.equals(l2) shouldBe false
+      }
+    }
   }
 }
 
