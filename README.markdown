@@ -31,10 +31,13 @@ Sorting Algorithms
 
 | Name              |   stable  |  in place |           |           |
 | ----------------- | --------- | --------- | --------- | --------- |
-| BubbleSort [1]    |    no     |   yes     |   Θ(n²)   |    O(n²)  |
+| BubbleSort        |    no     |   yes     |   Θ(n²)   |    O(n²)  |
 | InsertionSort     |    yes    |   yes     |   Θ(n²)   |    O(n²)  |
 | SelectionSort     |    no     |   yes     |   Θ(n²)   |    O(n²)  |
-| ShellSort [2]     |    no     |   yes     |   Θ(n<sup>3/2</sup>) |    O(n²)  |
+| ShellSort         |    no     |   yes     |   Θ(n<sup>3/2</sup>) |    O(n²)  |
+| HeapSort          |    yes    |   no      | Θ(n logn) |    O(n²)  |
+| MergeSort         |    yes    |   no      | Θ(n logn) |    O(n²)  |
+| QuickSort         |    no     |   yes     | Θ(n logn) |    O(n²)  |
 
 Data Structures
 ---------------
@@ -43,6 +46,9 @@ Data Structures
 * Binary search tree (normal and Red-Black)
 * Queue
 * Stack
+
+
+
 
 References
 ----------
