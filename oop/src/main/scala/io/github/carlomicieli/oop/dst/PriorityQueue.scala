@@ -22,19 +22,22 @@
  * limitations under the License.
  */
 
-package io.github.carlomicieli.oop.dst
+package io.github.carlomicieli
+package oop
+package dst
 
-import scala.reflect.ClassTag
-
-/** This is a collection of prioritized elements that allows arbitrary element insertion,
+/** A '''min-priority queue'''.
+  *
+  * == Overview ==
+  * This is a collection of prioritized elements that allows arbitrary element insertion,
   * and allows the removal of the element that has first priority.
   *
   * When an element is added to a priority queue, the user designates its priority by providing an
   * associated key. The element with the minimal key will be the next to be removed from the queue.
   *
   * A priority queue may have multiple entries with equivalent keys, in which case
-  * methods min and removeMin may report an arbitrary choice among those entry
-  * having minimal key.
+  * methods [[PriorityQueue#min]] and [[PriorityQueue#removeMin]] may report an arbitrary choice among
+  * those entry having minimal key.
   *
   * @tparam K the Key type
   * @tparam V the Value type
@@ -45,21 +48,39 @@ trait PriorityQueue[K, V] {
   /** Creates an entry with key k and value v in the priority queue.
     * @param key the key
     * @param value the value
-    * @param ord the keys natural ordering
     */
-  def insert(key: K, value: V)(implicit ord: Ordering[K]): Unit
+  def insert(key: K, value: V): Unit
 
-  /** Returns (but does not remove) a priority queue entry (k,v)
-    * having minimal key; returns null if the priority queue is empty.
+  /** Returns (but does not remove) a priority queue entry `(k,v)`
+    * having minimal key; returns `null` if the priority queue is empty.
     * @return
     */
   def min: (K, V)
 
-  /** Removes and returns an entry (k,v) having minimal key from
-    * the priority queue; returns null if the priority queue is empty.
+  /** Removes and returns an entry `(k,v)` having minimal key from
+    * the priority queue; returns `null` if the priority queue is empty.
     * @return
     */
-  def removeMin(): (K, V)
+  def extractMin(): (K, V)
+
+  /** Decreases the value of element x’s key to the new value `newKey`,
+    * which is assumed to be at least as smaller as x’s current `key` value.
+    *
+    * @param x the element index
+    * @param newKey the new key value
+    */
+  def decreaseKey(x: Int, newKey: K): Unit
+
+  /** Creates and returns a new priority queue that contains all the elements of
+    * `this` priority queue and `that` priority queue.
+    *
+    * Depending upon the implementation, this operation could destroy the two
+    * original priority queues.
+    *
+    * @param that the other priority queue
+    * @return a new priority queue
+    */
+  def union(that: PriorityQueue[K, V]): PriorityQueue[K, V]
 
   /** Returns the number of entries in the priority queue.
     * @return
@@ -70,16 +91,4 @@ trait PriorityQueue[K, V] {
     * @return
     */
   def isEmpty: Boolean
-}
-
-object PriorityQueue {
-  /** Creates a new binary heap with the provided capacity.
-    * @param s the heap capacity
-    * @tparam K the Key type
-    * @tparam V the Value type
-    * @return a new Priority queue
-    */
-  def binaryHeap[K: Ordering: ClassTag, V: ClassTag](s: Int): PriorityQueue[K, V] = {
-    BinaryHeap(s)
-  }
 }
