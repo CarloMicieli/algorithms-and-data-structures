@@ -26,8 +26,6 @@ package io.github.carlomicieli.oop.dst
 
 import io.github.carlomicieli.test.AbstractSpec
 
-import scala.util.Success
-
 class SinglyLinkedListSpec extends AbstractSpec with SinglyLinkedListFixture {
   describe("A singly linked list") {
     describe("head") {
