@@ -126,12 +126,18 @@ class BinaryHeapSpec extends FunSpec with Matchers with BinaryHeaps {
 
       it("should keep the heap property (2)") {
         val pq = newHeap(16)
-        pq.insert(42, "answer")
-        pq.insert(22, "answer")
-        pq.insert(12, "answer")
-        pq.insert(2, "answer")
+        pq.insert(42, "forty-two")
+        pq.insert(2, "two")
+        pq.insert(12, "twelve")
+        pq.insert(22, "twenty-two")
         pq.insert(1, "one")
-        pq.min shouldBe 1 -> "one"
+        pq.min shouldBe (1 -> "one")
+
+        pq.extractMin() shouldBe 1 -> "one"
+        pq.extractMin() shouldBe 2 -> "two"
+        pq.extractMin() shouldBe 12 -> "twelve"
+        pq.extractMin() shouldBe 22 -> "twenty-two"
+        pq.extractMin() shouldBe 42 -> "forty-two"
       }
     }
 

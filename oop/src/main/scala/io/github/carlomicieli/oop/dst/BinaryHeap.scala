@@ -29,11 +29,13 @@ package dst
 import scala.annotation.tailrec
 import scala.reflect.ClassTag
 
-private[this] class BinaryHeap[K, V] private (a: Array[(K, V)])(implicit val ord: Ordering[K])
+private[dst] class BinaryHeap[K, V] private (a: Array[(K, V)], length: Int = 0)(implicit val ord: Ordering[K])
     extends PriorityQueue[K, V] {
 
   private val array: Array[(K, V)] = a
   private var heapSize: Int = 0
+
+  buildMinHeap(length)
 
   override def insert(key: K, value: V): Unit = {
     array(heapSize) = key -> value
@@ -92,11 +94,12 @@ private[this] class BinaryHeap[K, V] private (a: Array[(K, V)])(implicit val ord
 
   override def isEmpty: Boolean = heapSize == 0
 
-  private def parent(i: Int): Int = i >> 1
-  private def left(i: Int): Int = i << 1
-  private def right(i: Int): Int = (i << 1) + 1
+  private def parent(i: Int): Int = (i - 1) >> 1
+  private def left(i: Int): Int = (i << 1) + 1
+  private def right(i: Int): Int = (i << 1) + 2
 
   private def buildMinHeap(length: Int): Unit = {
+    heapSize = length
     val start = math.floor(length / 2).toInt
     for (i <- start downTo 1) {
       minHeapify(i)
@@ -116,11 +119,11 @@ private[this] class BinaryHeap[K, V] private (a: Array[(K, V)])(implicit val ord
     val r = right(i)
 
     var smallest =
-      if (l <= heapSize && less(l, i))
+      if (l < heapSize && less(l, i))
         l
       else
         i
-    if (r <= heapSize && less(r, smallest))
+    if (r < heapSize && less(r, smallest))
       smallest = r
 
     if (smallest != i) {
@@ -137,7 +140,7 @@ private[this] class BinaryHeap[K, V] private (a: Array[(K, V)])(implicit val ord
 
   private def less(i: Int, j: Int): Boolean = {
     import Ordered._
-    array(i)._1 < array(j)._1
+    array(i)._1 <= array(j)._1
   }
 
   private def heapPropertyHold(i: Int): Boolean = {
@@ -170,6 +173,18 @@ object BinaryHeap {
     val a = new Array[(K, V)](s)
     new BinaryHeap(a)
   }
+
+  /** Creates a new binary heap with the elements in the array.
+    *
+    * @param a
+    * @tparam K the Key type
+    * @tparam V the Value type
+    * @return a new Priority queue
+    */
+  def apply[K: Ordering, V](a: Array[(K, V)]): PriorityQueue[K, V] = {
+    new BinaryHeap(a, a.length)
+  }
+
 }
 
 final class BinaryHeapOverflow extends NoSuchElementException("Binary Heap overflow: is full")
