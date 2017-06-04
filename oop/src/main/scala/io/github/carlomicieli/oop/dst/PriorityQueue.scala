@@ -71,6 +71,17 @@ trait PriorityQueue[K, V] {
     */
   def decreaseKey(x: Int, newKey: K): Unit
 
+  /** Creates and returns a new priority queue that contains all the elements of
+    * `this` priority queue and `that` priority queue.
+    *
+    * Depending upon the implementation, this operation could destroy the two
+    * original priority queues.
+    *
+    * @param that the other priority queue
+    * @return a new priority queue
+    */
+  def union(that: PriorityQueue[K, V]): PriorityQueue[K, V]
+
   /** Returns the number of entries in the priority queue.
     * @return
     */

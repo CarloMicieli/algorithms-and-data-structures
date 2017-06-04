@@ -72,6 +72,22 @@ private[this] class BinaryHeap[K, V] private (a: Array[(K, V)])(implicit val ord
     min
   }
 
+  override def union(that: PriorityQueue[K, V]): PriorityQueue[K, V] = {
+    val a = new Array[(K, V)](this.size + that.size)
+    val newHeap = new BinaryHeap[K, V](a)
+
+    while (!this.isEmpty) {
+      val (k, v) = this.extractMin()
+      newHeap insert (k, v)
+    }
+    while (!that.isEmpty) {
+      val (k, v) = that.extractMin()
+      newHeap insert (k, v)
+    }
+
+    newHeap
+  }
+
   override def size: Int = heapSize
 
   override def isEmpty: Boolean = heapSize == 0
