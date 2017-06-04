@@ -63,6 +63,8 @@ References
 * Bill Venners. 2015. __Simplifying Scala Collections__. ScalaWorld Conference. (Retrieved from [https://www.youtube.com/watch?v=UBjzbkhvYTU](https://www.youtube.com/watch?v=UBjzbkhvYTU))
 * Chris Allen. 2015. __Modeling Data in Haskell for Beginners__. LambdaConf 2015. (Retrieved from [https://www.youtube.com/watch?v=p-NBJm0kIYU](https://www.youtube.com/watch?v=p-NBJm0kIYU))
 * Rod Stephens. 2013. __Essential Algorithms__. John Wiley & Sons, Inc.
+* Roman Grebennikov. 2016. __Is scala code slow?__. Scala.io conference (Retrieved from [http://dfdx.me/talks/scala_is_slow](http://dfdx.me/talks/scala_is_slow))
+
 
 License
 -------
